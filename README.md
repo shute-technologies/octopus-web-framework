@@ -1,5 +1,13 @@
 This a web framework based on WebGL for 2D Game Development, there's no current oficial documentation but there are somes sample code in: **src/shute-technologies/specs** folder.
 
+## How to run the framework
+Go to the terminal in the root folder of the project and run:
+1. npm install
+2. npm start
+3. That's all!
+
+Note: This project used Node 10+
+
 ## Specs
 In order to change which spec is going to be displayed, the developer has to change the file: **index.ts** using the enum in: **src/shute-technologies/specs/enumSpecType.ts** and the available options are:
 - SimpleFramework
