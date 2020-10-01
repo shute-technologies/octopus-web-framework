@@ -15,9 +15,7 @@ In order to change which spec is going to be displayed, the developer has to cha
 
 The details of each spec is:
 
-1. **Simple Framework**
-
-The sample code for this is at **src/shute-technologies/specs/types/specTestFramework.ts**, in here are multiple samples of what the framework can do, like:
+1. **Simple Framework**: The sample code for this is at **src/shute-technologies/specs/types/specTestFramework.ts**, in here are multiple samples of what the framework can do, like:
 - Render an image
 - Render an animation
 - Render a Grid
@@ -25,9 +23,7 @@ The sample code for this is at **src/shute-technologies/specs/types/specTestFram
 - Render a Quad Primitive
 - Render a Cirle Primitive
 
-2. **Space Game**
-
-This sample is a whole simple 2D mini-game of side-scroller space shooter, the controls for the are:
+2. **Space Game**: This sample is a whole simple 2D mini-game of side-scroller space shooter, the controls for the are:
 - SPACE Key: for shooting the player bullets
 - Mouse: for controlling the player movements
 
