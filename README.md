@@ -1,4 +1,4 @@
-This a web framework based on WebGL for 2D Game Development, there's no current oficial documentation but there are somes sample code in: **src/shute-technologies/specs** folder.
+This a web framework based on WebGL for 2D Game Development in TypeScript, there's no current oficial documentation but there are somes sample code in: **src/shute-technologies/specs** folder.
 
 ## How to run the framework
 Go to the terminal in the root folder of the project and run:
@@ -23,7 +23,7 @@ The details of each spec is:
 - Render a Quad Primitive
 - Render a Cirle Primitive
 
-2. **Space Game**: This sample is a whole simple 2D mini-game of side-scroller space shooter, the controls for the are:
+2. **Space Game**: This sample is a whole simple 2D mini-game of side-scroller space shooter, the controls for the game are:
 - SPACE Key: for shooting the player bullets
 - Mouse: for controlling the player movements
 
