@@ -6,7 +6,7 @@ Go to the terminal in the root folder of the project and run:
 2. npm start
 3. That's all!
 
-Note: This project used Node 10+
+Note: This project uses Node 10+
 
 ## Specs
 In order to change which spec is going to be displayed, the developer has to change the file: **index.ts** using the enum in: **src/shute-technologies/specs/enumSpecType.ts** and the available options are:
