@@ -1,4 +1,4 @@
-This a web framework based on WebGL for 2D Game Development, there's no current oficial documentation but there are somes sample code in: **src/shute-technologies/specs** folder.
+This a web framework based on WebGL for 2D Game Development in TypeScript, there's no current oficial documentation but there are somes sample code in: **src/shute-technologies/specs** folder.
 
 ## How to run the framework
 Go to the terminal in the root folder of the project and run:
@@ -6,7 +6,7 @@ Go to the terminal in the root folder of the project and run:
 2. npm start
 3. That's all!
 
-Note: This project used Node 10+
+Note: This project uses Node 10+
 
 ## Specs
 In order to change which spec is going to be displayed, the developer has to change the file: **index.ts** using the enum in: **src/shute-technologies/specs/enumSpecType.ts** and the available options are:
@@ -15,8 +15,7 @@ In order to change which spec is going to be displayed, the developer has to cha
 
 The details of each spec is:
 
-1. **Simple Framework**
-The sample code for this is at **src/shute-technologies/specs/types/specTestFramework.ts**, in here are multiple samples of what the framework can do, like:
+1. **Simple Framework**: The sample code for this is at **src/shute-technologies/specs/types/specTestFramework.ts**, in here are multiple samples of what the framework can do, like:
 - Render an image
 - Render an animation
 - Render a Grid
@@ -24,8 +23,7 @@ The sample code for this is at **src/shute-technologies/specs/types/specTestFram
 - Render a Quad Primitive
 - Render a Cirle Primitive
 
-2. **Space Game**
-This sample is a whole simple 2D mini-game of side-scroller space shooter, the controls for the are:
+2. **Space Game**: This sample is a whole simple 2D mini-game of side-scroller space shooter, the controls for the game are:
 - SPACE Key: for shooting the player bullets
 - Mouse: for controlling the player movements
 
