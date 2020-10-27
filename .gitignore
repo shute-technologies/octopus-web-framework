@@ -27,6 +27,7 @@ $RECYCLE.BIN/
 # End of https://www.gitignore.io/api/windows
 
 # Excluded
+.vscode
 *.js.map
 node_modules
 src/shute-technologies/**/*.js

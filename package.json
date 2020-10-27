@@ -2,13 +2,17 @@
   "name": "octopuswebframework",
   "version": "0.1.0",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --mode development --watch"
   },
   "dependencies": {
     "gl-matrix": "^3.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chrisfs313/octopus-web-framework"
   },
   "devDependencies": {
     "@types/gl-matrix": "^3.2.0",
