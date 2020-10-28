@@ -9,6 +9,13 @@ export class OFTranslations {
       static readonly outOfBounds = `FrameworkFactory::setCurrentFramework index: {0} out of bounds.`;
     };
 
+    static GraphicsOptimization = class {
+      static PolygonBatcher = class {
+        static readonly changeShader = 'OFPolygonBatcher::changeShader> New shader: {0} applied.';
+        static readonly setShader = 'OFPolygonBatcher::setShader> New shader: {0} applied.';
+      };
+    };
+
     static AudioDevice = class {
       static readonly initialize = 'OF(id:{0}):OFAudioDevice::Initialize> Initialized.';
       static readonly notSupported = 'OF(id:{0}):OFAudioDevice::Initialize> Web Audio API is not supported in this browser.';

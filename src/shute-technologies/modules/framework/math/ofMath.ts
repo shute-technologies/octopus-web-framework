@@ -1,5 +1,6 @@
 import { OFVector3 } from "./ofVector3";
 import { OFVector2 } from "./ofVector2";
+import { mat4, vec4 } from "gl-matrix";
 
 export class OFMath {
 
@@ -118,5 +119,14 @@ export class OFMath {
 
   static max (val1: number, val2: number): number {
     return val1 > val2 ? val1 : val2;
+  }
+
+  static mat4XVec4(m: mat4, v: vec4): mat4 {
+    const out = mat4.create();
+    out[0]  = m[0]  * v[0]; out[1]  = m[1]  * v[1]; out[2]  = m[2]  * v[2]; out[3]  = m[3]  * v[3];
+    out[4]  = m[4]  * v[0]; out[5]  = m[5]  * v[1]; out[6]  = m[6]  * v[2]; out[7]  = m[7]  * v[3];
+    out[8]  = m[8]  * v[0]; out[9]  = m[9]  * v[1]; out[10] = m[10] * v[2]; out[11] = m[11] * v[3];
+    out[12] = m[12] * v[0]; out[13] = m[13] * v[1]; out[14] = m[14] * v[2]; out[15] = m[15] * v[3];
+    return out;
   }
 }
