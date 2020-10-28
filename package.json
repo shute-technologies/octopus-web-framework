@@ -1,11 +1,14 @@
 {
   "name": "octopuswebframework",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "license": "MIT",
   "private": false,
-  "main": "index.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": ["lib/**/*"],
   "scripts": {
-    "start": "webpack-dev-server --mode development --watch"
+    "start": "webpack-dev-server --mode development --watch",
+    "build": "tsc"
   },
   "dependencies": {
     "gl-matrix": "^3.3.0"

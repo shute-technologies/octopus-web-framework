@@ -30,5 +30,6 @@ $RECYCLE.BIN/
 .vscode
 *.js.map
 node_modules
+lib
 src/shute-technologies/**/*.js
 src/shute-technologies/**/*.js.map

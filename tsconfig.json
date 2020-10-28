@@ -2,6 +2,8 @@
   "compilerOptions": {
     "module": "commonjs",
     "sourceMap": true,
+    "declaration": true,
+    "outDir": "./lib",
     "target": "es6",
     "allowJs": true,
     "plugins": [
@@ -21,9 +23,11 @@
     },
   },
   "include": [
+    "./src/shute-technologies/modules",
     "./index.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".vscode"
   ]
 }
