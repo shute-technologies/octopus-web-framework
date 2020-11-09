@@ -1,16 +1,14 @@
-import { 
-  Dictionary, 
-  IOFRenderArgs, 
-  OFBaseShader, 
-  OFColor, 
-  OFConsole, 
-  OFEnumVBOObjectType, 
-  OFFrameworkFactory, 
-  OFGraphicDevice, 
-  OFImageContent, 
-  OFVBOObject 
-} from "@framework";
-import { OFTranslations } from "shute-technologies/modules/framework/settings/ofTranslations";
+import { OFColor } from "../../ofColor";
+import { OFGraphicDevice } from '../../../../device/ofGraphicDevice';
+import { OFImageContent } from '../../../../content/ofImageContent';
+import { OFBaseShader } from "../../../shader/ofBaseShader";
+import { Dictionary } from "../../../../../common/ofInterfaces";
+import { OFConsole } from "../../../../../helpers/ofConsole";
+import { IOFRenderArgs } from "../../../../../interfaces/iofRenderArgs";
+import { OFFrameworkFactory } from "../../../../../ofFrameworkFactory";
+import { OFTranslations } from "../../../../../settings/ofTranslations";
+import { OFEnumVBOObjectType } from "../../../../device/optimization/gpu/ofEnumVBOObjectType";
+import { OFVBOObject } from "../../../../device/optimization/gpu/ofVBOObject";
 
 export enum OFEnumInternalShaderTypes {
   IColor = 19,

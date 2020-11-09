@@ -1,15 +1,13 @@
 import { OFColor } from '../../ofColor';
-import { 
-  OFBaseShader, 
-  OFEnumVBOObjectType, 
-  OFFramework, 
-  OFFrameworkFactory, 
-  OFGraphicDevice, 
-  OFImageContent, 
-  OFShaderTexture, 
-  OFVBOObject
-} from '@framework';
 import { OFOptSpriteQuadStruct, OFOptSpriteQuadUVStruct } from '../../data/ofSpriteQuad';
+import { OFFramework } from '../../../../../ofFramework';
+import { OFGraphicDevice } from '../../../../device/ofGraphicDevice';
+import { OFBaseShader } from '../../../shader/ofBaseShader';
+import { OFFrameworkFactory } from '../../../../../ofFrameworkFactory';
+import { OFShaderTexture } from '../../../shader/ofShaderTexture';
+import { OFVBOObject } from '../../../../device/optimization/gpu/ofVBOObject';
+import { OFImageContent } from '../../../../content/ofImageContent';
+import { OFEnumVBOObjectType } from '../../../../device/optimization/gpu/ofEnumVBOObjectType';
 
 interface OFOptSpriteBatcherRenderData {
   vboObject: OFVBOObject;

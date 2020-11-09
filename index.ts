@@ -22,6 +22,7 @@ export * from './src/shute-technologies/modules/framework/core/device/ofGraphicD
 export * from './src/shute-technologies/modules/framework/core/render/camera/ofRenderCamera';
 export * from './src/shute-technologies/modules/framework/core/render/graphics/d2d/optimization/ofSpriteBatcher';
 export * from './src/shute-technologies/modules/framework/core/render/graphics/d2d/optimization/ofPolygonBatcher';
+export * from './src/shute-technologies/modules/framework/core/render/graphics/d2d/optimization/ofOptSpriteBatcher';
 export * from './src/shute-technologies/modules/framework/core/render/graphics/d2d/ofAnimation';
 export * from './src/shute-technologies/modules/framework/core/render/graphics/d2d/ofPrimitiveCircle';
 export * from './src/shute-technologies/modules/framework/core/render/graphics/d2d/ofPrimitiveGrid';

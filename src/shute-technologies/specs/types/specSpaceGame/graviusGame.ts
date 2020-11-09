@@ -18,18 +18,18 @@ export class GraviusGame {
   get effectManager(): OFEffect2DManager { return this._effectManager; }
 
   constructor() {
-    //this._spriteBatch = new OFSpriteBatcher('resources/spSpriteSheetGameElements.png');
-    //this._spriteBatch.initialize();
+    this._spriteBatch = new OFSpriteBatcher('resources/spSpriteSheetGameElements.png');
+    this._spriteBatch.initialize();
 
     this._player = new GPlayer(this);
     this._enemyFactory = new GEnemyFactory(this);
     this._bulletFactory = new GBulletFactory(this);
     this._effectManager = new OFEffect2DManager();
 
-    // this._player.sprite.setSpriteBatch(this._spriteBatch);
-    // this._effectManager.setSpriteBatch(this._spriteBatch);
-    // this._enemyFactory.setSpriteBatch(this._spriteBatch);
-    // this._bulletFactory.setSpriteBatch(this._spriteBatch);
+    this._player.sprite.setSpriteBatch(this._spriteBatch);
+    this._effectManager.setSpriteBatch(this._spriteBatch);
+    this._enemyFactory.setSpriteBatch(this._spriteBatch);
+    this._bulletFactory.setSpriteBatch(this._spriteBatch);
   }
 
   onMouseMove (x: number, y: number): void {
@@ -41,14 +41,14 @@ export class GraviusGame {
   }
 
   update(args: IOFRenderArgs): void {
-    //this._spriteBatch.beginDraw();
+    this._spriteBatch.beginDraw();
 
     this._player.update(args);
     this._enemyFactory.update(args);
     this._bulletFactory.update(args);
     this._effectManager.update(args);
 
-    //this._spriteBatch.endDraw();
-    //this._spriteBatch.update(args);
+    this._spriteBatch.endDraw();
+    this._spriteBatch.update(args);
   }
 }

@@ -3,7 +3,7 @@ import { OFEnumShaderLiterals } from "./ofEnumShaderLiterals";
 import { OFIShaderCodeInfo } from "./data/ofIShaderCodeInfo";
 import { OFIShaderCodeInfoInput } from "./data/ofIShaderCodeInfoInput";
 import { OFIShaderCodeInfoInputData } from "./data/ofIShaderCodeInfoInputData";
-import { Dictionary } from "@framework";
+import { Dictionary } from '../../../../common/ofInterfaces';
 
 export class OFShaderAnalizer {
 

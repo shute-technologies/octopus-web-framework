@@ -1,4 +1,4 @@
-import { OFImageContent } from "@framework";
+import { OFImageContent } from '../../../content/ofImageContent';
 
 export class OFOptSpriteQuadStruct {
   x: number;
