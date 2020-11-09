@@ -42,7 +42,7 @@ export class OFShaderPrimitive extends OFBaseShader {
     _GL.vertexAttribPointer(this._vertexPositionAttr, 3, _GL.FLOAT, false, 0, 0)
     
     // Get Transformation Matrix from RenderCamera
-    const transformedMatrix = this._renderCamera.transformed;
+    const transformedMatrix = this._renderCamera.transformedMatrix;
 
     // Now multiply the Camera transformed Matrix with the local 
     // transformations Matrix.

@@ -21,6 +21,8 @@ export * from './core/device/ofGraphicDevice';
 export * from './core/device/ofGraphicDeviceManager';
 export * from './core/render/camera/ofRenderCamera';
 export * from './core/render/graphics/d2d/optimization/ofSpriteBatcher';
+export * from './core/render/graphics/d2d/optimization/ofOptSpriteBatcher';
+export * from './core/render/graphics/d2d/optimization/ofPolygonBatcher';
 export * from './core/render/graphics/d2d/ofAnimation';
 export * from './core/render/graphics/d2d/ofPrimitiveCircle';
 export * from './core/render/graphics/d2d/ofPrimitiveGrid';

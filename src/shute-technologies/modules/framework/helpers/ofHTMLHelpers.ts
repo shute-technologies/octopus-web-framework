@@ -52,10 +52,10 @@ export class OFHTMLHelpers {
     }
   }
 
-  static addClass(parentElement: HTMLBaseElement, className: string): void {
-    const elements = parentElement.getElementsByClassName(className);
+  static addClass(elementClassName: string, className: string): void {
+    const elements = document.getElementsByClassName(elementClassName);
     
-    for(let i = 0; i < elements.length; i++) {
+    for (let i = 0; i < elements.length; i++) {
       const element = elements.item(i);
         
       if (element) {
@@ -96,5 +96,10 @@ export class OFHTMLHelpers {
     const attrClass = webElement.getAttribute('class');
     const classes: string[] = attrClass ? attrClass.split(' ') : null;
     return classes ? classes.indexOf(className) !== -1 : false;
+  }
+  
+  static percentWidth (element: HTMLElement): number {
+    const parent = (element.offsetParent || element) as HTMLElement;
+    return Number(((element.offsetWidth / parent.offsetWidth) * 100).toFixed(2));
   }
 }

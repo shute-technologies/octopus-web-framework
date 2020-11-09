@@ -1,14 +1,16 @@
-import { OFBaseShader } from '../../../shader/ofBaseShader';
-import { OFGraphicDevice } from '../../../../device/ofGraphicDevice';
-import { OFEnumVBOObjectType } from '../../../../device/optimization/gpu/ofEnumVBOObjectType';
-import { OFVBOObject } from '../../../../device/optimization/gpu/ofVBOObject';
-import { OFConsole } from '../../../../../helpers/ofConsole';
-import { OFTranslations } from '../../../../../settings/ofTranslations';
-import { OFImageContent } from '../../../../content/ofImageContent';
-import { IOFRenderArgs } from '../../../../../interfaces/iofRenderArgs';
-import { OFColor } from '../../ofColor';
-import { Dictionary } from '../../../../../common/ofInterfaces';
-import { OFFrameworkFactory } from '../../../../../ofFrameworkFactory';
+import { 
+  Dictionary, 
+  IOFRenderArgs, 
+  OFBaseShader, 
+  OFColor, 
+  OFConsole, 
+  OFEnumVBOObjectType, 
+  OFFrameworkFactory, 
+  OFGraphicDevice, 
+  OFImageContent, 
+  OFVBOObject 
+} from "@framework";
+import { OFTranslations } from "shute-technologies/modules/framework/settings/ofTranslations";
 
 export enum OFEnumInternalShaderTypes {
   IColor = 19,
@@ -103,7 +105,7 @@ export class OFPolygonBatcher {
     }
   }
 
-  begin(): void {
+  beginDraw(): void {
     this._vertices = [];
     this._indices = [];
     this._vertexCount = 0;
@@ -139,7 +141,7 @@ export class OFPolygonBatcher {
     //}
   }
 
-  end(): void {
+  endDraw(): void {
     if (this._vertexCount !== 0) {
       if (this._arrayBufferGPUVertex) {
         this._arrayBufferGPUVertex = null;

@@ -52,7 +52,7 @@ export class OFShaderTexture extends OFBaseShader {
     _GL.vertexAttribPointer(this._textureCoordPositionAttr, 2, _GL.FLOAT, false, 20, 12)
 
     // Get Transformation Matrix from RenderCamera
-    let transformedMatrix = this._renderCamera.transformed;
+    let transformedMatrix = this._renderCamera.transformedMatrix;
 
     // Now multiply the Camera transformed Matrix with the local 
     // transformations Matrix.
@@ -94,7 +94,7 @@ export class OFShaderTexture extends OFBaseShader {
     _GL.vertexAttribPointer(this._textureCoordPositionAttr, 2, _GL.FLOAT, false, 20, 12)
 
     // Get Transformation Matrix from RenderCamera
-    var transformedMatrix = this._renderCamera.transformed;
+    var transformedMatrix = this._renderCamera.transformedMatrix;
 
     // Now multiply the Camera transformed Matrix with the local 
     // transformations Matrix.

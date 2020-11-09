@@ -1,13 +1,15 @@
-import { OFVBOObject } from "../../../../device/optimization/gpu/ofVBOObject";
-import { OFBaseShader } from "../../../shader/ofBaseShader";
-import { OFImageContent } from "../../../../content/ofImageContent";
-import { OFFramework } from "../../../../../ofFramework";
-import { OFGraphicDevice } from "../../../../device/ofGraphicDevice";
-import { OFFrameworkFactory } from "../../../../../ofFrameworkFactory";
-import { OFEnumVBOObjectType } from "../../../../device/optimization/gpu/ofEnumVBOObjectType";
-import { IOFRenderArgs } from "../../../../../interfaces/iofRenderArgs";
+import { 
+  IOFRenderArgs, 
+  OFBaseShader, 
+  OFEnumVBOObjectType, 
+  OFFramework, 
+  OFFrameworkFactory, 
+  OFGraphicDevice, 
+  OFImageContent, 
+  OFShaderTexture, 
+  OFVBOObject 
+} from "@framework";
 import { OFSprite } from "../ofSprite";
-import { OFShaderTexture } from "../../../shader/ofShaderTexture";
 
 export class OFSpriteBatcher {
 

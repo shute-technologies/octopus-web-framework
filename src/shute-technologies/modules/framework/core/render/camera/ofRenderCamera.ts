@@ -1,9 +1,10 @@
 import { OFFramework } from "../../../ofFramework";
 import { OFGraphicDevice } from "../../device/ofGraphicDevice";
-import { OFViewport } from "../viewport/ofViewport";
+import { OFViewport } from '../viewport/ofViewport';
 import { OFEnumCanvasContextType } from "../../../enums/ofEnumCanvasContextType";
 import { IOFRenderArgs } from "../../../interfaces/iofRenderArgs";
 import { mat4, vec3 } from "gl-matrix";
+import { OFMath } from '../../../math/ofMath';
 
 export class OFRenderCamera {
 
@@ -21,16 +22,32 @@ export class OFRenderCamera {
   private _zFar: number;
   private _depth: number;
   
-  private _world: mat4;
-  private _view: mat4;
-  private _projection: mat4;
-  private _transformed: mat4;
+  private _worldMatrix: mat4;
+  private _viewMatrix: mat4;
+  private _projectionMatrix: mat4;
+  private _transformedMatrix: mat4;
 
   private _viewport: OFViewport;
 
   isFreeAspect: boolean;
 
-  get transformed(): mat4 { return mat4.clone(this._transformed); }
+  get worldMatrix(): mat4 { return this._worldMatrix; }
+  get viewMatrix(): mat4 { return this._viewMatrix; }
+  get projectionMatrix(): mat4 { return this._projectionMatrix; }
+  get transformedMatrix(): mat4 { return mat4.clone(this._transformedMatrix); }
+
+  get viewport(): OFViewport { return this._viewport; }
+  get isChildCamera(): boolean { return this._isChildCamera; }
+  get width(): number { return this._width; }
+  get height(): number { return this._height; }
+  get zNear(): number { return this._zNear; }
+  get zFar(): number { return this._zFar; }
+
+  get depth(): number { return this._depth; }
+  set depth(val: number) { 
+    this._depth = val;
+    this._worldMatrix = OFMath.mat4XVec4(mat4.create(), [0, 0, this._depth, 1]);
+  }
 
   constructor(
     private readonly _framework: OFFramework, 
@@ -40,12 +57,12 @@ export class OFRenderCamera {
     this._depth = OFRenderCamera.defaultDepth;
     this.isFreeAspect = true;
 
-    this._transformed = mat4.create();
-    this._projection =  mat4.create();
-    this._view =  mat4.create();
-    this._world = mat4.create();
+    this._transformedMatrix = mat4.create();
+    this._projectionMatrix =  mat4.create();
+    this._viewMatrix =  mat4.create();
+    this._worldMatrix = mat4.create();
 
-    mat4.lookAt(this._view, vec3.fromValues(0.0, 0.0, this._depth), vec3.create(), vec3.fromValues(0.0, 1.0, 0.0));
+    mat4.lookAt(this._viewMatrix, vec3.fromValues(0.0, 0.0, this._depth), vec3.create(), vec3.fromValues(0.0, 1.0, 0.0));
   }
 
   initialize(graphicDevice: OFGraphicDevice): void {
@@ -91,7 +108,7 @@ export class OFRenderCamera {
     
     const aspectRatio = width / height;
     
-    mat4.perspective(this._projection, fov, aspectRatio, zNear, zFar);
+    mat4.perspective(this._projectionMatrix, fov, aspectRatio, zNear, zFar);
   }
 
   createOrthographic (width: number, height: number, zNear: number, zFar: number): void {
@@ -100,10 +117,10 @@ export class OFRenderCamera {
     this._zNear = zNear;
     this._zFar = zFar;
     
-    mat4.ortho(this._projection, 0, width, height, 0, zNear, zFar);
+    mat4.ortho(this._projectionMatrix, 0, width, height, 0, zNear, zFar);
   }
 
-  resize(width: number, height: number, oldWidth: number, oldHeight: number): void {
+  resize(width: number, height: number, oldWidth?: number, oldHeight?: number): void {
     if (this.isFreeAspect) {
       switch (this._framework.settings.canvasContextType) {
         case OFEnumCanvasContextType.D2D:
@@ -138,7 +155,7 @@ export class OFRenderCamera {
   }
 
   update(args: IOFRenderArgs): void {
-    mat4.multiply(this._transformed, this._view, this._world);
-    mat4.multiply(this._transformed, this._projection, this._transformed);
+    mat4.multiply(this._transformedMatrix, this._viewMatrix, this._worldMatrix);
+    mat4.multiply(this._transformedMatrix, this._projectionMatrix, this._transformedMatrix);
   }
 }

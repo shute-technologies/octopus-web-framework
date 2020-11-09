@@ -127,7 +127,7 @@ export class OFShaderAbstract extends OFBaseShader {
     // Get Transformation Matrix from RenderCamera
     let transformedMatrix = args.hasCustomCamera
       ? args.cameraMVP
-      : this._renderCamera.transformed;
+      : this._renderCamera.transformedMatrix;
 
     if (transformedMatrix && this._shaderProgram) { 
       // Enable blending
