@@ -7,7 +7,6 @@ import { OFVBOObject } from "../../device/optimization/gpu/ofVBOObject";
 import { IOFRenderArgs } from "../../../interfaces/iofRenderArgs";
 import { OFFramework } from "../../../ofFramework";
 import { OFSpriteBatcher } from "./d2d/optimization/ofSpriteBatcher";
-import { OFEnumVBOObjectType } from "../../device/optimization/gpu/ofEnumVBOObjectType";
 
 export abstract class OFDrawable2D {
 

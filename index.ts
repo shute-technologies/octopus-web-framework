@@ -31,6 +31,7 @@ export * from './src/shute-technologies/modules/framework/core/render/graphics/d
 export * from './src/shute-technologies/modules/framework/core/render/graphics/data/ofQuad';
 export * from './src/shute-technologies/modules/framework/core/render/graphics/data/ofQuadTextCoords';
 export * from './src/shute-technologies/modules/framework/core/render/graphics/data/ofVertexPositionColorTexture';
+export * from './src/shute-technologies/modules/framework/core/render/graphics/data/ofSpriteQuad';
 export * from './src/shute-technologies/modules/framework/core/render/graphics/ofColor';
 export * from './src/shute-technologies/modules/framework/core/render/graphics/ofDrawable2D';
 export * from './src/shute-technologies/modules/framework/core/render/shader/analizer/data/ofIShaderCodeInfo';
@@ -75,3 +76,9 @@ export * from './src/shute-technologies/modules/framework/core/render/shader/str
 export * from './src/shute-technologies/modules/framework/core/render/shader/structs/sVec2';
 export * from './src/shute-technologies/modules/framework/core/render/shader/structs/sVec3';
 export * from './src/shute-technologies/modules/framework/core/render/shader/structs/sVec4';
+export * from './src/shute-technologies/modules/common/ofRenderLoop';
+export * from './src/shute-technologies/modules/cross-cutting/font-loader/ofBitmapFontLoader';
+export * from './src/shute-technologies/modules/cross-cutting/font-loader/data/ofBitmapFontCharset';
+export * from './src/shute-technologies/modules/cross-cutting/font-loader/data/ofBitmapFontCharDescriptor';
+export * from './src/shute-technologies/modules/cross-cutting/font-loader/data/ofBitmapFontKerning';
+export * from './src/shute-technologies/modules/cross-cutting/font-loader/data/ofBitmapFontPage';

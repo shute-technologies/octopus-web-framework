@@ -170,4 +170,12 @@ export class OFHelpers {
 
     return result;
   }
+
+  static eraseCharsInString(baseString: string, asciiChars: Array<string>): string {
+    for (let i = 0; i < asciiChars.length; i++) {
+      baseString = baseString.replace(asciiChars[i], '');
+    }
+    
+	  return baseString;
+  }
 }

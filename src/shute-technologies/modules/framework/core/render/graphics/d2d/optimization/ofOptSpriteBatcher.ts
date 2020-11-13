@@ -5,17 +5,11 @@ import { OFGraphicDevice } from '../../../../device/ofGraphicDevice';
 import { OFBaseShader } from '../../../shader/ofBaseShader';
 import { OFFrameworkFactory } from '../../../../../ofFrameworkFactory';
 import { OFShaderTexture } from '../../../shader/ofShaderTexture';
-import { OFVBOObject } from '../../../../device/optimization/gpu/ofVBOObject';
 import { OFImageContent } from '../../../../content/ofImageContent';
 import { OFEnumVBOObjectType } from '../../../../device/optimization/gpu/ofEnumVBOObjectType';
-
-interface OFOptSpriteBatcherRenderData {
-  vboObject: OFVBOObject;
-  iboObject: OFVBOObject;
-  vertexCount: number;
-  indicesCount: number;
-  imageTexture: WebGLTexture;
-}
+import { IOFRenderArgs } from '../../../../../interfaces/iofRenderArgs';
+import { mat4 } from 'gl-matrix';
+import { OFOptSpriteBatcherRenderData } from '../../data/ofOptSpriteBatcherRenderData';
 
 export class OFOptSpriteBatcher {
 
@@ -55,7 +49,7 @@ export class OFOptSpriteBatcher {
     this._alreadyTransformedForRender = false;
   }
 
-  pushSprite(x: number, y: number, width: number, height: number, uvs: OFOptSpriteQuadUVStruct, imageContent: OFImageContent, sortId: number): void {
+  pushSprite(x: number, y: number, width: number, height: number, uvs: OFOptSpriteQuadUVStruct, imageContent: OFImageContent, sortId: string): void {
     const quadData = {
       x: x,
       y: y,
@@ -90,7 +84,7 @@ export class OFOptSpriteBatcher {
 
       if (this._spriteQuadData.length > 0) {
         // Sort first: Doesn't matter the order, only the grouping
-        this._spriteQuadData = this._spriteQuadData.sort((a, b) => a.sortId - b.sortId);
+        this._spriteQuadData = this._spriteQuadData.sort((a, b) => a.sortId.localeCompare(b.sortId));
 
         const sortId = this._spriteQuadData[0].sortId;
         let vertices = [];
@@ -182,5 +176,40 @@ export class OFOptSpriteBatcher {
     renderData.imageTexture = imageContent.imageTexture;
     
     this._spriteBatchRenderData.push(renderData);
+  }
+
+  draw (args: IOFRenderArgs, transformationMatrix: mat4): void {
+    const _GL = this._graphicContext;
+    
+    for (let i = 0; i < this._spriteBatchRenderData.length; i++) {
+      const renderData = this._spriteBatchRenderData[i];
+      
+      if (!transformationMatrix) {
+        this._shader.setTranslate(0, 0, 0);
+        this._shader.setRotation(0, 0, 0);
+        this._shader.setScale(1, 1, 1);
+      }
+      
+      this._shader.setColorByIndex(0, this.color);
+      this._shader.setTextureByIndex(0, renderData.imageTexture);
+      this._shader.draw(args, renderData.vboObject.vbo, transformationMatrix, 
+        _GL.TRIANGLES, renderData.iboObject.vbo, renderData.indicesCount);
+    }
+  }
+
+  destroy(): void {
+    (this as any)['_framework'] = null;
+    (this as any)['_graphicDevice'] = null;
+    (this as any)['_graphicContext'] = null;
+
+    this.color = null;
+    this._spriteQuadData = null;
+    this._shader = null;
+
+    this._spriteBatchRenderData?.forEach(x => {
+      x.vboObject?.deactivate();
+      x.iboObject?.deactivate();
+    });
+    this._spriteBatchRenderData = null;
   }
 }

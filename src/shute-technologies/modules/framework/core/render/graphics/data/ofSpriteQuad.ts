@@ -14,7 +14,7 @@ export class OFOptSpriteQuadStruct {
   uv11_y: number;
   uv01_x: number; 
   uv01_y: number;
-  sortId: number;
+  sortId: string;
 }
 
 export class OFOptSpriteQuadUVStruct {
