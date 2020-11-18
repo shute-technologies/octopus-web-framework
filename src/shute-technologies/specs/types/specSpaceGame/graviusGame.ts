@@ -2,7 +2,10 @@
 import { GBulletFactory } from "./gBulletFactory";
 import { GPlayer } from "./gPlayer";
 import { GEnemyFactory } from "./gEnemyFactory";
-import { OFEffect2DManager, OFSpriteBatcher, OFEnumKeyCode, IOFRenderArgs } from "@framework";
+import { OFSpriteBatcher } from '../../../modules/framework/core/render/graphics/d2d/optimization/ofSpriteBatcher';
+import { OFEffect2DManager } from '../../../modules/framework/helpers/render/effects/ofEffect2DManager';
+import { OFEnumKeyCode } from "../../../modules/framework/enums/ofEnumKeyCode";
+import { IOFRenderArgs } from "../../../modules/framework/interfaces/iofRenderArgs";
 
 export class GraviusGame {
 
@@ -16,10 +19,10 @@ export class GraviusGame {
   get enemyFactory(): GEnemyFactory { return this._enemyFactory; }
   get bulletFactory(): GBulletFactory { return this._bulletFactory; }
   get effectManager(): OFEffect2DManager { return this._effectManager; }
+  get spriteBatch(): OFSpriteBatcher { return this._spriteBatch; }
 
   constructor() {
     this._spriteBatch = new OFSpriteBatcher('resources/spSpriteSheetGameElements.png');
-    this._spriteBatch.initialize();
 
     this._player = new GPlayer(this);
     this._enemyFactory = new GEnemyFactory(this);

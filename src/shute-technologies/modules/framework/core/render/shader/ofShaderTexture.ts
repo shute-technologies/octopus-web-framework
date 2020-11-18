@@ -29,8 +29,7 @@ export class OFShaderTexture extends OFBaseShader {
     this._uniformColor = _GL.getUniformLocation(this._shaderProgram, "uColor");
   }
 
-  draw (args: IOFRenderArgs, texture: WebGLTexture, vertexBuffer: WebGLBuffer, 
-    transformation: mat4): void {
+  draw (args: IOFRenderArgs, texture: WebGLTexture, vertexBuffer: WebGLBuffer, transformation?: mat4): void {
     
     const _GL = this._graphicContext;
     
@@ -109,5 +108,9 @@ export class OFShaderTexture extends OFBaseShader {
     //GL.drawArrays(GL.TRIANGLE_STRIP, 0, indexCount);
     _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, indexBuffer);
     _GL.drawElements(_GL.TRIANGLE_STRIP, indexCount, _GL.UNSIGNED_SHORT, 0);
+
+    // clear
+    _GL.bindBuffer(_GL.ARRAY_BUFFER, null);
+    _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, null);
   }
 }

@@ -73,10 +73,10 @@ export class OFGraphicDevice {
   useShaderProgram(shaderProgram: WebGLProgram): void {
     const _GL = this._graphicContext;
 
-    if (this._currentShaderProgram !== shaderProgram) {
+   // if (this._currentShaderProgram !== shaderProgram) {
       this._currentShaderProgram = shaderProgram;
       _GL.useProgram(shaderProgram);
-    }
+   // }
   }
 
   clear(): void {

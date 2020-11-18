@@ -59,7 +59,7 @@ export class OFBitmapFontCharset {
     for (let i = 0; i < kerningCount; i++) {
       const _kerning = this.kernings[i];
 
-      if (_kerning.first == unicodeFirst && _kerning.second == unicodeSecond) {
+      if (_kerning && _kerning.first === unicodeFirst && _kerning.second === unicodeSecond) {
         amount = _kerning.amount;
         break;
       }
@@ -105,7 +105,7 @@ export class OFBitmapFontCharset {
     const phraseLength = text.length;
     let textSize = 0;
     let oldUnicodeChar = -1;
-    let charDescriptor /*NBitmapFontCharDescriptor*/;
+    let charDescriptor: OFBitmapFontCharDescriptor;
 
     for (let i = 0; i < phraseLength; i++) {
       let kerningAmount = 0;

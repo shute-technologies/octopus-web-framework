@@ -29,6 +29,6 @@
   "exclude": [
     "node_modules",
     ".vscode",
-    "./src/shute-technologies/modules/framework/index.ts",
+    "./src/shute-technologies/modules/framework/index.ts"
   ]
 }

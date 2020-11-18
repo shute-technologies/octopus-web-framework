@@ -9,15 +9,12 @@ import { OFFrameworkFactory } from "../../../../../ofFrameworkFactory";
 import { OFTranslations } from "../../../../../settings/ofTranslations";
 import { OFEnumVBOObjectType } from "../../../../device/optimization/gpu/ofEnumVBOObjectType";
 import { OFVBOObject } from "../../../../device/optimization/gpu/ofVBOObject";
-
-export enum OFEnumInternalShaderTypes {
-  IColor = 19,
-  ITexture = 20,
-}
+import { OFEnumShaderDataTypes } from "../../../shader/analizer/ofEnumShaderDataTypes";
+import { mat4 } from "gl-matrix";
 
 export interface OFIPolygonBatcherUniformData {
   index: number;
-  type: OFEnumInternalShaderTypes;
+  type: OFEnumShaderDataTypes;
   value: OFColor | WebGLTexture;
 }
 
@@ -31,8 +28,8 @@ export class OFPolygonBatcher {
   private _graphicDevice: OFGraphicDevice;
   private _GL: WebGLRenderingContext;
 
-  private _arrayBufferGPUVertex;
-  private _arrayBufferGPUIndex;
+  private _arrayBufferGPUVertex: Float32Array;
+  private _arrayBufferGPUIndex: Uint16Array;
 
   private _shader: OFBaseShader;
 
@@ -141,12 +138,8 @@ export class OFPolygonBatcher {
 
   endDraw(): void {
     if (this._vertexCount !== 0) {
-      if (this._arrayBufferGPUVertex) {
-        this._arrayBufferGPUVertex = null;
-      }
-      if (this._arrayBufferGPUIndex) {
-        this._arrayBufferGPUIndex = null;
-      }
+      if (this._arrayBufferGPUVertex) {this._arrayBufferGPUVertex = null; }
+      if (this._arrayBufferGPUIndex) { this._arrayBufferGPUIndex = null; }
 
       this._arrayBufferGPUVertex = new Float32Array(this._vertexCount);
       this._arrayBufferGPUIndex = new Uint16Array(this._indices);
@@ -168,11 +161,8 @@ export class OFPolygonBatcher {
     }
   }
 
-  draw(args: IOFRenderArgs, transformationMatrix, renderMode?: number, uniformData?: Dictionary<OFIPolygonBatcherUniformData>): void {
+  draw(args: IOFRenderArgs, transformationMatrix?: mat4, renderMode?: number, uniformData?: Dictionary<OFIPolygonBatcherUniformData>): void {
     const _renderMode = !renderMode ? this._GL.TRIANGLES : renderMode;
-
-    //_GL.bindBuffer(_GL.ARRAY_BUFFER, mVBOObject.VBO);
-    //_GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, mIBOObject.VBO);
 
     if (!transformationMatrix) {
       // TODO: Optimize this in a single identity function
@@ -186,10 +176,10 @@ export class OFPolygonBatcher {
         const uData = uniformData[key];
 
         switch (uData.type) {
-          case OFEnumInternalShaderTypes.IColor:
+          case OFEnumShaderDataTypes.IColor:
             this._shader.setColorByIndex(uData.index, uData.value as OFColor);
             break;
-          case OFEnumInternalShaderTypes.ITexture:
+          case OFEnumShaderDataTypes.ITexture:
             this._shader.setTextureByIndex(uData.index, uData.value as WebGLTexture);
             break;
         }

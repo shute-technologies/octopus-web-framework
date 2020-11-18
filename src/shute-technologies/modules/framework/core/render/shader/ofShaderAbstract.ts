@@ -119,7 +119,7 @@ export class OFShaderAbstract extends OFBaseShader {
     }
   }
 
-  draw(args: IOFMoreRenderArgs, vertexBuffer: WebGLBuffer, transformation: mat4, renderType: number, 
+  draw(args: IOFMoreRenderArgs, vertexBuffer: WebGLBuffer, transformation: mat4 = null, renderType: number, 
     indexBuffer: WebGLBuffer, indexCount: number): void {
     
     const _GL = this._graphicContext;

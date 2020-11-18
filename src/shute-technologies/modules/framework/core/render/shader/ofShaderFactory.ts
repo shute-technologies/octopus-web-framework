@@ -16,8 +16,8 @@ interface OFDictionary<T> { [Key: string]: T; }
 
 export class OFShaderFactory {
 
-  private _framework: OFFramework;
-  private _shaderRepository: Dictionary<OFBaseShader>;
+  private readonly _framework: OFFramework;
+  private readonly _shaderRepository: Dictionary<OFBaseShader>;
 
   get framework(): OFFramework { return this._framework; }
 
@@ -52,7 +52,12 @@ export class OFShaderFactory {
   }
 
   loadAndAddShaderWithCodeInfo (shaderName: string, shaderObject: IOFDefaultShaderSource, 
-    shaderCodeInfo: OFIShaderCodeInfo, uid: string): OFShaderAbstract {
+    shaderCodeInfo: OFIShaderCodeInfo = null, uid: string): OFShaderAbstract {
+
+    if (!shaderCodeInfo) {
+      shaderCodeInfo = OFShaderAnalizer.analize(shaderObject.vertex);
+      shaderCodeInfo = OFShaderAnalizer.analize(shaderObject.fragment, shaderCodeInfo);
+    }
     
     this._shaderRepository[uid] = new OFShaderAbstract(this, shaderObject, shaderCodeInfo);
     this._shaderRepository[uid].name = shaderName;

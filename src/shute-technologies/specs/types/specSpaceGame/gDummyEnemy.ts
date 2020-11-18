@@ -1,7 +1,12 @@
 import { GEnemyBase } from "./gEnemyBase";
 import { GEnemyFactory } from "./gEnemyFactory";
 import { EnumProyectileType } from "./enums/enumProyectileType";
-import { OFVector2, OFInterval, OFSprite, OFImageContent, OFMath, IOFRenderArgs } from "@framework";
+import { OFInterval } from '../../../modules/framework/helpers/ofInterval';
+import { OFVector2 } from "../../../modules/framework/math/ofVector2";
+import { OFSprite } from "../../../modules/framework/core/render/graphics/d2d/ofSprite";
+import { OFImageContent } from "../../../modules/framework/core/content/ofImageContent";
+import { OFMath } from "../../../modules/framework/math/ofMath";
+import { IOFRenderArgs } from "../../../modules/framework/interfaces/iofRenderArgs";
 
 export class GDummyEnemy extends GEnemyBase {
 
@@ -30,7 +35,7 @@ export class GDummyEnemy extends GEnemyBase {
     this._sprite.createCollision(0, 0, collWidth, collHeight, 
       -collWidth / 2, -collHeight / 2);
 
-    this._iCreationMissile = new OFInterval(2, 20);
+    this._iCreationMissile = new OFInterval(0.025, 200);
     this._iCreationMissile.finishedLoopCallback = () => this.onFinishedLoop_CreationMissile();
   }
 

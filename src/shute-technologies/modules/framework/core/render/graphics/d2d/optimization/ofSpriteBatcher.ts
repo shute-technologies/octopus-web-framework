@@ -9,32 +9,82 @@ import { OFBaseShader } from "../../../shader/ofBaseShader";
 import { OFShaderTexture } from "../../../shader/ofShaderTexture";
 import { OFSprite } from "../ofSprite";
 
+class OFSBBatchGroup {
+  vboObject: OFVBOObject;
+  iboObject: OFVBOObject;
+  vertices: number[];
+  indices: number[];
+  vertexCount: number;
+  indexCount: number;
+  enabled: boolean;
+  isWaitingForDelete: boolean;
+
+  constructor(
+    readonly index: number,
+    private readonly _graphicDevice: OFGraphicDevice
+  ) {
+    this.initialize();
+  }
+
+  private initialize(): void {
+    this.enabled = false;
+    this.isWaitingForDelete = false;
+    this.vertexCount = 0;
+    this.indexCount = 0;
+    this.vertices = [];
+    this.indices = [];
+
+    // Get a VBO for this object
+    this.vboObject = this._graphicDevice.deviceOptimizationManager
+      .vboPooler.getAvailableVBO(OFEnumVBOObjectType.VertexBuffer);
+    this.vboObject.activate(OFEnumVBOObjectType.VertexBuffer);
+    // Get a IBO for this object
+    this.iboObject = this._graphicDevice.deviceOptimizationManager
+      .vboPooler.getAvailableVBO(OFEnumVBOObjectType.IndexBuffer);
+    this.iboObject.activate(OFEnumVBOObjectType.IndexBuffer);
+  }
+
+  reset(): void {
+    this.enabled = false;
+    this.vertexCount = 0;
+    this.indexCount = 0;
+    this.vertices = [];
+    this.indices = [];
+  }
+
+  destroy(): void {
+    this.isWaitingForDelete = true;
+    this.vboObject?.deactivate();
+    this.iboObject?.deactivate();
+    this.vboObject = null;
+    this.iboObject = null;
+    this.vertices = null;
+    this.indices = null;
+  }
+}
+
 export class OFSpriteBatcher {
 
+  private static readonly MAX_VERTICES = 20920;
+  
   protected readonly _framework: OFFramework;
   protected readonly _graphicDevice: OFGraphicDevice;
   protected readonly _graphicContext: WebGLRenderingContext;
 
-  protected _vboObject: OFVBOObject;
-  protected _iboObject: OFVBOObject;
+  protected _batchGroups: Array<OFSBBatchGroup>;
+  protected _currentBatchGroup: OFSBBatchGroup;
   protected _shader: OFBaseShader;
-  protected _vertices: number[];
-  protected _indices: number[];
 
   private _imageContent: OFImageContent;
   private _imageGLTexture: WebGLTexture;
-  private _arrayBufferGPUVertex: Float32Array;
-  private _arrayBufferGPUIndex: Uint16Array;
 
-  private _vertexCount: number;
-  private _indexCount: number;
+  get totalQuads(): number {
+    let countTotalQuads = 0;
+    this._batchGroups.forEach(x => countTotalQuads += (x.vertexCount / 4));
+    return countTotalQuads;
+  }
 
   constructor (spritePath: string) {
-    this._vertexCount = 0;
-    this._indexCount = 0;
-    this._vertices = [];
-    this._indices = [];
-
     this._graphicDevice = OFFrameworkFactory.currentFramewok.mainGraphicDevice;
     this._graphicContext = this._graphicDevice.graphicContext;
     this._framework = this._graphicDevice.framework;
@@ -43,24 +93,17 @@ export class OFSpriteBatcher {
     this._imageGLTexture = this._imageContent.imageTexture;
 
     this._shader = this._graphicDevice.shaderFactory.retrieveShader<OFShaderTexture>("ShaderTexture");
-  }
-
-  initialize(): void {
-    // Get a VBO for this object
-    this._vboObject = this._graphicDevice.deviceOptimizationManager
-      .vboPooler.getAvailableVBO(OFEnumVBOObjectType.VertexBuffer);
-    this._vboObject.activate(OFEnumVBOObjectType.VertexBuffer);
-    // Get a IBO for this object
-    this._iboObject = this._graphicDevice.deviceOptimizationManager
-      .vboPooler.getAvailableVBO(OFEnumVBOObjectType.IndexBuffer);
-    this._iboObject.activate(OFEnumVBOObjectType.IndexBuffer);
+    this._batchGroups = [new OFSBBatchGroup(0, this._graphicDevice)];
   }
 
   beginDraw(): void {
-    this._vertices = [];
-    this._indices = [];
-    this._vertexCount = 0;
-    this._indexCount = 0;
+    this._batchGroups.forEach(x => x.reset());
+
+    if (this._batchGroups.length === 0) {
+      this._batchGroups = [new OFSBBatchGroup(0, this._graphicDevice)];
+    }
+
+    this._currentBatchGroup = this._batchGroups[0];
   }
 
   drawGraphic(graphic: OFSprite): void {
@@ -129,14 +172,14 @@ export class OFSpriteBatcher {
       y_2 += centerY;
       y_3 += centerY;
 
-      this._vertices.push(
+      this._currentBatchGroup.vertices.push(
         x_0, y_0, 0.0, qTC.right, qTC.down,
         x_1, y_1, 0.0, qTC.left, qTC.down,
         x_2, y_2, 0.0, qTC.right, qTC.up,
         x_3, y_3, 0.0, qTC.left, qTC.up);
     }
     else {
-      this._vertices.push(
+      this._currentBatchGroup.vertices.push(
         vx + hw, vy + hh, 0.0, qTC.right, qTC.down,
         vx - hw, vy + hh, 0.0, qTC.left, qTC.down,
         vx + hw, vy - hh, 0.0, qTC.right, qTC.up,
@@ -144,64 +187,67 @@ export class OFSpriteBatcher {
     }
 
     // Degenerate indices    
-    if (this._vertexCount !== 0) {
-      this._indices.push(this._vertexCount -1, this._vertexCount, this._vertexCount, 
-        this._vertexCount + 1, this._vertexCount + 2, this._vertexCount + 3);
+    if (this._currentBatchGroup.vertexCount !== 0) {
+      this._currentBatchGroup.indices.push(this._currentBatchGroup.vertexCount -1, this._currentBatchGroup.vertexCount, this._currentBatchGroup.vertexCount, 
+        this._currentBatchGroup.vertexCount + 1, this._currentBatchGroup.vertexCount + 2, this._currentBatchGroup.vertexCount + 3);
     }
     else {
-      this._indices.push(this._vertexCount, this._vertexCount + 1, this._vertexCount + 2,
-        this._vertexCount + 3);
+      this._currentBatchGroup.indices.push(this._currentBatchGroup.vertexCount, this._currentBatchGroup.vertexCount + 1, this._currentBatchGroup.vertexCount + 2,
+        this._currentBatchGroup.vertexCount + 3);
     }
 
-    this._vertexCount += 4;
-    this._indexCount = this._indices.length;
+    this._currentBatchGroup.vertexCount += 4;
+    this._currentBatchGroup.indexCount = this._currentBatchGroup.indices.length;
+
+    if (this._currentBatchGroup.vertexCount >= OFSpriteBatcher.MAX_VERTICES) {
+      // use next batch group, and create one if needs it
+      if (this._currentBatchGroup.index >= (this._batchGroups.length - 1)) {
+        this._batchGroups.push(new OFSBBatchGroup(this._batchGroups.length, this._graphicDevice));
+      }
+      // move to the next Batch Group
+      this._currentBatchGroup = this._batchGroups[this._currentBatchGroup.index + 1];
+    }
   }
 
   endDraw(): void {
-    if (this._vertexCount !== 0) {
-      if (this._arrayBufferGPUVertex != null) { this._arrayBufferGPUVertex = null; }
-      if (this._arrayBufferGPUIndex != null) { this._arrayBufferGPUIndex = null; }
+    const _GL = this._graphicContext;
 
-      this._arrayBufferGPUVertex = new Float32Array(this._vertices);
-      this._arrayBufferGPUIndex = new Uint16Array(this._indices);
-      
-      const _GL = this._graphicContext;
-      // Now we set the vertices interleaved array to the VertexBuffer
-      _GL.bindBuffer(_GL.ARRAY_BUFFER, this._vboObject.vbo);
-      _GL.bufferData(_GL.ARRAY_BUFFER, this._arrayBufferGPUVertex, _GL.DYNAMIC_DRAW);
-      // Now we set the indices array to the IndexBuffer
-      _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, this._iboObject.vbo);
-      _GL.bufferData(_GL.ELEMENT_ARRAY_BUFFER, this._arrayBufferGPUIndex, _GL.STATIC_DRAW);
-    }
+    this._batchGroups.forEach(x => {
+      if (x.vertexCount !== 0) {
+        x.enabled = true;
+
+        // Now we set the vertices interleaved array to the VertexBuffer
+        _GL.bindBuffer(_GL.ARRAY_BUFFER, x.vboObject.vbo);
+        _GL.bufferData(_GL.ARRAY_BUFFER, new Float32Array(x.vertices), _GL.DYNAMIC_DRAW);
+        // Now we set the indices array to the IndexBuffer
+        _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, x.iboObject.vbo);
+        _GL.bufferData(_GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(x.indices), _GL.STATIC_DRAW);
+      } else {
+        x.destroy();
+      }
+    });
+
+    // remove destroy batch groups
+    this._batchGroups = this._batchGroups.filter(x => !x.isWaitingForDelete);
   }
 
   update(args: IOFRenderArgs): void {
-    if (this._vertexCount !== 0) {        
-      if (this._imageContent.isLoaded && this._vertexCount !== 0) {
-        const shader = this._shader as OFShaderTexture;
+    if (this._imageContent.isLoaded) {
+      this._batchGroups.forEach(x => {
+        if (x.enabled) {
+          const shader = this._shader as OFShaderTexture;
 
-        shader.setTranslate(0, 0, 0);
-        shader.rotationZ = 0;
-        shader.setScale(1, 1, 1);
-        shader.drawElements(args, this._imageGLTexture, this._iboObject.vbo, this._vboObject.vbo, this._indexCount);
-    
-        const _GL = this._graphicContext;
-        _GL.bindBuffer(_GL.ARRAY_BUFFER, null);
-        _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, null);
-      }
+          shader.setTranslate(0, 0, 0);
+          shader.rotationZ = 0;
+          shader.setScale(1, 1, 1);
+          shader.drawElements(args, this._imageGLTexture, x.iboObject.vbo, x.vboObject.vbo, x.indexCount);
+        }
+      });
     }
   }
 
   destroy(): void {
-    if (this._arrayBufferGPUVertex) { this._arrayBufferGPUVertex = null; }
-    if (this._arrayBufferGPUIndex) { this._arrayBufferGPUIndex = null; }
-
-    if (this._vboObject) { this._vboObject.deactivate(); }
-    if (this._iboObject) { this._iboObject.deactivate(); }
-
-    this._vboObject = null;
-    this._iboObject = null;
-    this._vertices = null;
-    this._indices = null;
+    this._batchGroups.forEach(x => x.destroy());
+    this._batchGroups = null;
   }
 }

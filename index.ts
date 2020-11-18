@@ -1,6 +1,7 @@
 export * from './src/shute-technologies/modules/framework/common/ofDeltaTimeCorrector';
 export * from './src/shute-technologies/modules/framework/common/ofInterfaces';
 export * from './src/shute-technologies/modules/framework/common/ofUtils';
+export * from './src/shute-technologies/modules/framework/components/ofCBitmapTextfield2D';
 export * from './src/shute-technologies/modules/framework/core/ofCanvasContextManager';
 export * from './src/shute-technologies/modules/framework/core/content/ofBaseContent';
 export * from './src/shute-technologies/modules/framework/core/content/ofContentManager';

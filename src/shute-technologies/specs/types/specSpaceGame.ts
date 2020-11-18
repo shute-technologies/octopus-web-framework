@@ -1,5 +1,6 @@
+import { OFFramework } from "../../modules/framework/ofFramework";
+import { OFFrameworkFactory } from "../../modules/framework/ofFrameworkFactory";
 import { SpaceGameScene } from "./specSpaceGame/scenes/spaceGameScene";
-import { OFFramework, OFFrameworkFactory } from "@framework";
 
 export class SpecSpaceGame {
 
