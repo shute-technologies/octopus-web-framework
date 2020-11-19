@@ -9,8 +9,8 @@ import { OFFrameworkFactory } from "../../../../../ofFrameworkFactory";
 import { OFTranslations } from "../../../../../settings/ofTranslations";
 import { OFEnumVBOObjectType } from "../../../../device/optimization/gpu/ofEnumVBOObjectType";
 import { OFVBOObject } from "../../../../device/optimization/gpu/ofVBOObject";
-import { OFEnumShaderDataTypes } from "../../../shader/analizer/ofEnumShaderDataTypes";
 import { mat4 } from "gl-matrix";
+import { OFEnumShaderDataTypes } from '../../../../../../cross-cutting/shader-analizer/ofEnumShaderDataTypes';
 
 export interface OFIPolygonBatcherUniformData {
   index: number;

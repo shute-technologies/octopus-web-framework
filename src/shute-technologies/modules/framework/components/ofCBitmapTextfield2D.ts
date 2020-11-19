@@ -7,12 +7,12 @@ import { OFQuadStruct } from '../core/render/graphics/data/ofQuad';
 import { OFImageContent } from '../core/content/ofImageContent';
 import { OFEnumTextAlign } from '../enums/ofEnumTextAlign';
 import { OFVector2 } from '../math/ofVector2';
-import { OFEnumShaderDataTypes } from '../core/render/shader/analizer/ofEnumShaderDataTypes';
 import { OFEnumKeyCode } from '../enums/ofEnumKeyCode';
 import { OFBitmapFontCharDescriptor } from '../../cross-cutting/font-loader/data/ofBitmapFontCharDescriptor';
 import { IOFRenderArgs } from '../interfaces/iofRenderArgs';
 import { mat4 } from 'gl-matrix';
 import { Dictionary } from '../common/ofInterfaces';
+import { OFEnumShaderDataTypes } from '../../cross-cutting/shader-analizer/ofEnumShaderDataTypes';
 
 export class OFCBitmapTextfield2D {
   private readonly _graphicDevice: OFGraphicDevice;
@@ -122,10 +122,10 @@ export class OFCBitmapTextfield2D {
     return phrase && this._text !== phrase;
   }
 
-  setText(phrase: string, override?: boolean): void {
+  setText(phrase: string, overrideTextValidation?: boolean): void {
     phrase = !phrase ? '' : phrase;
 
-    if (this.preValidationText(phrase) || override) {
+    if (this.preValidationText(phrase) || overrideTextValidation) {
       // reset
       this._text = phrase;
       this._textQuadCounter = 0;

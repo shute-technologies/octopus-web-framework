@@ -1,6 +1,6 @@
 {
   "name": "octopuswebframework",
-  "version": "0.2.23",
+  "version": "0.2.26",
   "license": "MIT",
   "private": false,
   "main": "lib/index.js",

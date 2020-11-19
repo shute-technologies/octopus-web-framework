@@ -1,10 +1,10 @@
 import { OFBaseShader } from "./ofBaseShader";
 import { OFShaderFactory } from "./ofShaderFactory";
-import { OFIShaderCodeInfo } from "./analizer/data/ofIShaderCodeInfo";
 import { IOFDefaultShaderSource } from "../../../default-assets/ofDefaultShaderSources";
 import { mat4 } from "gl-matrix";
-import { OFEnumShaderDataTypes } from "./analizer/ofEnumShaderDataTypes";
 import { IOFMoreRenderArgs } from "../../../interfaces/iofMoreRenderArgs";
+import { OFIShaderCodeInfo } from '../../../../cross-cutting/shader-analizer/data/ofIShaderCodeInfo';
+import { OFEnumShaderDataTypes } from '../../../../cross-cutting/shader-analizer/ofEnumShaderDataTypes';
 
 export class OFShaderAbstract extends OFBaseShader {
 

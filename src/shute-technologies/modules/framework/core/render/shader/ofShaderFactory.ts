@@ -8,9 +8,9 @@ import { OFTranslations } from "../../../settings/ofTranslations";
 import { OFConsole } from "../../../helpers/ofConsole";
 import { OFGLHelper } from "../../../helpers/ofGLHelper";
 import { OFDefaultShaderSources, IOFDefaultShaderSource } from "../../../default-assets/ofDefaultShaderSources";
-import { OFIShaderCodeInfo } from "./analizer/data/ofIShaderCodeInfo";
-import { OFShaderAnalizer } from "./analizer/ofShaderAnalizer";
 import { Dictionary } from '../../../common/ofInterfaces';
+import { OFIShaderCodeInfo } from '../../../../cross-cutting/shader-analizer/data/ofIShaderCodeInfo';
+import { OFShaderAnalizer } from '../../../../cross-cutting/shader-analizer/ofShaderAnalizer';
 
 interface OFDictionary<T> { [Key: string]: T; }
 
