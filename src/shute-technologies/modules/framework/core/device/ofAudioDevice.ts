@@ -1,14 +1,13 @@
-import { OFFramework } from "../../ofFramework";
-import { IOFRenderArgs } from "../../interfaces/iofRenderArgs";
-import { OFAudioDeviceOptimizationManager } from "./optimization/audio/ofAudioDeviceOptimizationManager";
-import { OFAudioNodePooler } from "./optimization/audio/ofAudioNodePooler";
-import { OFConsole } from "../../helpers/ofConsole";
-import { OFTranslations } from "../../settings/ofTranslations";
-import { OFAudioNodeObject } from "./optimization/audio/ofAudioNodeObject";
-import { OFEnumAudioNodeType } from "./optimization/audio/ofEnumAudioNodeType";
+import { OFFramework } from '../../ofFramework';
+import { IOFRenderArgs } from '../../interfaces/iofRenderArgs';
+import { OFAudioDeviceOptimizationManager } from './optimization/audio/ofAudioDeviceOptimizationManager';
+import { OFAudioNodePooler } from './optimization/audio/ofAudioNodePooler';
+import { OFConsole } from '../../helpers/ofConsole';
+import { OFTranslations } from '../../settings/ofTranslations';
+import { OFAudioNodeObject } from './optimization/audio/ofAudioNodeObject';
+import { OFEnumAudioNodeType } from './optimization/audio/ofEnumAudioNodeType';
 
 export class OFAudioDevice {
-
   private _audioContext: AudioContext;
   private _initialTime: number;
   private _masterVolume: number;
@@ -17,11 +16,21 @@ export class OFAudioDevice {
   private _audioDeviceOptimizationManager: OFAudioDeviceOptimizationManager;
   private _audioNodePooler: OFAudioNodePooler;
 
-  get initialTime(): number { return this._initialTime; }
-  get masterVolume(): number { return this._masterVolume; }
-  get isAudioSupported(): boolean { return this._isAudioSupported; }
-  get audioContext(): AudioContext { return this._audioContext; }
-  get audioDeviceOptimizationManager(): OFAudioDeviceOptimizationManager { return this._audioDeviceOptimizationManager; }
+  get initialTime(): number {
+    return this._initialTime;
+  }
+  get masterVolume(): number {
+    return this._masterVolume;
+  }
+  get isAudioSupported(): boolean {
+    return this._isAudioSupported;
+  }
+  get audioContext(): AudioContext {
+    return this._audioContext;
+  }
+  get audioDeviceOptimizationManager(): OFAudioDeviceOptimizationManager {
+    return this._audioDeviceOptimizationManager;
+  }
 
   constructor(private readonly _framework: OFFramework) {
     this._isAudioSupported = false;
@@ -42,16 +51,15 @@ export class OFAudioDevice {
       this._isAudioSupported = true;
 
       OFConsole.log(OFTranslations.Framework.AudioDevice.initialize, this._framework.frameworkIdentifier.toString());
-    }
-    catch (e) {
+    } catch (e) {
       this._isAudioSupported = false;
       OFConsole.error(OFTranslations.Framework.AudioDevice.notSupported, this._framework.frameworkIdentifier.toString());
     }
   }
 
-  requestGainNode (): OFAudioNodeObject<GainNode> {
+  requestGainNode(): OFAudioNodeObject<GainNode> {
     const audioNodeObj = this._audioNodePooler.getAvailableAudioNode(OFEnumAudioNodeType.GainNode);
-        
+
     if (audioNodeObj.bufferType === OFEnumAudioNodeType.Unsigned) {
       const gainNode = this._audioContext.createGain();
       audioNodeObj.setWebAudioNode(gainNode, OFEnumAudioNodeType.GainNode);
@@ -60,9 +68,9 @@ export class OFAudioDevice {
     return audioNodeObj as OFAudioNodeObject<GainNode>;
   }
 
-  requestStereoPannerNode (): OFAudioNodeObject<StereoPannerNode> {
+  requestStereoPannerNode(): OFAudioNodeObject<StereoPannerNode> {
     const audioNodeObj = this._audioNodePooler.getAvailableAudioNode(OFEnumAudioNodeType.StereoPannerNode);
-    
+
     if (audioNodeObj.bufferType === OFEnumAudioNodeType.Unsigned) {
       if (this._audioContext.createStereoPanner) {
         const stereoPannerNode = this._audioContext.createStereoPanner();
@@ -73,7 +81,7 @@ export class OFAudioDevice {
     return audioNodeObj as OFAudioNodeObject<StereoPannerNode>;
   }
 
-  releaseNode (node: OFAudioNodeObject<AudioNode>): void {
+  releaseNode(node: OFAudioNodeObject<AudioNode>): void {
     if (node) {
       node.webAudioNode.disconnect();
       node.deactivate();
@@ -84,46 +92,46 @@ export class OFAudioDevice {
     this._audioDeviceOptimizationManager.update(args);
   }
 
-  static connectNodes (audioDevice: OFAudioDevice, source: AudioNode): void {
-    var argCount = arguments.length
-    
+  static connectNodes(audioDevice: OFAudioDevice, source: AudioNode, ...args: Array<OFAudioNodeObject<AudioNode>>): void {
+    const argCount = args.length;
+
     // Connect Source with the first Node.
-    if (argCount > 2) {
-      source.connect(arguments[2].WebAudioNode);    
+    if (argCount > 1) {
+      source.connect(args[0].webAudioNode);
     }
-    
+
     // Connect the Nodes
-    for (let i = 2; (i + 1) < argCount; i++) {
-      arguments[i].WebAudioNode.connect(arguments[i + 1].WebAudioNode);
+    for (let i = 0; i + 1 < argCount; i++) {
+      args[i].webAudioNode.connect(args[i + 1].webAudioNode);
     }
-    
+
     // Connect last node with the AudioContext Destination
     if (argCount > 2) {
-        var gainNode = audioDevice.requestGainNode();
-        gainNode.activate();
-        gainNode.webAudioNode.gain.value = audioDevice.masterVolume;
-        
-        arguments[argCount - 1].WebAudioNode.connect(gainNode.webAudioNode);
-        gainNode.webAudioNode.connect(audioDevice.audioContext.destination);    
+      const gainNode = audioDevice.requestGainNode();
+      gainNode.activate();
+      gainNode.webAudioNode.gain.value = audioDevice.masterVolume;
+
+      args[argCount - 1].webAudioNode.connect(gainNode.webAudioNode);
+      gainNode.webAudioNode.connect(audioDevice.audioContext.destination);
     }
   }
-  
-  static connectNodesNoMaster (audioDevice: OFAudioDevice, source: AudioNode): void {
-    const argCount = arguments.length
-    
+
+  static connectNodesNoMaster(audioDevice: OFAudioDevice, source: AudioNode, ...args: Array<OFAudioNodeObject<AudioNode>>): void {
+    const argCount = args.length;
+
     // Connect Source with the first Node.
-    if (argCount > 2) {
-      source.connect(arguments[2].WebAudioNode);    
+    if (argCount > 1) {
+      source.connect(args[0].webAudioNode);
     }
-    
+
     // Connect the Nodes
-    for (let i = 2; (i + 1) < argCount; i++) {
-      arguments[i].WebAudioNode.connect(arguments[i + 1].WebAudioNode);
+    for (let i = 0; i + 1 < argCount; i++) {
+      args[i].webAudioNode.connect(args[i + 1].webAudioNode);
     }
-    
+
     // Connect last node with the AudioContext Destination
-    if (argCount > 2) {
-      arguments[argCount - 1].WebAudioNode.connect(audioDevice.audioContext.destination);
+    if (argCount > 1) {
+      args[argCount - 1].webAudioNode.connect(audioDevice.audioContext.destination);
     }
   }
 }

@@ -63,7 +63,7 @@ export class SpaceGameScene extends OFBaseScene {
     mat4.fromScaling(transformText, vec3.fromValues(0.25, 0.25, 0.25));
 
     const fps = 1 / args.dt;
-    this._textfield?.setText(`FPS: ${fps.toString().substring(0, 5)}, # of Quads: ${this._graviusGame.spriteBatch.totalQuads}`);
+    this._textfield?.setText(`FPS: ${fps.toString().substring(0, 5)}, # of Quads: ${this._graviusGame.spriteBatch.totalQuads}, # of Draw Calls: ${this._graviusGame.spriteBatch.totalDrawCalls}`);
     this._textfield?.setLetterColor(1, OFColor.red());
     this._textfield?.draw(args, transformText);
   }

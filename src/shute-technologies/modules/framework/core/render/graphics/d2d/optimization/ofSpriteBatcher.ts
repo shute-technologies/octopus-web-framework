@@ -84,6 +84,10 @@ export class OFSpriteBatcher {
     return countTotalQuads;
   }
 
+  get totalDrawCalls(): number {
+    return this._batchGroups.filter(x => x.enabled).length;
+  }
+
   constructor (spritePath: string) {
     this._graphicDevice = OFFrameworkFactory.currentFramewok.mainGraphicDevice;
     this._graphicContext = this._graphicDevice.graphicContext;
