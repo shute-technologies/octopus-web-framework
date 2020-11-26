@@ -1,9 +1,9 @@
-import { OFFramework } from "../../../ofFramework";
-import { OFGraphicDevice } from "../../device/ofGraphicDevice";
+import { OFFramework } from '../../../ofFramework';
+import { OFGraphicDevice } from '../../device/ofGraphicDevice';
 import { OFViewport } from '../viewport/ofViewport';
-import { OFEnumCanvasContextType } from "../../../enums/ofEnumCanvasContextType";
-import { IOFRenderArgs } from "../../../interfaces/iofRenderArgs";
-import { mat4, vec3 } from "gl-matrix";
+import { OFEnumCanvasContextType } from '../../../enums/ofEnumCanvasContextType';
+import { IOFRenderArgs } from '../../../interfaces/iofRenderArgs';
+import { mat4, vec3 } from 'gl-matrix';
 import { OFMath } from '../../../math/ofMath';
 
 export class OFRenderCamera {
@@ -21,7 +21,7 @@ export class OFRenderCamera {
   private _zNear: number;
   private _zFar: number;
   private _depth: number;
-  
+
   private _worldMatrix: mat4;
   private _viewMatrix: mat4;
   private _projectionMatrix: mat4;
@@ -44,13 +44,13 @@ export class OFRenderCamera {
   get zFar(): number { return this._zFar; }
 
   get depth(): number { return this._depth; }
-  set depth(val: number) { 
+  set depth(val: number) {
     this._depth = val;
     this._worldMatrix = OFMath.mat4XVec4(mat4.create(), [0, 0, this._depth, 1]);
   }
 
   constructor(
-    private readonly _framework: OFFramework, 
+    private readonly _framework: OFFramework,
     private readonly _isChildCamera = false) {
 
     this._viewport = OFViewport.empty();
@@ -80,7 +80,7 @@ export class OFRenderCamera {
         this.createOrthographic(appWidth, appHeight, OFRenderCamera.defaultZNear, OFRenderCamera.defaultZFar);
         break;
       case OFEnumCanvasContextType.D3D:
-        this.createPerspective(OFRenderCamera.defaultFov, appWidth, appHeight, OFRenderCamera.defaultZNear, 
+        this.createPerspective(OFRenderCamera.defaultFov, appWidth, appHeight, OFRenderCamera.defaultZNear,
           OFRenderCamera.defaultZFar);
         break;
     }
@@ -105,9 +105,9 @@ export class OFRenderCamera {
     this._height = height;
     this._zNear = zNear;
     this._zFar = zFar;
-    
+
     const aspectRatio = width / height;
-    
+
     mat4.perspective(this._projectionMatrix, fov, aspectRatio, zNear, zFar);
   }
 
@@ -116,7 +116,7 @@ export class OFRenderCamera {
     this._height = height;
     this._zNear = zNear;
     this._zFar = zFar;
-    
+
     mat4.ortho(this._projectionMatrix, 0, width, height, 0, zNear, zFar);
   }
 
@@ -127,7 +127,7 @@ export class OFRenderCamera {
           this.createOrthographic(width, height, OFRenderCamera.defaultZNear, OFRenderCamera.defaultZFar);
           break;
         case OFEnumCanvasContextType.D3D:
-          this.createPerspective(OFRenderCamera.defaultFov, width, height, OFRenderCamera.defaultZNear, 
+          this.createPerspective(OFRenderCamera.defaultFov, width, height, OFRenderCamera.defaultZNear,
             OFRenderCamera.defaultZFar);
           break;
       }
@@ -135,21 +135,21 @@ export class OFRenderCamera {
       // Change Viewport
       this._viewport.width = width;
       this._viewport.height = height;
-      
+
       this._graphicContext.viewport(this._viewport.x, this._viewport.y, this._viewport.width, this._viewport.height);
     }
   }
 
   invalidateConfiguration(): void {
     const _GL = this._graphicContext;
-        
+
     // Viewport
     this._graphicContext.viewport(this._viewport.x, this._viewport.y, this._viewport.width, this._viewport.height);
-        
+
     // Set the scissor rectangle.
     _GL.scissor(
-        this._viewport.x, 
-        this._viewport.y, 
+        this._viewport.x,
+        this._viewport.y,
         this._viewport.width * this._width,
         this._viewport.height * this._height);
   }

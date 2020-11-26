@@ -1,8 +1,8 @@
-import { OFDrawable2D } from "../ofDrawable2D";
-import { OFColor } from "../ofColor";
-import { IOFRenderArgs } from "../../../../interfaces/iofRenderArgs";
-import { OFEnumVBOObjectType } from "../../../device/optimization/gpu/ofEnumVBOObjectType";
-import { OFShaderPrimitive } from "../../shader/ofShaderPrimitive";
+import { OFDrawable2D } from '../ofDrawable2D';
+import { OFColor } from '../ofColor';
+import { IOFRenderArgs } from '../../../../interfaces/iofRenderArgs';
+import { OFEnumVBOObjectType } from '../../../device/optimization/gpu/ofEnumVBOObjectType';
+import { OFShaderPrimitive } from '../../shader/ofShaderPrimitive';
 
 export class OFPrimitiveCircle extends OFDrawable2D {
 
@@ -17,19 +17,19 @@ export class OFPrimitiveCircle extends OFDrawable2D {
   offsetY: number;
 
   get radius(): number { return this._radius; }
-  set radius(val: number) { 
+  set radius(val: number) {
     this._radius = val;
 
     const vertexPart = (2.0 * Math.PI) / OFPrimitiveCircle.vertexQuality;
 
     this._vertices = [];
     // center: only if case if is wireframe TRIANGLE_STRIP
-    this._vertices.push(0, 0, 0)
+    this._vertices.push(0, 0, 0);
 
     for (let i = 0; i < this._vertexQuality; i++) {
       const vx = Math.cos(vertexPart * i) * this._radius * 0.5;
       const vy = Math.sin(vertexPart * i) * this._radius * 0.5;
-      
+
       this._vertices.push(vx, vy, 0);
 
       const _GL = this._graphicContext;
@@ -37,11 +37,11 @@ export class OFPrimitiveCircle extends OFDrawable2D {
       // Now we set the vertices array to the VertexBuffer
       _GL.bindBuffer(_GL.ARRAY_BUFFER, this._vboObject.vbo);
       _GL.bufferData(_GL.ARRAY_BUFFER, new Float32Array(this._vertices), _GL.STATIC_DRAW);
-      
+
       // Now we set the indices array to the IndexBuffer
       _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, this._iboObject.vbo);
       _GL.bufferData(_GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(this._indices), _GL.STATIC_DRAW);
-    }  
+    }
   }
 
   get color(): OFColor { return this._color; }
@@ -100,19 +100,18 @@ export class OFPrimitiveCircle extends OFDrawable2D {
       for (let i = 1; i < this._vertexQuality; i++) {
         this._indices.push(i, i + 1);
       }
-      
+
       this._indices.push(this._vertexQuality, 1);
-    }
-    else {
+    } else {
         this._drawingCount = this._vertexQuality * 2;
         this._triangleRenderType = _GL.TRIANGLE_STRIP;
         this._indices = [];
         this._indices.push(0, 1, 2);
-        
+
         for (let i = 2; i < this._vertexQuality; i++) {
           this._indices.push(i + 1, 0);
         }
-        
+
         this._indices.push(1, 0);
     }
 
@@ -132,11 +131,11 @@ export class OFPrimitiveCircle extends OFDrawable2D {
   }
 
   hitTestByPoint (x: number, y: number): boolean {
-    const hWidth = this.radius * 0.5;        
+    const hWidth = this.radius * 0.5;
     const hHeight = this.radius * 0.5;
     const thisX = this.x + this.offsetX;
     const thisY = this.y + this.offsetY;
-      
+
     return (thisX - hWidth) < x && (thisX + hWidth) > x && (thisY - hHeight) < y && (thisY + hHeight) > y;
   }
 
@@ -148,12 +147,11 @@ export class OFPrimitiveCircle extends OFDrawable2D {
         this._shader.setTranslate(this.x + this.offsetX, this.y + this.offsetY, this.z);
         this._shader.rotationZ = this.rotation;
         this._shader.setScale(this.scaleX, this.scaleY, 1.0);
-  
-        this._shader.draw(args, this._vboObject.vbo, this._iboObject.vbo, this._triangleRenderType, 
+
+        this._shader.draw(args, this._vboObject.vbo, this._iboObject.vbo, this._triangleRenderType,
           this._drawingCount);
-      }
-      else {
-        this._shader.draw(args, this._vboObject.vbo, this._transformation, 
+      } else {
+        this._shader.draw(args, this._vboObject.vbo, this._transformation,
           this._triangleRenderType, this._iboObject.vbo, this._drawingCount);
       }
     }

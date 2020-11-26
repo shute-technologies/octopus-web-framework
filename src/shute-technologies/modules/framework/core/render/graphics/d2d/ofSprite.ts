@@ -1,14 +1,14 @@
-import { OFImageContent } from "../../../content/ofImageContent";
-import { OFQuadTextCoords } from "../data/ofQuadTextCoords";
-import { OFDrawable2D } from "../ofDrawable2D";
-import { OFColor } from "../ofColor";
-import { IOFSRect } from "../../../../interfaces/iofSRect";
-import { OFEnumVBOObjectType } from "../../../device/optimization/gpu/ofEnumVBOObjectType";
-import { OFPrimitiveQuad } from "./ofPrimitiveQuad";
-import { IOFRenderArgs } from "../../../../interfaces/iofRenderArgs";
-import { OFShaderTexture } from "../../shader/ofShaderTexture";
-import { OFSpriteBatcher } from "./optimization/ofSpriteBatcher";
-import { OFCollisionHelper } from "../../../../helpers/ofCollisionHelper";
+import { OFImageContent } from '../../../content/ofImageContent';
+import { OFQuadTextCoords } from '../data/ofQuadTextCoords';
+import { OFDrawable2D } from '../ofDrawable2D';
+import { OFColor } from '../ofColor';
+import { IOFSRect } from '../../../../interfaces/iofSRect';
+import { OFEnumVBOObjectType } from '../../../device/optimization/gpu/ofEnumVBOObjectType';
+import { OFPrimitiveQuad } from './ofPrimitiveQuad';
+import { IOFRenderArgs } from '../../../../interfaces/iofRenderArgs';
+import { OFShaderTexture } from '../../shader/ofShaderTexture';
+import { OFSpriteBatcher } from './optimization/ofSpriteBatcher';
+import { OFCollisionHelper } from '../../../../helpers/ofCollisionHelper';
 
 export class OFSprite extends OFDrawable2D {
 
@@ -20,7 +20,7 @@ export class OFSprite extends OFDrawable2D {
   protected _quadTextCoords: OFQuadTextCoords;
   protected _debugCollisionQuad: OFPrimitiveQuad;
   protected _collisionRect: IOFSRect;
-  
+
   enabledShaderProps: boolean;
 
   get quadTextCoords(): OFQuadTextCoords { return this._quadTextCoords; }
@@ -42,22 +42,21 @@ export class OFSprite extends OFDrawable2D {
     this.updateGLBufferData();
   }
 
-  set debugMode(val: boolean) { 
+  set debugMode(val: boolean) {
     this._debugMode = val;
 
     if (this._debugMode && !this._debugCollisionQuad) {
-      this._debugCollisionQuad = new OFPrimitiveQuad(this._collisionRect.x, this._collisionRect.y, 
+      this._debugCollisionQuad = new OFPrimitiveQuad(this._collisionRect.x, this._collisionRect.y,
         this._collisionRect.width, this._collisionRect.height, OFColor.white());
     }
-  } 
+  }
 
   constructor(x = 0, y = 0) {
     super(x, y);
 
     this.enabledShaderProps = false;
     this._imageRect = { x: 0, y: 0, width: 0, height: 0, offsetX: 0, offsetY: 0 } as IOFSRect;
-
-    this._shader = this._graphicDevice.shaderFactory.retrieveShader<OFShaderTexture>("ShaderTexture");
+    this._shader = this._graphicDevice.shaderFactory.retrieveShader<OFShaderTexture>('ShaderTexture');
 
     this.initialize();
   }
@@ -125,13 +124,13 @@ export class OFSprite extends OFDrawable2D {
   }
 
   createCollision (x: number, y: number, width: number, height: number, offsetX = 0, offsetY = 0): IOFSRect {
-    this._collisionRect = { 
-      x: x, 
-      y: y, 
-      width: width, 
-      height: height, 
-      offsetX: offsetX, 
-      offsetY: offsetY 
+    this._collisionRect = {
+      x,
+      y,
+      width,
+      height,
+      offsetX,
+      offsetY
     } as IOFSRect;
 
     return this._collisionRect;
@@ -168,7 +167,7 @@ export class OFSprite extends OFDrawable2D {
         // Now we set the vertices interleaved array to the VertexBuffer
         const _GL = this._graphicContext;
         _GL.bindBuffer(_GL.ARRAY_BUFFER, this._vboObject.vbo);
-        _GL.bufferData(_GL.ARRAY_BUFFER, new Float32Array(this._vertices), _GL.STATIC_DRAW); 
+        _GL.bufferData(_GL.ARRAY_BUFFER, new Float32Array(this._vertices), _GL.STATIC_DRAW);
       }
     }
   }
@@ -176,9 +175,9 @@ export class OFSprite extends OFDrawable2D {
   update(args: IOFRenderArgs): void {
     if (this._imageContent && this._imageContent.isLoaded) {
       // update the buffer data if the quad text coords are still null
-      if (!this._quadTextCoords) { 
+      if (!this._quadTextCoords) {
         this.updateGLBufferData();
-        this.setAdvanceAnimationTileConfig(this._imageRect.x, this._imageRect.y, 
+        this.setAdvanceAnimationTileConfig(this._imageRect.x, this._imageRect.y,
           this._imageRect.width, this._imageRect.height);
       }
 
@@ -188,10 +187,10 @@ export class OFSprite extends OFDrawable2D {
         if (this.enabledShaderProps) {
           this._shader.setColorByIndex(0, this._color);
           this._shader.setTextureByIndex(0, this._imageGLTexture);
-        } else{
+        } else {
           (this._shader as OFShaderTexture).color = this._color;
         }
-        
+
         if (!this._transformation) {
           this._shader.setTranslate(this.x, this.y, this.z);
           this._shader.rotationZ = this.rotation;

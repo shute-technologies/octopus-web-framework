@@ -1,9 +1,9 @@
-import { OFDrawable2D } from "../ofDrawable2D";
-import { OFColor } from "../ofColor";
-import { IOFRenderArgs } from "../../../../interfaces/iofRenderArgs";
-import { OFEnumVBOObjectType } from "../../../device/optimization/gpu/ofEnumVBOObjectType";
-import { OFShaderPrimitive } from "../../shader/ofShaderPrimitive";
-import { OFCollisionHelper } from "../../../../helpers/ofCollisionHelper"
+import { OFDrawable2D } from '../ofDrawable2D';
+import { OFColor } from '../ofColor';
+import { IOFRenderArgs } from '../../../../interfaces/iofRenderArgs';
+import { OFEnumVBOObjectType } from '../../../device/optimization/gpu/ofEnumVBOObjectType';
+import { OFShaderPrimitive } from '../../shader/ofShaderPrimitive';
+import { OFCollisionHelper } from '../../../../helpers/ofCollisionHelper';
 
 export class OFPrimitiveQuad extends OFDrawable2D {
 
@@ -17,9 +17,9 @@ export class OFPrimitiveQuad extends OFDrawable2D {
   private _drawingCount: number;
 
   get width(): number { return this._width; }
-  set width(val: number) { 
+  set width(val: number) {
     this._width = val;
-    
+
     const hw = this._width / 2;
     const hh = this._height / 2;
 
@@ -37,9 +37,9 @@ export class OFPrimitiveQuad extends OFDrawable2D {
   }
 
   get height(): number { return this._height; }
-  set height(val: number) { 
+  set height(val: number) {
     this._height = val;
-    
+
     const hw = this._width / 2;
     const hh = this._height / 2;
 
@@ -96,7 +96,7 @@ export class OFPrimitiveQuad extends OFDrawable2D {
     // Now we set the vertices array to the VertexBuffer
     _GL.bindBuffer(_GL.ARRAY_BUFFER, this._vboObject.vbo);
     _GL.bufferData(_GL.ARRAY_BUFFER, new Float32Array(this._vertices), _GL.STATIC_DRAW);
-    
+
     // Now we set the indices array to the IndexBuffer
     _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, this._iboObject.vbo);
     _GL.bufferData(_GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(this._indices), _GL.STATIC_DRAW);
@@ -121,8 +121,7 @@ export class OFPrimitiveQuad extends OFDrawable2D {
       this._drawingCount = 8;
       this._triangleRenderType = _GL.LINES;
       this._indices = [0, 1, 1, 3, 3, 2, 2, 0];
-    }
-    else {
+    } else {
       this._drawingCount = 4;
       this._triangleRenderType = _GL.TRIANGLE_STRIP;
       this._indices = [0, 1, 2, 3];
@@ -149,12 +148,11 @@ export class OFPrimitiveQuad extends OFDrawable2D {
         this._shader.setTranslate(this.x + this.offsetX, this.y + this.offsetY, this.z);
         this._shader.rotationZ = this.rotation;
         this._shader.setScale(this.scaleX, this.scaleY, 1.0);
-  
-        this._shader.draw(args, this._vboObject.vbo, this._iboObject.vbo, this._triangleRenderType, 
+
+        this._shader.draw(args, this._vboObject.vbo, this._iboObject.vbo, this._triangleRenderType,
           this._drawingCount);
-      }
-      else {
-        this._shader.draw(args, this._vboObject.vbo, this._transformation, 
+      } else {
+        this._shader.draw(args, this._vboObject.vbo, this._transformation,
           this._triangleRenderType, this._iboObject.vbo, this._drawingCount);
       }
     }

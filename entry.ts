@@ -5,7 +5,7 @@ import { OFRenderLoop } from './src/shute-technologies/modules/common/ofRenderLo
 (function main() {
   const instance = new SpecMain(EnumSpectType.SpaceGame);
   const frameRate = 30;
-  
+
   OFRenderLoop.create((deltaTime) => {
     instance.update(deltaTime);
   }, frameRate);

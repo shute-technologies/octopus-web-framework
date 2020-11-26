@@ -1,4 +1,4 @@
-import { OFVertexPositionColorTexture } from "./ofVertexPositionColorTexture"
+import { OFVertexPositionColorTexture } from './ofVertexPositionColorTexture'
 
 export class OFQuadStruct {
   created: boolean;
@@ -8,7 +8,7 @@ export class OFQuadStruct {
   VPTTopRight: OFVertexPositionColorTexture;
   VPTBottomLeft: OFVertexPositionColorTexture;
   VPTBottomRight: OFVertexPositionColorTexture;
-  
+
   static createAsVertexPositionColorTexture () {
     const result = new OFQuadStruct();
     result.created = false;

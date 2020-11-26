@@ -1,6 +1,6 @@
 {
-  "name": "octopuswebframework",
-  "version": "0.2.29",
+  "name": "shute-technologies.octopus-web-framework",
+  "version": "0.3.0",
   "license": "MIT",
   "private": false,
   "main": "lib/index.js",

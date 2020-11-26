@@ -1,12 +1,12 @@
-import { OFColor } from "./ofColor";
-import { mat4 } from "gl-matrix";
-import { OFBaseShader } from "../shader/ofBaseShader";
-import { OFFrameworkFactory } from "../../../ofFrameworkFactory";
-import { OFGraphicDevice } from "../../device/ofGraphicDevice";
-import { OFVBOObject } from "../../device/optimization/gpu/ofVBOObject";
-import { IOFRenderArgs } from "../../../interfaces/iofRenderArgs";
-import { OFFramework } from "../../../ofFramework";
-import { OFSpriteBatcher } from "./d2d/optimization/ofSpriteBatcher";
+import { OFColor } from './ofColor';
+import { mat4 } from 'gl-matrix';
+import { OFBaseShader } from '../shader/ofBaseShader';
+import { OFFrameworkFactory } from '../../../ofFrameworkFactory';
+import { OFGraphicDevice } from '../../device/ofGraphicDevice';
+import { OFVBOObject } from '../../device/optimization/gpu/ofVBOObject';
+import { IOFRenderArgs } from '../../../interfaces/iofRenderArgs';
+import { OFFramework } from '../../../ofFramework';
+import { OFSpriteBatcher } from './d2d/optimization/ofSpriteBatcher';
 
 export abstract class OFDrawable2D {
 

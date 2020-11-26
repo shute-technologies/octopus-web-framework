@@ -1,12 +1,12 @@
-import { OFShaderFactory } from "./ofShaderFactory";
-import { OFRenderCamera } from "../camera/ofRenderCamera";
-import { IOFDefaultShaderSource } from "../../../default-assets/ofDefaultShaderSources";
-import { mat4, vec3 } from "gl-matrix";
-import { IOFRenderArgs } from "../../../interfaces/iofRenderArgs";
-import { IOFMoreRenderArgs } from "../../../interfaces/iofMoreRenderArgs";
-import { OFUtils } from "../../../common/ofUtils";
-import { OFGraphicDevice } from "../../device/ofGraphicDevice";
-import { OFColor } from "../graphics/ofColor";
+import { OFShaderFactory } from './ofShaderFactory';
+import { OFRenderCamera } from '../camera/ofRenderCamera';
+import { IOFDefaultShaderSource } from '../../../default-assets/ofDefaultShaderSources';
+import { mat4, vec3 } from 'gl-matrix';
+import { IOFRenderArgs } from '../../../interfaces/iofRenderArgs';
+import { IOFMoreRenderArgs } from '../../../interfaces/iofMoreRenderArgs';
+import { OFUtils } from '../../../common/ofUtils';
+import { OFGraphicDevice } from '../../device/ofGraphicDevice';
+import { OFColor } from '../graphics/ofColor';
 
 export abstract class OFBaseShader {
 
@@ -71,7 +71,7 @@ export abstract class OFBaseShader {
   set rotationZ(val: number) {
     if (this._rotationZ !== val) {
       this._rotationZ = val;
-    
+
       // compute
       mat4.fromScaling(this._world, vec3.fromValues(this._scaleX, this._scaleY, this._scaleZ));
       mat4.fromZRotation(this._rotation, this._rotationZ);
@@ -157,10 +157,10 @@ export abstract class OFBaseShader {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
-    
+
     const uniformLocation = this[uniformName];
-    
-    _GL.activeTexture(_GL["TEXTURE" + textureIndex]);
+
+    _GL.activeTexture(_GL[`TEXTURE${textureIndex}`]);
     _GL.bindTexture(_GL.TEXTURE_2D, texture);
     _GL.uniform1i(uniformLocation, 0);
   }
@@ -169,20 +169,20 @@ export abstract class OFBaseShader {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
-    
-    const uniformName = this["mTextureUniform" + index];
+
+    const uniformName = this[`mTextureUniform${index}`];
     const uniformLocation = this[uniformName];
-    
-    _GL.activeTexture(_GL["TEXTURE" + index]);
+
+    _GL.activeTexture(_GL[`TEXTURE'${index}`]);
     _GL.bindTexture(_GL.TEXTURE_2D, texture);
     _GL.uniform1i(uniformLocation, 0);
   }
-  
+
   setColor (uniformName: string, colorObject: OFColor): void {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
-    
+
     const uniformLocation = this[uniformName];
     _GL.uniform4f(uniformLocation, colorObject.r, colorObject.g, colorObject.b, colorObject.a);
   }
@@ -191,7 +191,7 @@ export abstract class OFBaseShader {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
-    
+
     const uniformLocation = this[uniformName];
     _GL.uniform4f(uniformLocation, x, y, z, w);
   }
@@ -200,7 +200,7 @@ export abstract class OFBaseShader {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
-    
+
     const uniformLocation = this[uniformName];
     _GL.uniform3f(uniformLocation, x, y, z);
   }
@@ -209,7 +209,7 @@ export abstract class OFBaseShader {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
-      
+
     const uniformLocation = this[uniformName];
     _GL.uniform2f(uniformLocation, x, y);
   }
@@ -218,7 +218,7 @@ export abstract class OFBaseShader {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
-      
+
     const uniformLocation = this[uniformName];
     _GL.uniform1f(uniformLocation, x);
   }
@@ -227,7 +227,7 @@ export abstract class OFBaseShader {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
-      
+
     const uniformLocation = this[uniformName];
     _GL.uniform1i(uniformLocation, x);
   }
@@ -236,7 +236,7 @@ export abstract class OFBaseShader {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
-      
+
     const uniformLocation = this[uniformName];
     _GL.uniform2i(uniformLocation, x, y);
   }
@@ -245,7 +245,7 @@ export abstract class OFBaseShader {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
-      
+
     const uniformLocation = this[uniformName];
     _GL.uniform3i(uniformLocation, x, y, z);
   }
@@ -254,7 +254,7 @@ export abstract class OFBaseShader {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
-      
+
     const uniformLocation = this[uniformName];
     _GL.uniform4i(uniformLocation, x, y, z, w);
   }
@@ -263,8 +263,8 @@ export abstract class OFBaseShader {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
-      
-    const uniformName = this["mColorUniform" + index];
+
+    const uniformName = this[`mColorUniform${index}`];
     const uniformLocation = this[uniformName];
 
     _GL.uniform4f(uniformLocation, colorObject.r, colorObject.g, colorObject.b, colorObject.a);

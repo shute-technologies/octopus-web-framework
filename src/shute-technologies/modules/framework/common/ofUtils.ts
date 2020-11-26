@@ -1,4 +1,4 @@
-import { IOFConstructor } from "../interfaces/iofConstructor";
+import { IOFConstructor } from '../interfaces/iofConstructor';
 
 export class OFUtils {
 
@@ -21,7 +21,7 @@ export class OFUtils {
     return !!param ? trueCondition : falseCondition;
   }
 
-  static replaceAllInString(sourceString: string, search: string, replacement: string): string { 
+  static replaceAllInString(sourceString: string, search: string, replacement: string): string {
     return sourceString.split(search).join(replacement);
   }
 
@@ -30,7 +30,7 @@ export class OFUtils {
   }
 
   static instanceByClassName (className: string, params?) {
-    return new Function('arg1', 'return new ' + className + '(arg1)')(params);
+    return new Function('arg1', `return new ${className}(arg1)`)(params);
   }
 
   static instanceByType<T>(type: IOFConstructor<T>): T {
@@ -51,17 +51,17 @@ export class OFUtils {
   }
 
   static createGuid (): string {
-    const lut = []; 
-    
-    for (let i = 0; i < 256; i++) { 
-      lut[i] = (i < 16 ? '0' : '') + (i).toString(16); 
+    const lut = [];
+
+    for (let i = 0; i < 256; i++) {
+      lut[i] = (i < 16 ? '0' : '') + (i).toString(16);
     }
-    
-    const d0 = Math.random()*0x100000000>>>0;
-    const d1 = Math.random()*0x100000000>>>0;
-    const d2 = Math.random()*0x100000000>>>0;
-    const d3 = Math.random()*0x100000000>>>0;
-    
+
+    const d0 = Math.random() * 0x100000000 >>> 0;
+    const d1 = Math.random() * 0x100000000 >>> 0;
+    const d2 = Math.random() * 0x100000000 >>> 0;
+    const d3 = Math.random() * 0x100000000 >>> 0;
+
     return lut[d0&0xff] + lut[d0>>8&0xff] + lut[d0>>16&0xff] + lut[d0>>24&0xff]+ '-' +
       lut[d1&0xff] + lut[d1>>8&0xff] + '-' + lut[d1>>16&0x0f|0x40] + lut[d1>>24&0xff]+ '-' +
       lut[d2&0x3f|0x80] + lut[d2>>8&0xff] + '-' + lut[d2>>16&0xff] + lut[d2>>24&0xff]+
@@ -70,22 +70,22 @@ export class OFUtils {
 
   static countPropertiesInObject (object: Object) {
     let count = 0;
-    
-    for (const k in object) {
+
+    for (const k of Object.keys(object)) {
       if (object.hasOwnProperty(k)) {
         ++count;
       }
     }
-    
+
     return count;
   }
 
-  static arrayInsertArray <T>(array_target: Array<T>, index: number, array_new: Array<T>): Array<T> {
-    for (let i = array_new.length - 1; i >= 0; i--) {
-      array_target.splice(index, 0, array_new[i]);
+  static arrayInsertArray <T>(arrayTarget: Array<T>, index: number, arrayNew: Array<T>): Array<T> {
+    for (let i = arrayNew.length - 1; i >= 0; i--) {
+      arrayTarget.splice(index, 0, arrayNew[i]);
     }
-    
-    return array_target;
+
+    return arrayTarget;
   }
 
   static isNullOrUndefinedOrWhiteSpace (text: string): boolean {

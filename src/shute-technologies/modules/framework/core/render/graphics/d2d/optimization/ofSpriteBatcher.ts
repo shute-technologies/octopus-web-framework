@@ -1,13 +1,13 @@
-import { IOFRenderArgs } from "../../../../../interfaces/iofRenderArgs";
-import { OFFramework } from "../../../../../ofFramework";
-import { OFFrameworkFactory } from "../../../../../ofFrameworkFactory";
-import { OFImageContent } from "../../../../content/ofImageContent";
-import { OFGraphicDevice } from "../../../../device/ofGraphicDevice";
-import { OFEnumVBOObjectType } from "../../../../device/optimization/gpu/ofEnumVBOObjectType";
-import { OFVBOObject } from "../../../../device/optimization/gpu/ofVBOObject";
-import { OFBaseShader } from "../../../shader/ofBaseShader";
-import { OFShaderTexture } from "../../../shader/ofShaderTexture";
-import { OFSprite } from "../ofSprite";
+import { IOFRenderArgs } from '../../../../../interfaces/iofRenderArgs';
+import { OFFramework } from '../../../../../ofFramework';
+import { OFFrameworkFactory } from '../../../../../ofFrameworkFactory';
+import { OFImageContent } from '../../../../content/ofImageContent';
+import { OFGraphicDevice } from '../../../../device/ofGraphicDevice';
+import { OFEnumVBOObjectType } from '../../../../device/optimization/gpu/ofEnumVBOObjectType';
+import { OFVBOObject } from '../../../../device/optimization/gpu/ofVBOObject';
+import { OFBaseShader } from '../../../shader/ofBaseShader';
+import { OFShaderTexture } from '../../../shader/ofShaderTexture';
+import { OFSprite } from '../ofSprite';
 
 class OFSBBatchGroup {
   vboObject: OFVBOObject;
@@ -66,7 +66,7 @@ class OFSBBatchGroup {
 export class OFSpriteBatcher {
 
   private static readonly MAX_VERTICES = 20920;
-  
+
   protected readonly _framework: OFFramework;
   protected readonly _graphicDevice: OFGraphicDevice;
   protected readonly _graphicContext: WebGLRenderingContext;
@@ -96,7 +96,7 @@ export class OFSpriteBatcher {
     this._imageContent = this._framework.contentManager.getContent<OFImageContent>(spritePath);
     this._imageGLTexture = this._imageContent.imageTexture;
 
-    this._shader = this._graphicDevice.shaderFactory.retrieveShader<OFShaderTexture>("ShaderTexture");
+    this._shader = this._graphicDevice.shaderFactory.retrieveShader<OFShaderTexture>('ShaderTexture');
     this._batchGroups = [new OFSBBatchGroup(0, this._graphicDevice)];
   }
 
@@ -125,7 +125,7 @@ export class OFSpriteBatcher {
       let x_1 = vx - hw;
       let x_2 = vx + hw;
       let x_3 = vx - hw;
-      
+
       let y_0 = vy + hh;
       let y_1 = vy + hh;
       let y_2 = vy - hh;
@@ -148,7 +148,7 @@ export class OFSpriteBatcher {
       let _x_1 = x_1;
       let _x_2 = x_2;
       let _x_3 = x_3;
-      
+
       let _y_0 = y_0;
       let _y_1 = y_1;
       let _y_2 = y_2;
@@ -181,8 +181,7 @@ export class OFSpriteBatcher {
         x_1, y_1, 0.0, qTC.left, qTC.down,
         x_2, y_2, 0.0, qTC.right, qTC.up,
         x_3, y_3, 0.0, qTC.left, qTC.up);
-    }
-    else {
+    } else {
       this._currentBatchGroup.vertices.push(
         vx + hw, vy + hh, 0.0, qTC.right, qTC.down,
         vx - hw, vy + hh, 0.0, qTC.left, qTC.down,
@@ -190,12 +189,11 @@ export class OFSpriteBatcher {
         vx - hw, vy - hh, 0.0, qTC.left, qTC.up);
     }
 
-    // Degenerate indices    
+    // Degenerate indices
     if (this._currentBatchGroup.vertexCount !== 0) {
-      this._currentBatchGroup.indices.push(this._currentBatchGroup.vertexCount -1, this._currentBatchGroup.vertexCount, this._currentBatchGroup.vertexCount, 
+      this._currentBatchGroup.indices.push(this._currentBatchGroup.vertexCount - 1, this._currentBatchGroup.vertexCount, this._currentBatchGroup.vertexCount,
         this._currentBatchGroup.vertexCount + 1, this._currentBatchGroup.vertexCount + 2, this._currentBatchGroup.vertexCount + 3);
-    }
-    else {
+    } else {
       this._currentBatchGroup.indices.push(this._currentBatchGroup.vertexCount, this._currentBatchGroup.vertexCount + 1, this._currentBatchGroup.vertexCount + 2,
         this._currentBatchGroup.vertexCount + 3);
     }

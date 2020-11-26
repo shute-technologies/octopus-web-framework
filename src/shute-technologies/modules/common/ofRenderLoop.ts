@@ -19,7 +19,7 @@ export class OFRenderLoop {
     const currentTime = new Date().getTime();
     const deltaTime = (currentTime - this._lastTime) / 1000;
     this._lastTime = currentTime;
-    
+
     this._functionLoop(deltaTime);
   }
 

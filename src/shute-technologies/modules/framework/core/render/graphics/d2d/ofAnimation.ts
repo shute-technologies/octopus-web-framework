@@ -1,9 +1,9 @@
-import { OFColor } from "../ofColor";
-import { IOFRenderArgs } from "../../../../interfaces/iofRenderArgs";
-import { OFQuadTextCoords } from "../data/ofQuadTextCoords";
-import { OFImageContent } from "../../../content/ofImageContent";
-import { OFShaderTexture } from "../../shader/ofShaderTexture";
-import { OFSprite } from "./ofSprite";
+import { OFColor } from '../ofColor';
+import { IOFRenderArgs } from '../../../../interfaces/iofRenderArgs';
+import { OFQuadTextCoords } from '../data/ofQuadTextCoords';
+import { OFImageContent } from '../../../content/ofImageContent';
+import { OFShaderTexture } from '../../shader/ofShaderTexture';
+import { OFSprite } from './ofSprite';
 
 export class OFAnimation extends OFSprite {
 
@@ -32,7 +32,7 @@ export class OFAnimation extends OFSprite {
       this._imageRect.height = this._imageHTML.height;
 
       this._quadTextCoords = new OFQuadTextCoords(0, 0, 0, 0,
-        (this._imageRect.width / this._horizontalTiles) * 0.5, 
+        (this._imageRect.width / this._horizontalTiles) * 0.5,
         (this._imageRect.height / this._verticalTiles) * 0.5);
 
       // verify that the VBO object exists because could be erase if using the sprite batch
@@ -56,10 +56,10 @@ export class OFAnimation extends OFSprite {
     }
   }
 
-  constructor(x = 0, y = 0, 
-    private readonly _horizontalTiles: number, 
+  constructor(x = 0, y = 0,
+    private readonly _horizontalTiles: number,
     private readonly _verticalTiles: number) {
-    
+
     super(x, y);
 
     this._currentFrameHorizontal = 0;
@@ -81,8 +81,8 @@ export class OFAnimation extends OFSprite {
     this._totalFrames = this._horizontalTiles * this._verticalTiles;
 
     // After finished loading created the vertices
-    var hw = (this._imageRect.width / this._horizontalTiles) * 0.5;
-    var hh = (this._imageRect.height / this._verticalTiles) * 0.5;
+    const hw = (this._imageRect.width / this._horizontalTiles) * 0.5;
+    const hh = (this._imageRect.height / this._verticalTiles) * 0.5;
 
     // Update quad data
     this._quadTextCoords.width = (this._imageRect.width / this._horizontalTiles);
@@ -146,7 +146,7 @@ export class OFAnimation extends OFSprite {
     const targetFramerate = this._framework.settings.targetFramerate;
     // Now add the division of the framerates to the currentFrameHorizontal
     this._currentFrameHorizontal += animationFramerate / targetFramerate;
-    
+
     if (this._currentFrameHorizontal >= this._horizontalTiles) {
       this._currentFrameHorizontal = 0;
       this._currentFrameVertical++;

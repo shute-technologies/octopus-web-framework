@@ -29,7 +29,7 @@ export class OFOptSpriteBatcher {
     this._graphicContext = this._graphicDevice.graphicContext;
     this._framework = this._graphicDevice.framework;
 
-    this._shader = this._graphicDevice.shaderFactory.retrieveShader<OFShaderTexture>("ShaderTexture");
+    this._shader = this._graphicDevice.shaderFactory.retrieveShader<OFShaderTexture>('ShaderTexture');
     this.color = OFColor.white();
     this._spriteQuadData = [];
     this._spriteBatchRenderData = [];
@@ -43,7 +43,7 @@ export class OFOptSpriteBatcher {
         x.iboObject.deactivate();
       });
     }
-    
+
     this._spriteQuadData = [];
     this._spriteBatchRenderData = [];
     this._alreadyTransformedForRender = false;
@@ -51,16 +51,16 @@ export class OFOptSpriteBatcher {
 
   pushSprite(x: number, y: number, width: number, height: number, uvs: OFOptSpriteQuadUVStruct, imageContent: OFImageContent, sortId: string): void {
     const quadData = {
-      x: x,
-      y: y,
-      width: width,
-      height: height,
-      imageContent: imageContent,
+      x,
+      y,
+      width,
+      height,
+      imageContent,
       uv00_x: 0, uv00_y: 0,
       uv10_x: 0, uv10_y: 0,
       uv11_x: 0, uv11_y: 0,
       uv01_x: 0, uv01_y: 0,
-      sortId: sortId
+      sortId
     } as OFOptSpriteQuadStruct;
 
     if (!uvs) {
@@ -89,7 +89,7 @@ export class OFOptSpriteBatcher {
         const sortId = this._spriteQuadData[0].sortId;
         let vertices = [];
         let indices = [];
-        let imageContent = undefined;
+        let imageContent = null;
         let indicesCount = 0;
         let vertexCount = 0;
 
@@ -97,33 +97,33 @@ export class OFOptSpriteBatcher {
           if (sortId !== sqData.sortId) {
             // Phase 1: Flush it!
             this.flush(imageContent, vertices, indices, vertexCount, indicesCount);
-            
+
             // Phase 2: Clear and start again
             vertices = [];
             indices = [];
             vertexCount = 0;
             indicesCount = 0;
           }
-          
+
           const vx = sqData.x;
           const vy = sqData.y;
           const vw = sqData.width;
           const vh = sqData.height;
-          
+
           imageContent = sqData.imageContent;
-          
+
           vertices.push(
             vx + 0, vy + 0, 0.0,    sqData.uv00_x, sqData.uv00_y,
             vx + vw, vy + 0, 0.0,   sqData.uv10_x, sqData.uv10_y,
             vx + vw, vy + vh, 0.0,  sqData.uv11_x, sqData.uv11_y,
             vx + 0, vy + vh, 0.0,   sqData.uv01_x, sqData.uv01_y
           );
-              
+
           indices.push(
             vertexCount + 0, vertexCount + 1, vertexCount + 2,
             vertexCount + 2, vertexCount + 3, vertexCount + 0
           );
-              
+
           vertexCount += 4;
           indicesCount += 6;
         });
@@ -140,11 +140,11 @@ export class OFOptSpriteBatcher {
 
   private flush (imageContent: OFImageContent, vertices: Array<number>, indices: Array<number>, 
     vertexCount: number, indicesCount: number): void {
-    
+
     const _GL = this._graphicContext;
     let arrayBufferGPUVertex = new Float32Array(vertices);
     let arrayBufferGPUIndex = new Uint16Array(indices);
-    
+
     // Get a VBO for this object
     const vboObject = this._graphicDevice.deviceOptimizationManager.vboPooler
       .getAvailableVBO(OFEnumVBOObjectType.VertexBuffer);
@@ -153,20 +153,20 @@ export class OFOptSpriteBatcher {
     const iboObject = this._graphicDevice.deviceOptimizationManager.vboPooler
       .getAvailableVBO(OFEnumVBOObjectType.IndexBuffer);
     iboObject.activate(OFEnumVBOObjectType.IndexBuffer);
-    
+
     // Now we set the vertices interleaved array to the VertexBuffer
     _GL.bindBuffer(_GL.ARRAY_BUFFER, vboObject.vbo);
     _GL.bufferData(_GL.ARRAY_BUFFER, arrayBufferGPUVertex, _GL.DYNAMIC_DRAW);
     // Now we set the indices array to the IndexBuffer
     _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, iboObject.vbo);
     _GL.bufferData(_GL.ELEMENT_ARRAY_BUFFER, arrayBufferGPUIndex, _GL.DYNAMIC_DRAW);
-    // Clear it          
+    // Clear it
     _GL.bindBuffer(_GL.ARRAY_BUFFER, null);
     _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, null);
-    
+
     arrayBufferGPUVertex = null;
     arrayBufferGPUIndex = null;
-    
+
     // Now store it as a batch render data
     const renderData = {} as OFOptSpriteBatcherRenderData;
     renderData.vboObject = vboObject;
@@ -174,25 +174,23 @@ export class OFOptSpriteBatcher {
     renderData.vertexCount = vertexCount;
     renderData.indicesCount = indicesCount;
     renderData.imageTexture = imageContent.imageTexture;
-    
+
     this._spriteBatchRenderData.push(renderData);
   }
 
   draw (args: IOFRenderArgs, transformationMatrix: mat4): void {
     const _GL = this._graphicContext;
-    
-    for (let i = 0; i < this._spriteBatchRenderData.length; i++) {
-      const renderData = this._spriteBatchRenderData[i];
-      
+
+    for (const renderData of this._spriteBatchRenderData) {
       if (!transformationMatrix) {
         this._shader.setTranslate(0, 0, 0);
         this._shader.setRotation(0, 0, 0);
         this._shader.setScale(1, 1, 1);
       }
-      
+
       this._shader.setColorByIndex(0, this.color);
       this._shader.setTextureByIndex(0, renderData.imageTexture);
-      this._shader.draw(args, renderData.vboObject.vbo, transformationMatrix, 
+      this._shader.draw(args, renderData.vboObject.vbo, transformationMatrix,
         _GL.TRIANGLES, renderData.iboObject.vbo, renderData.indicesCount);
     }
   }

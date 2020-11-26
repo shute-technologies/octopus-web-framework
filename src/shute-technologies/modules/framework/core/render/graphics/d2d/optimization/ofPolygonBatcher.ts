@@ -1,15 +1,15 @@
-import { OFColor } from "../../ofColor";
+import { OFColor } from '../../ofColor';
 import { OFGraphicDevice } from '../../../../device/ofGraphicDevice';
 import { OFImageContent } from '../../../../content/ofImageContent';
-import { OFBaseShader } from "../../../shader/ofBaseShader";
-import { Dictionary } from "../../../../../common/ofInterfaces";
-import { OFConsole } from "../../../../../helpers/ofConsole";
-import { IOFRenderArgs } from "../../../../../interfaces/iofRenderArgs";
-import { OFFrameworkFactory } from "../../../../../ofFrameworkFactory";
-import { OFTranslations } from "../../../../../settings/ofTranslations";
-import { OFEnumVBOObjectType } from "../../../../device/optimization/gpu/ofEnumVBOObjectType";
-import { OFVBOObject } from "../../../../device/optimization/gpu/ofVBOObject";
-import { mat4 } from "gl-matrix";
+import { OFBaseShader } from '../../../shader/ofBaseShader';
+import { Dictionary } from '../../../../../common/ofInterfaces';
+import { OFConsole } from '../../../../../helpers/ofConsole';
+import { IOFRenderArgs } from '../../../../../interfaces/iofRenderArgs';
+import { OFFrameworkFactory } from '../../../../../ofFrameworkFactory';
+import { OFTranslations } from '../../../../../settings/ofTranslations';
+import { OFEnumVBOObjectType } from '../../../../device/optimization/gpu/ofEnumVBOObjectType';
+import { OFVBOObject } from '../../../../device/optimization/gpu/ofVBOObject';
+import { mat4 } from 'gl-matrix';
 import { OFEnumShaderDataTypes } from '../../../../../../cross-cutting/shader-analizer/ofEnumShaderDataTypes';
 
 export interface OFIPolygonBatcherUniformData {
@@ -115,8 +115,8 @@ export class OFPolygonBatcher {
 
     const indexStart = this._vertexCount / 8;
 
-    for (let i = 0; i < indices.length; i++) {
-      this._indices.push(indices[i] + indexStart);
+    for (const index of this._indices) {
+      this._indices.push(index + indexStart);
     }
 
     this._vertices.push({ array: vertices, count: this._vertexCount });
@@ -124,16 +124,16 @@ export class OFPolygonBatcher {
     this._indexCount += indices.length;
     this._vertexCount += vertices.length;
 
-    //if (texture != this.lastTexture) {
-    //this.flush();
-    //this.lastTexture = texture;
-    //texture.bind();
-    //}
-    //else if (this.verticesLength + vertices.length > this.mesh.getVertices().length ||
+    // if (texture != this.lastTexture) {
+    // this.flush();
+    // this.lastTexture = texture;
+    // texture.bind();
+    // }
+    // else if (this.verticesLength + vertices.length > this.mesh.getVertices().length ||
     //    this.indicesLength + indices.length > this.mesh.getIndices().length) {
 
-    //this.flush();
-    //}
+    // this.flush();
+    // }
   }
 
   endDraw(): void {
@@ -172,7 +172,7 @@ export class OFPolygonBatcher {
     }
 
     if (uniformData) {
-      for (const key in uniformData) {
+      for (const key of Object.keys(uniformData)) {
         const uData = uniformData[key];
 
         switch (uData.type) {

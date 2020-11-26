@@ -1,4 +1,4 @@
-import { OFVBOObject } from "../../../device/optimization/gpu/ofVBOObject";
+import { OFVBOObject } from '../../../device/optimization/gpu/ofVBOObject';
 
 export interface OFOptSpriteBatcherRenderData {
   vboObject: OFVBOObject;
