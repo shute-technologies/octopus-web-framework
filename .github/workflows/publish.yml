@@ -1,4 +1,4 @@
-name: "publish"
+name: "Publish to NPM"
 
 on:
     push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
     release:
-        name: Publish NPM Package
+        name: Job - Compile unbuilt TS files and publish to NPM
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -28,7 +28,7 @@ jobs:
                 user-email: "chris_fs313@hotmail.com"
                 message: "Automatically built unbuilt typescript"
                 directories: ./
-            - name: Publish
+            - name: Publish to NPM
               run: npm publish --access public
               env:
                 NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
