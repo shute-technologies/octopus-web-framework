@@ -1,4 +1,4 @@
-![publish](https://github.com/shute-technologies/octopus-web-framework/workflows/publish/badge.svg?branch=master)
+![Publish to NPM](https://github.com/shute-technologies/octopus-web-framework/workflows/Publish%20to%20NPM/badge.svg)
 
 This a web framework based on WebGL for 2D Game Development in TypeScript, there's no current oficial documentation but there are somes sample code in: **src/shute-technologies/specs** folder.
 
