@@ -23,6 +23,15 @@ export class OFColor {
     return result;
   }
 
+  static fromObject(obj: {r, g, b, a}) {
+    return {
+      r: parseInt(String(obj.r), 10),
+      g: parseInt(String(obj.g), 10),
+      b: parseInt(String(obj.b), 10),
+      a: parseInt(String(obj.a), 10),
+    };
+  }
+
   static fromNormalized(color: OFColor): OFColor {
     return new OFColor(
       Math.round(color.r * 255.0),
