@@ -51,7 +51,7 @@ export class OFImageContent extends OFBaseContent{
     this._image.src = path;
   } 
 
-  loadFromImageHTML (imageHTML: HTMLImageElement, path: string, params: {}) {
+  loadFromImageHTML (imageHTML: HTMLImageElement, path: string, params?: {}) {
     params = !params ? {} : params;
     const _GL = this.graphicContext;
 
@@ -86,7 +86,7 @@ export class OFImageContent extends OFBaseContent{
     this._isLoaded = true;
   }
 
-  changeProperties (params: {}) {
+  changeProperties (params?: {}) {
     if (this.isLoaded) {
       params = !params ? {} : params;
       const _GL = this.graphicContext;
