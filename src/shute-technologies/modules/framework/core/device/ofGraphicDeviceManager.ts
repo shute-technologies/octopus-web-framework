@@ -1,22 +1,23 @@
-import { OFFramework } from "../../ofFramework";
-import { OFGraphicDevice } from "./ofGraphicDevice";
-import { OFConsole } from "../../helpers/ofConsole";
-import { OFTranslations } from "../../settings/ofTranslations";
-import { IOFRenderArgs } from "../../interfaces/iofRenderArgs";
-import { IOFCanvasElement } from "../ofCanvasContextManager";
+import { OFFramework } from '../../ofFramework';
+import { OFGraphicDevice } from './ofGraphicDevice';
+import { OFConsole } from '../../helpers/ofConsole';
+import { OFTranslations } from '../../settings/ofTranslations';
+import { IOFRenderArgs } from '../../interfaces/iofRenderArgs';
+import { IOFCanvasElement } from '../ofCanvasContextManager';
+import { Dictionary } from '../../common/ofInterfaces';
 
 export class  OFGraphicDeviceManager {
-  
-  private readonly _graphicDevices: OFGraphicDevice[];
+
+  private readonly _graphicDevices: Dictionary<OFGraphicDevice>;
 
   get shaderFactories() {
     const result = [];
 
-    for (var key in this._graphicDevices) {
-      var shaderFactory = this._graphicDevices[key].shaderFactory;
-            
-      if (shaderFactory !== undefined){
-          result.push(shaderFactory);
+    for (const key of Object.keys(this._graphicDevices)) {
+      const shaderFactory = this._graphicDevices[key].shaderFactory;
+
+      if (shaderFactory) {
+        result.push(shaderFactory);
       }
     }
 
@@ -24,12 +25,10 @@ export class  OFGraphicDeviceManager {
   }
 
   constructor(private readonly _framework: OFFramework) {
-    this._graphicDevices = [];
+    this._graphicDevices = {};
   }
 
-  initialize(): void {
-
-  }
+  initialize(): void { /* NOTHING */ }
 
   createGraphicDevice (id: string, canvasObject: IOFCanvasElement): OFGraphicDevice {
     const graphicDevice = new OFGraphicDevice(this._framework);
@@ -37,28 +36,28 @@ export class  OFGraphicDeviceManager {
 
     this._graphicDevices[id] = graphicDevice;
 
-    OFConsole.log(OFTranslations.Framework.GraphicDeviceManager.createGraphicDevice, 
+    OFConsole.log(OFTranslations.Framework.GraphicDeviceManager.createGraphicDevice,
       this._framework.frameworkIdentifier.toString(), id);
 
     return graphicDevice;
   }
 
   loadDefault(): void {
-    for (const key in this._graphicDevices) {
-      if (this._graphicDevices[key].shaderFactory){
+    for (const key of Object.keys(this._graphicDevices)) {
+      if (this._graphicDevices[key].shaderFactory) {
         this._graphicDevices[key].shaderFactory.loadDefault();
       }
     }
   }
 
   resize (width: number, height: number, oldWidth: number, oldHeight: number) {
-    for (const key in this._graphicDevices) {
+    for (const key of Object.keys(this._graphicDevices)) {
       this._graphicDevices[key].resize(width, height, oldWidth, oldHeight);
     }
-  }   
+  }
 
   update (args: IOFRenderArgs) {
-    for (const key in this._graphicDevices) {
+    for (const key of Object.keys(this._graphicDevices)) {
       this._graphicDevices[key].update(args);
     }
   }

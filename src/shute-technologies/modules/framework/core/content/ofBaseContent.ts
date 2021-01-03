@@ -1,5 +1,5 @@
-import { OFContentManager } from "./ofContentManager";
-import { OFFramework } from "../../ofFramework";
+import { OFContentManager } from './ofContentManager';
+import { OFFramework } from '../../ofFramework';
 
 export class OFBaseContent {
 
@@ -20,13 +20,13 @@ export class OFBaseContent {
     this._graphicContext = this._framework.mainGraphicDevice.graphicContext;
   }
 
-  initialize (): void {}
+  initialize (): void { /* NOTHING */ }
 
-  changeProperties(params: {}): void {}
+  changeProperties(params: {}): void { /* NOTHING */ }
 
   load(path: string): void {
     this._path = path;
   }
 
-  unload(): void {}
+  unload(): void { /* NOTHING */ }
 }

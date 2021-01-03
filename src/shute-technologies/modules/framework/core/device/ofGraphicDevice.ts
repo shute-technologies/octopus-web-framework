@@ -1,10 +1,10 @@
-import { OFFramework } from "../../ofFramework";
-import { OFRenderCamera } from "../render/camera/ofRenderCamera";
-import { OFColor } from "../render/graphics/ofColor";
-import { OFShaderFactory } from "../render/shader/ofShaderFactory";
-import { OFDeviceOptimizationManager } from "./optimization/gpu/ofDeviceOptimizationManager";
-import { IOFRenderArgs } from "../../interfaces/iofRenderArgs";
-import { IOFCanvasElement } from "../ofCanvasContextManager";
+import { OFFramework } from '../../ofFramework';
+import { OFRenderCamera } from '../render/camera/ofRenderCamera';
+import { OFColor } from '../render/graphics/ofColor';
+import { OFShaderFactory } from '../render/shader/ofShaderFactory';
+import { OFDeviceOptimizationManager } from './optimization/gpu/ofDeviceOptimizationManager';
+import { IOFRenderArgs } from '../../interfaces/iofRenderArgs';
+import { IOFCanvasElement } from '../ofCanvasContextManager';
 
 export class OFGraphicDevice {
 
@@ -14,11 +14,12 @@ export class OFGraphicDevice {
   private _shaderFactory: OFShaderFactory;
   private _deviceOptimizationManager: OFDeviceOptimizationManager;
 
-  private _hasCustomCamera: boolean; 
+  private _hasCustomCamera: boolean;
   private _currentShaderProgram: WebGLProgram;
 
   clearColor: OFColor;
 
+  get currentShaderProgram(): WebGLProgram { return this._currentShaderProgram; }
   get hasCustomCamera(): boolean { return this._hasCustomCamera; }
   get graphicContext(): WebGLRenderingContext { return this._graphicContext; }
   get canvasElement(): HTMLCanvasElement { return this._canvasObject.canvasElement; }
@@ -56,9 +57,9 @@ export class OFGraphicDevice {
 
   resize(width: number, height: number, oldWidth: number, oldHeight: number): void {
     // Resize canvas element
-    var canvasElement = this._canvasObject.canvasElement;
-    canvasElement.setAttribute("width", width.toString());
-    canvasElement.setAttribute("height", height.toString());
+    const canvasElement = this._canvasObject.canvasElement;
+    canvasElement.setAttribute('width', width.toString());
+    canvasElement.setAttribute('height', height.toString());
 
     // resize camera
     if (!this._hasCustomCamera) {
@@ -82,12 +83,12 @@ export class OFGraphicDevice {
   clear(): void {
     const _GL = this._graphicContext;
     const color = this.clearColor;
-    
+
     _GL.clearColor(color.r, color.g, color.b, color.a);
     _GL.clear(_GL.COLOR_BUFFER_BIT);
-    
-    //_GL.enable(_GL.DEPTH_TEST);
-    //_GL.depthFunc(_GL.LEQUAL);
+
+    // _GL.enable(_GL.DEPTH_TEST);
+    // _GL.depthFunc(_GL.LEQUAL);
   }
 
   update (args: IOFRenderArgs): void {
