@@ -5,13 +5,14 @@ import { OFTranslations } from '../../settings/ofTranslations';
 import { IOFRenderArgs } from '../../interfaces/iofRenderArgs';
 import { IOFCanvasElement } from '../ofCanvasContextManager';
 import { Dictionary } from '../../common/ofInterfaces';
+import { OFShaderFactory } from '../render/shader/ofShaderFactory';
 
 export class  OFGraphicDeviceManager {
 
   private readonly _graphicDevices: Dictionary<OFGraphicDevice>;
 
-  get shaderFactories() {
-    const result = [];
+  get shaderFactories(): Array<OFShaderFactory> {
+    const result: Array<OFShaderFactory> = [];
 
     for (const key of Object.keys(this._graphicDevices)) {
       const shaderFactory = this._graphicDevices[key].shaderFactory;
