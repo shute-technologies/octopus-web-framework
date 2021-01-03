@@ -109,7 +109,7 @@ export class OFContentManager {
     return soundContent;
   }
 
-  loadImageFromHTMLImage (image, path: string, params: {}): OFImageContent {
+  loadImageFromHTMLImage (image: HTMLImageElement, path: string, params: {}): OFImageContent {
     let imageContent = this.getContent<OFImageContent>(path);
     
     if (!imageContent) {
