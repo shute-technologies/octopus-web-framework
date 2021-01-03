@@ -29,6 +29,7 @@ export class OFShaderAbstract extends OFBaseShader {
 
   getShaderLocations(_GL: WebGLRenderingContext): void { /*NO IMPLEMENTATION HERE*/ }
 
+  // tslint:disable-next-line: cyclomatic-complexity
   updateShader(sourceTarget: IOFDefaultShaderSource, newShaderCodeInfo: OFIShaderCodeInfo): void {
     const _GL = this.graphicContext;
 
@@ -119,6 +120,7 @@ export class OFShaderAbstract extends OFBaseShader {
     }
   }
 
+  // tslint:disable-next-line: cyclomatic-complexity
   draw(args: IOFMoreRenderArgs, vertexBuffer: WebGLBuffer, transformation: mat4 = null, renderType: number,
     indexBuffer: WebGLBuffer, indexCount: number): void {
 
