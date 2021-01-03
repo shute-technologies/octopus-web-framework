@@ -23,10 +23,10 @@ export class OFContentManager {
   }
 
   changePropertiesInContent (path: string, otherParams) {
-    const imageContent = this.getContent(path);
+    const content = this.getContent(path);
 
-    if (imageContent) {
-      imageContent.changeProperties(otherParams);
+    if (content) {
+      content.changeProperties(otherParams);
     } else {
       OFConsole.warn(OFTranslations.Framework.ContentManagement.changePropertiesInContentNotFound,
         this.framework.frameworkIdentifier.toString(), path);
