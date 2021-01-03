@@ -96,10 +96,10 @@ export class OFContentManager {
     return imageContent;
   }
 
-  loadSoundFromArrayBuffer<T extends OFSCExternalSource> (array_buffer, path: string, params: T): OFSoundContent {
+  async asyncLoadSoundFromArrayBuffer<T extends OFSCExternalSource> (arrayBuffer: ArrayBuffer, path: string, params: T): Promise<OFSoundContent> {
     const soundContent = new OFSoundContent(this);
     soundContent.initialize();
-    soundContent.loadFromArrayBuffer<T>(array_buffer, path, params);
+    await soundContent.loadFromArrayBuffer<T>(arrayBuffer, path, params);
     
     this._contentRepository.push(soundContent);
 

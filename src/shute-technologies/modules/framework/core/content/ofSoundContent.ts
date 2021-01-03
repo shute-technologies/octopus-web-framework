@@ -10,7 +10,7 @@ export interface OFSCExternalSource {
 export class OFSoundContent extends OFBaseContent {
 
   private _audioBuffer: AudioBuffer;
-  private _audioBuffer_Error;
+  private _audioBuffer_Error: DOMException;
   private _params: OFSCExternalSource;
 
   get audioBuffer (): AudioBuffer { return this._audioBuffer; }
@@ -28,7 +28,7 @@ export class OFSoundContent extends OFBaseContent {
     super.load(path);
   }
 
-  loadFromArrayBuffer<T extends OFSCExternalSource> (audio_arrayBuffer, path: string, params: T) {
+  loadFromArrayBuffer<T extends OFSCExternalSource> (audioArrayBuffer: ArrayBuffer, path: string, params: T): Promise<AudioBuffer> {
     if (path) { super.load(path); }
     
     this._params = params;
@@ -36,11 +36,14 @@ export class OFSoundContent extends OFBaseContent {
     const audioDevice = this.framework.audioDevice;
     const audioContext = audioDevice.audioContext;
     
-    audioContext.decodeAudioData(audio_arrayBuffer, this.internal_OnDecodeAudioData,
-      this.internal_OnErrorDecodeAudioData);
+    return audioContext.decodeAudioData(
+      audioArrayBuffer, 
+      this.internal_OnDecodeAudioData,
+      this.internal_OnErrorDecodeAudioData
+    );
   }
 
-  internal_OnDecodeAudioData (buffer: AudioBuffer) {
+  internal_OnDecodeAudioData (buffer: AudioBuffer): void {
     this._isLoaded = true;
     this._audioBuffer = buffer;
     
@@ -50,10 +53,10 @@ export class OFSoundContent extends OFBaseContent {
     }
   }
 
-  internal_OnErrorDecodeAudioData (error) {
+  internal_OnErrorDecodeAudioData (error: DOMException): void {
     this._audioBuffer_Error = error;
 
     OFConsole.log(OFTranslations.Framework.ContentManagement.SoundContent.internal_OnErrorDecodeAudioData,
-      this._framework.frameworkIdentifier.toString(), error);
+      this._framework.frameworkIdentifier.toString(), error.message);
   }
 }

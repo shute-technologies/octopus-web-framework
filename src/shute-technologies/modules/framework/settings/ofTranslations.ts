@@ -26,7 +26,7 @@ export class OFTranslations {
       static readonly loadMaterial = 'OF(id:{0}):ContentManager::loadMaterial> {1}';
       static readonly loadImage = 'OF(id:{0}):ContentManager::loadImage> {1}';
       static readonly loadMaterialFromJSON = 'OF(id:{0}):ContentManager::loadMaterialFromJSON> {1}';
-      static readonly loadSoundFromArrayABuffer = 'OF(id:{0}):ContentManager::loadSoundFromArrayBuffer> {1}';
+      static readonly loadSoundFromArrayABuffer = 'OF(id:{0}):ContentManager::asyncLoadSoundFromArrayBuffer> {1}';
       static readonly loadImageFromHTMLImage = 'OF(id:{0}):ContentManager::loadImageFromHTMLImage> {1}';
       static readonly notImplementedException = 'OF(id:{0}):ContentManager> Not implemented exception: {1}';
       
