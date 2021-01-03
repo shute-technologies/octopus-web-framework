@@ -86,7 +86,6 @@ export abstract class OFBaseShader {
   protected get graphicContext(): WebGLRenderingContext { return this._shaderFactory.graphicDevice.graphicContext; }
 
   constructor(protected readonly _shaderFactory: OFShaderFactory, sourceTarget: IOFDefaultShaderSource) {
-    this._name = name;
     this._graphicDevice = _shaderFactory.graphicDevice;
     this._renderCamera = this._graphicDevice.renderCamera;
     this._shaderProgram = _shaderFactory.instanceShader(sourceTarget);
