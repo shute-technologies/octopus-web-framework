@@ -127,7 +127,7 @@ export class OFShaderAbstract extends OFBaseShader {
     const _GL = this._graphicContext;
 
     // Get Transformation Matrix from RenderCamera
-    const transformedMatrix = args.hasCustomCamera
+    const transformedMatrix = !!args.hasCustomCamera
       ? args.cameraMVP
       : this._renderCamera.transformedMatrix;
 

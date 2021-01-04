@@ -1,8 +1,7 @@
-import { OFFramework } from "../ofFramework";
-import { IOFRenderArgs } from "./iofRenderArgs";
-import { mat4 } from "gl-matrix";
+import { IOFRenderArgs } from './iofRenderArgs';
+import { mat4 } from 'gl-matrix';
 
 export interface IOFMoreRenderArgs extends IOFRenderArgs {
-  hasCustomCamera: boolean;
-  cameraMVP: mat4;
+  hasCustomCamera?: boolean;
+  cameraMVP?: mat4;
 }
