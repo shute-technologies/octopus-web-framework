@@ -1,4 +1,4 @@
-![Publish to NPM](https://github.com/shute-technologies/octopus-web-framework/workflows/Publish%20to%20NPM/badge.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Publish to NPM](https://github.com/shute-technologies/octopus-web-framework/workflows/Publish%20to%20NPM/badge.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![npm](https://img.shields.io/npm/v/shute-technologies.octopus-web-framework)
 
 This a web framework based on WebGL for 2D Game Development in TypeScript, there's no current oficial documentation but there are somes sample code in: **src/shute-technologies/specs** folder.
 
