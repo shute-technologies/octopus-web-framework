@@ -1,6 +1,6 @@
-import { OFVector3 } from "./ofVector3";
-import { OFVector2 } from "./ofVector2";
-import { mat4, vec4 } from "gl-matrix";
+import { OFVector3 } from './ofVector3';
+import { OFVector2 } from './ofVector2';
+import { mat4, vec4 } from 'gl-matrix';
 
 export class OFMath {
 
@@ -14,12 +14,12 @@ export class OFMath {
 
   static quadraticBezier (p0: OFVector3, p1: OFVector3, control: OFVector3, time: number) {
     const result = OFVector3.zero();
-    
+
     // Calculate point that results form quadratic Bezier expression
     result.x = (1 - time) * (1 - time) * p0.x + (2 - 2 * time) * time * control.x + p1.x * time * time;
     result.y = (1 - time) * (1 - time) * p0.y + (2 - 2 * time) * time * control.y + p1.y * time * time;
     result.z = (1 - time) * (1 - time) * p0.z + (2 - 2 * time) * time * control.z + p1.z * time * time;
-    
+
     return result;
   }
 
@@ -41,26 +41,26 @@ export class OFMath {
 
   static lowPrecisionCos (angle: number): number {
     let cosValue = 0;
-    
+
     if (angle < -3.14159265) { angle += 6.28318531; }
     else { if (angle > 3.14159265) { angle -= 6.28318531; } }
     angle += 1.57079632;
     if (angle < 0) { cosValue = 1.27323954 * angle + 0.405284735 * angle * angle; }
     else { cosValue = 1.27323954 * angle - 0.405284735 * angle * angle; }
-    
+
     return cosValue;
   }
 
   static lowPrecisionSin (angle: number): number {
     let sinValue = 0;
-      
+
     if (angle < -3.14159265) { angle += 6.28318531; }
     else { if (angle > 3.14159265) { angle -= 6.28318531; } }
     angle += 3.14159265;
     if (angle > 3.14159265) { angle -= 6.28318531; }
     if (angle < 0) { sinValue = 1.27323954 * angle + 0.405284735 * angle * angle; }
     else { sinValue = 1.27323954 * angle - 0.405284735 * angle * angle; }
-    
+
     return sinValue;
   }
 
@@ -68,25 +68,24 @@ export class OFMath {
     const coeff_1 = Math.PI / 4.0;
     const coeff_2 = 3 * coeff_1;
     const abs_y = Math.abs(y);
-    let angle;
-    
+    let angle: number;
+
     if (x >= 0.0) {
       const r = (x - abs_y) / (x + abs_y);
       angle = coeff_1 - coeff_1 * r;
-    }
-    else {
+    } else {
       const r = (x + abs_y) / (abs_y - x);
       angle = coeff_2 - coeff_1 * r;
     }
-    
+
     return y < 0.0 ? -angle : angle;
   }
 
   static isPointInPolygon (point: OFVector2, polygon: OFVector2[]): boolean {
-    var minX = polygon[0].x;
-    var maxX = polygon[0].x;
-    var minY = polygon[0].y;
-    var maxY = polygon[0].y;
+    let minX = polygon[0].x;
+    let maxX = polygon[0].x;
+    let minY = polygon[0].y;
+    let maxY = polygon[0].y;
 
     polygon.forEach(p => {
       minX = Math.min(p.x, minX);
@@ -101,9 +100,9 @@ export class OFMath {
 
     let pointInsidePolygon = false;
 
-    for (var i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-      if ((polygon[i].y > point.y) != (polygon[j].y > point.y) && point.x < 
-          (polygon[j].x - polygon[i].x) * (point.y - polygon[i].y) / 
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      if ((polygon[i].y > point.y) !== (polygon[j].y > point.y) && point.x <
+          (polygon[j].x - polygon[i].x) * (point.y - polygon[i].y) /
           (polygon[j].y - polygon[i].y) + polygon[i].x) {
 
         pointInsidePolygon = !pointInsidePolygon;

@@ -122,6 +122,7 @@ export class OFCBitmapTextfield2D {
     return phrase && this._text !== phrase;
   }
 
+  // tslint:disable-next-line: cyclomatic-complexity
   setText(phrase: string, overrideTextValidation?: boolean): void {
     phrase = !phrase ? '' : phrase;
 
@@ -135,14 +136,14 @@ export class OFCBitmapTextfield2D {
       this._textSize.y = this._fontCharset.base;
 
       const currentCharCount = phrase.length;
-      const ctor_array = !this._customQuads || (this._customQuads && currentCharCount > this._customQuads.length);
+      const ctorArray = !this._customQuads || (this._customQuads && currentCharCount > this._customQuads.length);
 
-      if (ctor_array) {
+      if (ctorArray) {
         this._customQuads = [];
       }
 
       let oldUnicodeChar = -1;
-      let phraseLength = this._text.length;
+      const phraseLength = this._text.length;
       let oldIndexAfterJumpLine = 0;
       let oldWidthAfterJumpLine = 0;
       let jumpLineFound = false;
@@ -187,7 +188,7 @@ export class OFCBitmapTextfield2D {
 
       // IF NO JUMP LINE IS MADE, SET TEXT SIZE BY DEFAULT
       if (this._textSize.x === 0) {
-        var sizeText = this._fontCharset.measureString(this._text);
+        const sizeText = this._fontCharset.measureString(this._text);
         sizeText.x += this._text.length * this._trackingQuantity;
 
         this._textSize.x = sizeText.x;
@@ -208,7 +209,7 @@ export class OFCBitmapTextfield2D {
       this.transformToRender();
 
       // now do the scale thing
-      //if (mScaleWasModified) { this.scale = mScale; }
+      // if (mScaleWasModified) { this.scale = mScale; }
     }
   }
 
