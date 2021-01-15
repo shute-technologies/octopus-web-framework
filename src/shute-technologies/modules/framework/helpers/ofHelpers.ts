@@ -1,6 +1,6 @@
-import { OFUtils } from "../common/ofUtils";
-import { SimpleCallback } from "../common/ofInterfaces";
-import { OFFramework } from "../ofFramework";
+import { OFUtils } from '../common/ofUtils';
+import { SimpleCallback } from '../common/ofInterfaces';
+import { OFFramework } from '../ofFramework';
 
 interface IPPDetails {
   isFirstParameter: boolean;
@@ -22,19 +22,20 @@ export class OFHelpers {
   }
 
   static getDigitsByValue(value: number, numDigits: number): string {
-		let s = value.toString();
-		const offset = numDigits - s.length;
+    let s = value.toString();
+    const offset = numDigits - s.length;
 
-		for (let i = 0; i < offset; i++) {
+    for (let i = 0; i < offset; i++) {
       s = '0' + s;
-		}
-		return s;
+    }
+
+    return s;
   }
 
   static clone(from) {
     const wasDate = from instanceof Date;
     const cloned = JSON.parse(JSON.stringify(from));
-    
+
     /* istanbul ignore else */
     if (!wasDate) {
       OFHelpers.cloneIterate(cloned);
@@ -137,45 +138,44 @@ export class OFHelpers {
   }
 
   static getMousePosition (framework: OFFramework, mouseEvent): { x: number, y: number } {
-    let result = {} as { x: number, y: number };
+    const result = {} as { x: number, y: number };
     let tempX = 0;
-    let tempY = 0; 
+    let tempY = 0;
     const IE = !!document.all;
 
     if (IE) { // grab the x-y pos.s if browser is IE
       tempX = mouseEvent.clientX + document.body.scrollLeft;
       tempY = mouseEvent.clientY + document.body.scrollTop;
-    }
-    else {  // grab the x-y pos.s if browser is NS
+    } else {  // grab the x-y pos.s if browser is NS
       tempX = mouseEvent.pageX;
       tempY = mouseEvent.pageY;
     }
-    
+
     let fTempX = tempX;
     let fTempY = tempY;
     const mousePosition = framework.mousePositionOffset;
-    
+
     // Subtract mouse position offset
-    fTempX -= mousePosition.x;            
+    fTempX -= mousePosition.x;
     fTempY -= mousePosition.y;
 
     // Compute limits
-    fTempX = fTempX < 0 ? 0 : fTempX; 
+    fTempX = fTempX < 0 ? 0 : fTempX;
     fTempX = fTempX > framework.appWidth ? framework.appWidth : fTempX;
     fTempY = fTempY < 0 ? 0 : fTempY;
     fTempY = fTempY > framework.appHeight ? framework.appHeight : fTempY;
 
-    result.x = fTempX;        
+    result.x = fTempX;
     result.y = fTempY;
 
     return result;
   }
 
   static eraseCharsInString(baseString: string, asciiChars: Array<string>): string {
-    for (let i = 0; i < asciiChars.length; i++) {
-      baseString = baseString.replace(asciiChars[i], '');
+    for (const char of asciiChars) {
+      baseString = baseString.replace(char, '');
     }
-    
-	  return baseString;
+
+    return baseString;
   }
 }
