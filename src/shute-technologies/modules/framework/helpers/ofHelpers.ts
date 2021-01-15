@@ -73,7 +73,7 @@ export class OFHelpers {
     return val;
   }
 
-  static pathFormat(path: string, ...args: string[]): string {
+  static formatString(path: string, ...args: string[]): string {
     args.forEach((val, index) => {
       if (!OFUtils.isNullOrEmpty(val)) {
         path = path.replace(`{${index}}`, val);
