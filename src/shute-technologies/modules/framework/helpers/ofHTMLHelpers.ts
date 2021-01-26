@@ -1,5 +1,5 @@
 import { OFVector2 } from '../math/ofVector2';
-import { SimpleCallback } from '../common/ofInterfaces';
+import { SimpleCallback, SimpleGCallback } from '../common/ofInterfaces';
 
 export class OFHTMLHelpers {
 
@@ -27,7 +27,7 @@ export class OFHTMLHelpers {
     return { x: resultX, y: resultY } as OFVector2;
   }
 
-  static on(element: HTMLBaseElement | any, eventName: string, callback: SimpleCallback): void {
+  static on(element: Window | HTMLBaseElement | string, eventName: string, callback: SimpleGCallback<Event>): void {
     if (typeof element === 'string') {
       const elements = document.getElementsByClassName(element) as HTMLCollectionOf<HTMLBaseElement | any>;
 
@@ -41,10 +41,32 @@ export class OFHTMLHelpers {
         }
       }
     } else {
-      if (element.attachEvent) {
-        element.attachEvent('on' + eventName, callback);
+      if (element['attachEvent']) { // If ['attachEvent'] exists then use it
+        element['attachEvent']('on' + eventName, callback);
       } else if (element.addEventListener) {
         element.addEventListener(eventName, callback, true);
+      }
+    }
+  }
+
+  static off(element: Window | HTMLBaseElement | string, eventName: string, callback: SimpleGCallback<Event>): void {
+    if (typeof element === 'string') {
+      const elements = document.getElementsByClassName(element) as HTMLCollectionOf<HTMLBaseElement>;
+
+      for (let i = 0; i < elements.length; i++) {
+        const item = elements.item(i);
+
+        if (item['detachEvent ']) {
+          item['detachEvent ']('on' + eventName);
+        } else if (item.removeEventListener) {
+          item.removeEventListener(eventName, callback, true);
+        }
+      }
+    } else {
+      if (element['detachEvent']) { // If ['attachEvent'] exists then use it
+        element['detachEvent']('on' + eventName, callback);
+      } else if (element.removeEventListener) {
+        element.removeEventListener(eventName, callback, true);
       }
     }
   }
