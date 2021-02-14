@@ -83,3 +83,4 @@ export * from './src/shute-technologies/modules/cross-cutting/font-loader/data/o
 export * from './src/shute-technologies/modules/cross-cutting/font-loader/data/ofBitmapFontCharDescriptor';
 export * from './src/shute-technologies/modules/cross-cutting/font-loader/data/ofBitmapFontKerning';
 export * from './src/shute-technologies/modules/cross-cutting/font-loader/data/ofBitmapFontPage';
+export * from './src/shute-technologies/modules/cross-cutting/local-storage/ofLocalStorage';
