@@ -197,6 +197,9 @@ export class OFSprite extends OFDrawable2D {
           this._shader.setScale(this.scaleX, this.scaleY, 1.0);
           this._shader.draw(args, this._imageGLTexture, this._vboObject.vbo);
         } else {
+          if (this.enabledShaderProps) {
+            this._shader.draw(args, this._vboObject.vbo, this._transformation);
+          }
           this._shader.draw(args, this._imageGLTexture, this._vboObject.vbo, this._transformation);
         }
       }
