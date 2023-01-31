@@ -1,6 +1,7 @@
 import { OFFramework } from "./ofFramework";
 import { OFConsole } from "./helpers/ofConsole";
 import { OFTranslations } from "./settings/ofTranslations";
+import { OFSettings } from "./settings/ofSettings";
 
 export class OFFrameworkFactory {
 
@@ -11,8 +12,8 @@ export class OFFrameworkFactory {
 
   static get currentFramewok(): OFFramework { return OFFrameworkFactory._frameworks[OFFrameworkFactory._currentFramework]; }
 
-  static create(params: {} = null): OFFramework {
-    const instance = OFFramework.create(OFFrameworkFactory._uniqueIdentifier++, params);
+  static create(params: {} = null, customSettings: OFSettings = null): OFFramework {
+    const instance = OFFramework.create(OFFrameworkFactory._uniqueIdentifier++, params, customSettings);
     this._frameworks.push(instance);
 
     // set this new one, the current framework
