@@ -174,7 +174,7 @@ export abstract class OFBaseShader {
 
     _GL.activeTexture(_GL[`TEXTURE'${index}`]);
     _GL.bindTexture(_GL.TEXTURE_2D, texture);
-    _GL.uniform1i(uniformLocation, 0);
+    _GL.uniform1i(uniformLocation, index);
   }
 
   setColor (uniformName: string, colorObject: OFColor): void {
