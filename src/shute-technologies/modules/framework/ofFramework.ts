@@ -59,10 +59,10 @@ export class OFFramework {
   get sceneManager (): OFSceneManager { return this._sceneManager; }    
   get params (): {} { return this._params; }    
 
-  private constructor(identifier: number, params:{} = null) {
+  private constructor(identifier: number, params:{} = null, customSettings: OFSettings = null) {
     this.frameworkIdentifier = identifier;
     this._params = params;
-    this._settings = OFSettings.create();
+    this._settings = !customSettings ? OFSettings.create() : customSettings;
     this._deltaTimeCorrector = new OFDeltaTimeCorrector();
 
     OFConsole.log(OFTranslations.Framework.initialized, this.frameworkIdentifier.toString());
