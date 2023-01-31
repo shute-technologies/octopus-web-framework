@@ -235,7 +235,7 @@ export class OFFramework {
 
   destroy (): void {}
 
-  static create(identifier: number, params:{} = null): OFFramework {
-    return new OFFramework(identifier, params);
+  static create(identifier: number, params:{} = null, customSettings: OFSettings = null): OFFramework {
+    return new OFFramework(identifier, params, customSettings);
   }
 }
