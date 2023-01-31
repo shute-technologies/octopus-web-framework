@@ -54,7 +54,7 @@ export class OFSprite extends OFDrawable2D {
   constructor(x = 0, y = 0) {
     super(x, y);
 
-    this.enabledShaderProps = false;
+    this.enabledShaderProps = true;
     this._imageRect = { x: 0, y: 0, width: 0, height: 0, offsetX: 0, offsetY: 0 } as IOFSRect;
     this._shader = this._graphicDevice.shaderFactory.retrieveShader<OFShaderTexture>('ShaderTexture');
 
