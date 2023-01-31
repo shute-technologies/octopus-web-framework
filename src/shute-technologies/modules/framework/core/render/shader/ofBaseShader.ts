@@ -172,7 +172,7 @@ export abstract class OFBaseShader {
     const uniformName = this[`mTextureUniform${index}`];
     const uniformLocation = this[uniformName];
 
-    _GL.activeTexture(_GL[`TEXTURE'${index}`]);
+    _GL.activeTexture(_GL[`TEXTURE${index}`]);
     _GL.bindTexture(_GL.TEXTURE_2D, texture);
     _GL.uniform1i(uniformLocation, index);
   }
