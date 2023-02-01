@@ -155,10 +155,6 @@ export class OFShaderAbstract extends OFBaseShader {
             }
 
             _GL.uniformMatrix4fv(uniformLocation, false, transformedMatrix);
-          case OFEnumShaderDataTypes.IColor:
-            // Set uniform for Color
-            _GL.uniform4f(uniformLocation, 0, 1, 0, 1);
-            break;
         }
       }
 
