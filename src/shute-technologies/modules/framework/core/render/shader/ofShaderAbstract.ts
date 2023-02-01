@@ -84,7 +84,7 @@ export class OFShaderAbstract extends OFBaseShader {
 
       // count size of interleaved data
       switch (attributeData.inputVariableType) {
-        case OFEnumShaderDataTypes.Float:   this._attributeInterleavedDataSize += 4; break;
+        case OFEnumShaderDataTypes.Float: this._attributeInterleavedDataSize += 4; break;
         case OFEnumShaderDataTypes.Vector2: this._attributeInterleavedDataSize += 8; break;
         case OFEnumShaderDataTypes.Vector3: this._attributeInterleavedDataSize += 12; break;
         case OFEnumShaderDataTypes.Vector4: this._attributeInterleavedDataSize += 16; break;
@@ -95,7 +95,7 @@ export class OFShaderAbstract extends OFBaseShader {
     this.precomputeUniformsLocation();
   }
 
-  precomputeUniformsLocation (): void {
+  precomputeUniformsLocation(): void {
     const _GL = this._graphicContext;
 
     // Auto-Generate global variables and functions
@@ -143,20 +143,22 @@ export class OFShaderAbstract extends OFBaseShader {
       for (let i = 0; i < this._shaderCodeInfo.uniformCount; i++) {
         const uniformData = this._shaderCodeInfo.uniforms[i];
 
-        if (uniformData.inputVariableType === OFEnumShaderDataTypes.ICamera) {
-          const uniformLocation = this[uniformData.inputName];
+        switch (uniformData.inputVariableType) {
+          case OFEnumShaderDataTypes.ICamera:
+            const uniformLocation = this[uniformData.inputName];
 
-          // Now multiply the Camera transformed Matrix with the local transformations Matrix.
-          if (!transformation) {
-            mat4.multiply(transformedMatrix, transformedMatrix, this._world);
-          } else {
-            mat4.multiply(transformedMatrix, transformedMatrix, transformation);
-          }
+            // Now multiply the Camera transformed Matrix with the local transformations Matrix.
+            if (!transformation) {
+              mat4.multiply(transformedMatrix, transformedMatrix, this._world);
+            } else {
+              mat4.multiply(transformedMatrix, transformedMatrix, transformation);
+            }
 
-          _GL.uniformMatrix4fv(uniformLocation, false, transformedMatrix);
-
-          // no more to iterate
-          break;
+            _GL.uniformMatrix4fv(uniformLocation, false, transformedMatrix);
+          case OFEnumShaderDataTypes.IColor:
+            // Set uniform for Color
+            _GL.uniform4f(uniformLocation, 0, 1, 0, 1);
+            break;
         }
       }
 

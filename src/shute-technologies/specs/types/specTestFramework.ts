@@ -40,6 +40,8 @@ export class SpecTestFramework {
     this._quad2 = new OFPrimitiveQuad(300, 200, 40, 40, OFColor.green());
     this._circle = new OFPrimitiveCircle(300, 200, 160, OFColor.blue());
 
+    this._quad.setWireframeVisibility(true);
+
     this._grid = new OFPrimitiveGrid(40, 40, OFColor.white());
     this._grid.changeGrid(14, 8, 32, 32);
   }

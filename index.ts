@@ -1,3 +1,4 @@
+export * from './src/shute-technologies/modules/framework/settings/ofSettings'
 export * from './src/shute-technologies/modules/framework/common/ofDeltaTimeCorrector';
 export * from './src/shute-technologies/modules/framework/common/ofInterfaces';
 export * from './src/shute-technologies/modules/framework/common/ofUtils';

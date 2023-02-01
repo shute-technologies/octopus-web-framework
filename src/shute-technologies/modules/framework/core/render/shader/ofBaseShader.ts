@@ -164,26 +164,22 @@ export abstract class OFBaseShader {
     _GL.uniform1i(uniformLocation, 0);
   }
 
-  setTextureByIndex (index: number, texture: WebGLTexture): void {
-    const _GL = this._graphicContext;
-    // Use ShaderProgram for setting the uniforms
-    this._graphicDevice.useShaderProgram(this._shaderProgram);
-
-    const uniformName = this[`mTextureUniform${index}`];
-    const uniformLocation = this[uniformName];
-
-    _GL.activeTexture(_GL[`TEXTURE${index}`]);
-    _GL.bindTexture(_GL.TEXTURE_2D, texture);
-    _GL.uniform1i(uniformLocation, index);
-  }
-
   setColor (uniformName: string, colorObject: OFColor): void {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
 
-    const uniformLocation = this[uniformName];
+    const uniformLocation = this.getOrCreateUniformLocation(uniformName);
     _GL.uniform4f(uniformLocation, colorObject.r, colorObject.g, colorObject.b, colorObject.a);
+  }
+
+  private getOrCreateUniformLocation(uniformName: string): WebGLUniformLocation {
+    if (!this[uniformName]) {
+      const _GL = this._graphicContext;
+      this[uniformName] = _GL.getUniformLocation(this._shaderProgram, uniformName)
+    }
+
+    return this[uniformName];
   }
 
   setVector4Float (uniformName: string, x: number, y: number, z: number, w: number): void {
@@ -256,6 +252,20 @@ export abstract class OFBaseShader {
 
     const uniformLocation = this[uniformName];
     _GL.uniform4i(uniformLocation, x, y, z, w);
+  }
+
+  // custom
+  setTextureByIndex (index: number, texture: WebGLTexture): void {
+    const _GL = this._graphicContext;
+    // Use ShaderProgram for setting the uniforms
+    this._graphicDevice.useShaderProgram(this._shaderProgram);
+
+    const uniformName = this[`mTextureUniform${index}`];
+    const uniformLocation = this[uniformName];
+
+    _GL.activeTexture(_GL[`TEXTURE${index}`]);
+    _GL.bindTexture(_GL.TEXTURE_2D, texture);
+    _GL.uniform1i(uniformLocation, index);
   }
 
   setColorByIndex (index: number, colorObject: OFColor): void {

@@ -57,7 +57,9 @@ export class OFPrimitiveQuad extends OFDrawable2D {
   }
 
   get color(): OFColor { return this._color; }
-  set color(val: OFColor) { this._color = val; }
+  set color(val: OFColor) { 
+    this._color = val;
+  }
 
   constructor(x: number, y: number, width: number, height: number, color: OFColor) {
     super(x, y);
@@ -100,6 +102,9 @@ export class OFPrimitiveQuad extends OFDrawable2D {
     // Now we set the indices array to the IndexBuffer
     _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, this._iboObject.vbo);
     _GL.bufferData(_GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(this._indices), _GL.STATIC_DRAW);
+
+    // Get uniform color
+    this._shader.setColor('uColor', this._color);
   }
 
   protected createVBOs(): void {
@@ -142,16 +147,16 @@ export class OFPrimitiveQuad extends OFDrawable2D {
 
   update(args: IOFRenderArgs): void {
     if (this._color.a !== 0) {
-      (this._shader as OFShaderPrimitive).color = this._color;
-
       if (!this._transformation) {
         this._shader.setTranslate(this.x + this.offsetX, this.y + this.offsetY, this.z);
         this._shader.rotationZ = this.rotation;
         this._shader.setScale(this.scaleX, this.scaleY, 1.0);
+        (this._shader as OFShaderPrimitive).color = this._color;
 
         this._shader.draw(args, this._vboObject.vbo, this._iboObject.vbo, this._triangleRenderType,
           this._drawingCount);
       } else {
+        this._shader.setColor('uColor', this._color);
         this._shader.draw(args, this._vboObject.vbo, this._transformation,
           this._triangleRenderType, this._iboObject.vbo, this._drawingCount);
       }
