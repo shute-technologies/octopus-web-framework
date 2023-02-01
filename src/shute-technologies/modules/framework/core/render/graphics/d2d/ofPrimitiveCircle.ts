@@ -140,19 +140,18 @@ export class OFPrimitiveCircle extends OFDrawable2D {
   }
 
   update(args: IOFRenderArgs): void {
-    if (this._color.a !== 0) {
-      (this._shader as OFShaderPrimitive).color = this._color;
-
+    if (!this._shader.isShaderAbstract && this._color.a !== 0) {
       if (!this._transformation) {
         this._shader.setTranslate(this.x + this.offsetX, this.y + this.offsetY, this.z);
         this._shader.rotationZ = this.rotation;
         this._shader.setScale(this.scaleX, this.scaleY, 1.0);
+        (this._shader as OFShaderPrimitive).color = this._color;
 
         this._shader.draw(args, this._vboObject.vbo, this._iboObject.vbo, this._triangleRenderType,
           this._drawingCount);
       } else {
-        this._shader.draw(args, this._vboObject.vbo, this._transformation,
-          this._triangleRenderType, this._iboObject.vbo, this._drawingCount);
+        this._shader.draw(args, this._vboObject.vbo, this._iboObject.vbo, this._triangleRenderType,
+          this._drawingCount, this._transformation);
       }
     }
   }
