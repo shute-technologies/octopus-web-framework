@@ -47,6 +47,7 @@ export * from './src/shute-technologies/modules/framework/core/render/shader/ofS
 export * from './src/shute-technologies/modules/framework/core/render/shader/ofShaderFactory';
 export * from './src/shute-technologies/modules/framework/core/render/shader/ofShaderPrimitive';
 export * from './src/shute-technologies/modules/framework/core/render/shader/ofShaderTexture';
+export * from './src/shute-technologies/modules/framework/core/render/shader/interfaces/ofIIsShaderAbstract';
 export * from './src/shute-technologies/modules/framework/core/render/viewport/ofViewport';
 export * from './src/shute-technologies/modules/framework/enums/ofEnumCanvasContextType';
 export * from './src/shute-technologies/modules/framework/enums/ofEnumKeyCode';

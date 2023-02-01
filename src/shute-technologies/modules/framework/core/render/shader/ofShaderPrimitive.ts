@@ -26,7 +26,7 @@ export class OFShaderPrimitive extends OFBaseShader {
   }
 
   draw(args: IOFRenderArgs, vertexBuffer: WebGLBuffer, indexBuffer: WebGLBuffer,
-    renderType: number, count: number): void {
+    renderType: number, count: number, overrideTransformation: mat4 = null): void {
 
     const _GL = this._graphicContext;
 
@@ -41,9 +41,12 @@ export class OFShaderPrimitive extends OFBaseShader {
     // Get Transformation Matrix from RenderCamera
     const transformedMatrix = this._renderCamera.transformedMatrix;
 
-    // Now multiply the Camera transformed Matrix with the local
-    // transformations Matrix.
-    mat4.multiply(transformedMatrix, transformedMatrix, this._world);
+    // Now multiply the Camera transformed Matrix with the local transformations Matrix.
+    if (!overrideTransformation) {
+      mat4.multiply(transformedMatrix, transformedMatrix, this._world);
+    } else {
+      mat4.multiply(transformedMatrix, transformedMatrix, overrideTransformation);
+    }
 
     // Set uniform for WVP Matrix
     _GL.uniformMatrix4fv(this._uniformWVPMatrix, false, transformedMatrix);

@@ -7,8 +7,9 @@ import { IOFMoreRenderArgs } from '../../../interfaces/iofMoreRenderArgs';
 import { OFUtils } from '../../../common/ofUtils';
 import { OFGraphicDevice } from '../../device/ofGraphicDevice';
 import { OFColor } from '../graphics/ofColor';
+import { OFIIsShaderAbstract } from './interfaces/ofIIsShaderAbstract';
 
-export abstract class OFBaseShader {
+export abstract class OFBaseShader implements OFIIsShaderAbstract {
 
   protected readonly _renderCamera: OFRenderCamera;
 
@@ -85,7 +86,11 @@ export abstract class OFBaseShader {
 
   protected get graphicContext(): WebGLRenderingContext { return this._shaderFactory.graphicDevice.graphicContext; }
 
-  constructor(protected readonly _shaderFactory: OFShaderFactory, sourceTarget: IOFDefaultShaderSource) {
+  constructor(
+    protected readonly _shaderFactory: OFShaderFactory, 
+    sourceTarget: IOFDefaultShaderSource,
+    readonly isShaderAbstract = false
+  ) {
     this._graphicDevice = _shaderFactory.graphicDevice;
     this._renderCamera = this._graphicDevice.renderCamera;
     this._shaderProgram = _shaderFactory.instanceShader(sourceTarget);

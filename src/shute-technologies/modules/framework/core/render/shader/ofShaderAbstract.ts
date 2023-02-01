@@ -16,12 +16,11 @@ export class OFShaderAbstract extends OFBaseShader {
 
   constructor(protected readonly _shaderFactory: OFShaderFactory, sourceTarget: IOFDefaultShaderSource,
     shaderCodeInfo: OFIShaderCodeInfo) {
-    super(_shaderFactory, sourceTarget);
+    super(_shaderFactory, sourceTarget, true);
 
     this._attributeInterleavedDataSize = 0;
     this._colorPropIndexCount = 0;
     this._texturePropIndexCount = 0;
-
     this._shaderCodeInfo = shaderCodeInfo;
 
     this.updateShader(sourceTarget, shaderCodeInfo);
