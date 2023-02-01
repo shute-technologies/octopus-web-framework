@@ -7,14 +7,14 @@ import { OFCollisionHelper } from '../../../../helpers/ofCollisionHelper';
 
 export class OFPrimitiveQuad extends OFDrawable2D {
 
-  private _width: number;
-  private _height: number;
+  protected _width: number;
+  protected _height: number;
 
   offsetX: number;
   offsetY: number;
 
-  private _triangleRenderType: number;
-  private _drawingCount: number;
+  protected _triangleRenderType: number;
+  protected _drawingCount: number;
 
   get width(): number { return this._width; }
   set width(val: number) {
