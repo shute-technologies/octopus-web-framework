@@ -8,10 +8,10 @@ export class OFPrimitiveCircle extends OFDrawable2D {
 
   static readonly vertexQuality = 64;
 
-  private _radius: number;
-  private _vertexQuality: number;
-  private _triangleRenderType: number;
-  private _drawingCount: number;
+  protected _radius: number;
+  protected _vertexQuality: number;
+  protected _triangleRenderType: number;
+  protected _drawingCount: number;
 
   offsetX: number;
   offsetY: number;
