@@ -38,8 +38,8 @@ export class OFSoundContent extends OFBaseContent {
 
     return audioContext.decodeAudioData(
       audioArrayBuffer,
-      this.internal_OnDecodeAudioData,
-      this.internal_OnErrorDecodeAudioData
+      (buffer) => this.internal_OnDecodeAudioData(buffer),
+      (error) => this.internal_OnErrorDecodeAudioData(error)
     );
   }
 
