@@ -11,17 +11,17 @@ export class OFPrimitiveGrid extends OFDrawable2D {
   static readonly defaultWidth = 1;
   static readonly defaultHeight = 2;
 
-  private _width: number;
-  private _height: number;
-  private _tileSizeX: number;
-  private _tileSizeY: number;
+  protected _width: number;
+  protected _height: number;
+  protected _tileSizeX: number;
+  protected _tileSizeY: number;
 
   offsetX: number;
   offsetY: number;
 
-  private _triangleRenderType: number;
-  private _drawingCount: number;
-  private _otherTransformation: mat4;
+  protected _triangleRenderType: number;
+  protected _drawingCount: number;
+  protected _otherTransformation: mat4;
 
   get width(): number { return this._width; }
   get height(): number { return this._height; }
