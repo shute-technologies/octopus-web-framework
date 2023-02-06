@@ -75,6 +75,9 @@ export class OFPrimitiveGrid extends OFDrawable2D {
     // Now we set the indices array to the IndexBuffer
     _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, this._iboObject.vbo);
     _GL.bufferData(_GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(this._indices), _GL.STATIC_DRAW);
+  
+    // Get uniform color
+    this._shader.setColor('uColor', this._color);
   }
 
   protected createVBOs(): void {
@@ -149,13 +152,12 @@ export class OFPrimitiveGrid extends OFDrawable2D {
   }
 
   update(args: IOFRenderArgs): void {
-    if (this._color.a !== 0) {
-      (this._shader as OFShaderPrimitive).color = this._color;
-
+    if (!this._shader.isShaderAbstract && this._color.a !== 0) {
       if (!this._transformation) {
         this._shader.setTranslate(this.x + this.offsetX, this.y + this.offsetY, this.z);
         this._shader.rotationZ = this.rotation;
         this._shader.setScale(this.scaleX, this.scaleY, 1.0);
+        (this._shader as OFShaderPrimitive).color = this._color;
 
         this._shader.draw(args, this._vboObject.vbo, this._iboObject.vbo, this._triangleRenderType,
           this._drawingCount);
@@ -163,8 +165,8 @@ export class OFPrimitiveGrid extends OFDrawable2D {
         mat4.fromTranslation(this._otherTransformation, vec3.fromValues(this.offsetX, this.offsetY, 0));
         mat4.multiply(this._otherTransformation, this._transformation, this._otherTransformation);
 
-        this._shader.draw(args, this._vboObject.vbo, this._otherTransformation,
-          this._triangleRenderType, this._iboObject.vbo, this._drawingCount);
+        this._shader.draw(args, this._vboObject.vbo, this._iboObject.vbo, this._triangleRenderType, 
+          this._drawingCount, this._otherTransformation);
       }
     }
   }
