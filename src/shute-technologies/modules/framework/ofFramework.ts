@@ -158,7 +158,7 @@ export class OFFramework {
       const foundFramework = OFFrameworkFactory.getById(frameworkId);
 
       if (foundFramework) {
-        const mousePos = OFHelpers.getMousePosition<HTMLElement, HTMLElement>(foundFramework, e);
+        const mousePos = OFHelpers.getMousePosition(foundFramework, e);
         foundFramework.onMouseMove(mousePos.x, mousePos.y);
       }
     });
