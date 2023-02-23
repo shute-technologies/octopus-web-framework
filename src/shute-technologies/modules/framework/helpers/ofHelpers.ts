@@ -9,6 +9,11 @@ interface IPPDetails {
   hasNextParameter: boolean;
 }
 
+type JQueryMultipleMouseEvent = 
+  JQuery.MouseMoveEvent<Document | HTMLElement, undefined, Element, Element> | 
+  JQuery.MouseDownEvent<Document | HTMLElement, undefined, Element, Element> |
+  JQuery.MouseUpEvent<Document | HTMLElement, undefined, Element, Element>;
+
 export class OFHelpers {
 
   static callIn(time: number, functionCallback: SimpleCallback, args?) {
@@ -137,10 +142,7 @@ export class OFHelpers {
       : path.substring(0, ppDetails.firstIndex) + (ppDetails.hasNextParameter ? '' : '&') + path.substring(ppDetails.lastIndex);
   }
 
-  static getMousePosition<TElement2 extends Element, TElement3 extends Element>(
-    framework: OFFramework, 
-    mouseEvent: JQuery.MouseMoveEvent<Document | HTMLElement, undefined, TElement2, TElement3>
-  ): { x: number, y: number } {
+  static getMousePosition(framework: OFFramework, mouseEvent: JQueryMultipleMouseEvent) : { x: number, y: number } {
     const result = {} as { x: number, y: number };
     let tempX = 0;
     let tempY = 0;
