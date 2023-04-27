@@ -18,7 +18,7 @@ export class OFConsole {
     console.error(`${fromClass.constructor.name}-> ${STHelpers.formatString (message, ...args)}`);
   }
 
-  static throwError<TInstance extends Object>(fromClass: TInstance, message?: string | unknown, ...args: string[]): Error {
-    return null;
+  static throwError<TInstance extends Object>(fromClass: TInstance, message?: string, ...args: string[]): Error {
+    throw Error(`${fromClass.constructor.name}-> ${STHelpers.formatString (message, ...args)}`);
   }
 }
