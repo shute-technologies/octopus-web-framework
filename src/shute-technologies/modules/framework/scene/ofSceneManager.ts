@@ -1,10 +1,9 @@
 import { OFFramework } from "../ofFramework"
-import { OFUtils } from "../common/ofUtils"
 import { OFBaseScene } from "./ofBaseScene"
 import { OFConsole } from "../helpers/ofConsole";
 import { OFTranslations } from "../settings/ofTranslations";
 import { IOFRenderArgs } from "../interfaces/iofRenderArgs";
-import { IOFConstructor } from "../interfaces/iofConstructor";
+import { IConstructor, STUtils } from 'shute-technologies.common-and-utils'
 
 export class OFSceneManager {
 
@@ -17,7 +16,7 @@ export class OFSceneManager {
   gotoScene(className: string, params?): void {
     if (this._currentScene) { this._currentScene.destroy(); }
 
-    const instance = OFUtils.instanceByClassName(className);
+    const instance = STUtils.instanceByClassName(className);
 
     if (instance) {
       this._currentScene = instance;
@@ -31,10 +30,10 @@ export class OFSceneManager {
     }
   }
 
-  gotoSceneBy<T extends OFBaseScene>(classType: IOFConstructor<T>, params?): void {
+  gotoSceneBy<T extends OFBaseScene>(classType: IConstructor<T>, params?): void {
     if (this._currentScene) { this._currentScene.destroy(); }
 
-    const instance = OFUtils.instanceByType<T>(classType);
+    const instance = STUtils.instanceByType<T>(classType);
 
     if (instance) {
       this._currentScene = instance;

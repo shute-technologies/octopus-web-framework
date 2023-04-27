@@ -4,12 +4,12 @@ import { OFConsole } from '../../helpers/ofConsole';
 import { OFTranslations } from '../../settings/ofTranslations';
 import { IOFRenderArgs } from '../../interfaces/iofRenderArgs';
 import { IOFCanvasElement } from '../ofCanvasContextManager';
-import { Dictionary } from '../../common/ofInterfaces';
 import { OFShaderFactory } from '../render/shader/ofShaderFactory';
+import { IDictionary } from 'shute-technologies.common-and-utils';
 
 export class  OFGraphicDeviceManager {
 
-  private readonly _graphicDevices: Dictionary<OFGraphicDevice>;
+  private readonly _graphicDevices: IDictionary<OFGraphicDevice>;
 
   get shaderFactories(): Array<OFShaderFactory> {
     const result: Array<OFShaderFactory> = [];

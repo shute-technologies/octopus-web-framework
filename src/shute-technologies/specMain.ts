@@ -1,13 +1,14 @@
 import { EnumSpectType } from "./specs/enumSpecType";
 import { SpecTestFramework } from "./specs/types/specTestFramework";
 import { SpecSpaceGame } from "./specs/types/specSpaceGame";
-import { SimpleGCallback } from './modules/framework/common/ofInterfaces';
+
+interface SpecInstance {
+  update: (dt: number) => void;
+};
 
 export class SpecMain {
 
-  private _currentSpec: {
-    update: SimpleGCallback<number>
-  };
+  private _currentSpec: SpecInstance;
 
   constructor (specType: EnumSpectType) {
     switch (specType) {

@@ -8,16 +8,16 @@ import { OFTranslations } from '../../../settings/ofTranslations';
 import { OFConsole } from '../../../helpers/ofConsole';
 import { OFGLHelper } from '../../../helpers/ofGLHelper';
 import { OFDefaultShaderSources, IOFDefaultShaderSource } from '../../../default-assets/ofDefaultShaderSources';
-import { Dictionary } from '../../../common/ofInterfaces';
 import { OFIShaderCodeInfo } from '../../../../cross-cutting/shader-analizer/data/ofIShaderCodeInfo';
 import { OFShaderAnalizer } from '../../../../cross-cutting/shader-analizer/ofShaderAnalizer';
+import { IDictionary } from 'shute-technologies.common-and-utils';
 
 interface OFDictionary<T> { [Key: string]: T; }
 
 export class OFShaderFactory {
 
   private readonly _framework: OFFramework;
-  private readonly _shaderRepository: Dictionary<OFBaseShader>;
+  private readonly _shaderRepository: IDictionary<OFBaseShader>;
 
   get framework(): OFFramework { return this._framework; }
 

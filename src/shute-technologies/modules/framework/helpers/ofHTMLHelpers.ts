@@ -1,5 +1,11 @@
 import { OFVector2 } from '../math/ofVector2';
-import { SimpleCallback, SimpleGCallback } from '../common/ofInterfaces';
+import { OFFramework } from '../ofFramework';
+import { ICallback1 } from 'shute-technologies.common-and-utils';
+
+type JQueryMultipleMouseEvent = 
+  JQuery.MouseMoveEvent<Document | HTMLElement, undefined, Element, Element> | 
+  JQuery.MouseDownEvent<Document | HTMLElement, undefined, Element, Element> |
+  JQuery.MouseUpEvent<Document | HTMLElement, undefined, Element, Element>;
 
 export class OFHTMLHelpers {
 
@@ -27,7 +33,7 @@ export class OFHTMLHelpers {
     return { x: resultX, y: resultY } as OFVector2;
   }
 
-  static on(element: Window | HTMLBaseElement | string, eventName: string, callback: SimpleGCallback<Event>): void {
+  static on(element: Window | HTMLBaseElement | string, eventName: string, callback: ICallback1<Event>): void {
     if (typeof element === 'string') {
       const elements = document.getElementsByClassName(element) as HTMLCollectionOf<HTMLBaseElement | any>;
 
@@ -49,7 +55,7 @@ export class OFHTMLHelpers {
     }
   }
 
-  static off(element: Window | HTMLBaseElement | string, eventName: string, callback: SimpleGCallback<Event>): void {
+  static off(element: Window | HTMLBaseElement | string, eventName: string, callback: ICallback1<Event>): void {
     if (typeof element === 'string') {
       const elements = document.getElementsByClassName(element) as HTMLCollectionOf<HTMLBaseElement>;
 
@@ -120,5 +126,39 @@ export class OFHTMLHelpers {
   static percentWidth (element: HTMLElement): number {
     const parent = (element.offsetParent || element) as HTMLElement;
     return Number(((element.offsetWidth / parent.offsetWidth) * 100).toFixed(2));
+  }
+
+  static getMousePosition(framework: OFFramework, mouseEvent: JQueryMultipleMouseEvent) : { x: number, y: number } {
+    const result = {} as { x: number, y: number };
+    let tempX = 0;
+    let tempY = 0;
+    const IE = !!document.all;
+
+    if (IE) { // grab the x-y pos.s if browser is IE
+      tempX = mouseEvent.clientX + document.body.scrollLeft;
+      tempY = mouseEvent.clientY + document.body.scrollTop;
+    } else {  // grab the x-y pos.s if browser is NS
+      tempX = mouseEvent.pageX;
+      tempY = mouseEvent.pageY;
+    }
+
+    let fTempX = tempX;
+    let fTempY = tempY;
+    const mousePosition = framework.mousePositionOffset;
+
+    // Subtract mouse position offset
+    fTempX -= mousePosition.x;
+    fTempY -= mousePosition.y;
+
+    // Compute limits
+    fTempX = fTempX < 0 ? 0 : fTempX;
+    fTempX = fTempX > framework.appWidth ? framework.appWidth : fTempX;
+    fTempY = fTempY < 0 ? 0 : fTempY;
+    fTempY = fTempY > framework.appHeight ? framework.appHeight : fTempY;
+
+    result.x = fTempX;
+    result.y = fTempY;
+
+    return result;
   }
 }

@@ -11,8 +11,8 @@ import { OFEnumKeyCode } from '../enums/ofEnumKeyCode';
 import { OFBitmapFontCharDescriptor } from '../../cross-cutting/font-loader/data/ofBitmapFontCharDescriptor';
 import { IOFRenderArgs } from '../interfaces/iofRenderArgs';
 import { mat4 } from 'gl-matrix';
-import { Dictionary } from '../common/ofInterfaces';
 import { OFEnumShaderDataTypes } from '../../cross-cutting/shader-analizer/ofEnumShaderDataTypes';
+import { IDictionary } from 'shute-technologies.common-and-utils';
 
 export class OFCBitmapTextfield2D {
   private readonly _graphicDevice: OFGraphicDevice;
@@ -20,7 +20,7 @@ export class OFCBitmapTextfield2D {
 
   private _renderType: number;
   private _polygonBatcher: OFPolygonBatcher;
-  private _uniformData: Dictionary<OFIPolygonBatcherUniformData>;
+  private _uniformData: IDictionary<OFIPolygonBatcherUniformData>;
 
   private _fontCharset: OFBitmapFontCharset;
 

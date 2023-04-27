@@ -2,7 +2,6 @@ import { OFColor } from '../../ofColor';
 import { OFGraphicDevice } from '../../../../device/ofGraphicDevice';
 import { OFImageContent } from '../../../../content/ofImageContent';
 import { OFBaseShader } from '../../../shader/ofBaseShader';
-import { Dictionary } from '../../../../../common/ofInterfaces';
 import { OFConsole } from '../../../../../helpers/ofConsole';
 import { IOFRenderArgs } from '../../../../../interfaces/iofRenderArgs';
 import { OFFrameworkFactory } from '../../../../../ofFrameworkFactory';
@@ -11,6 +10,7 @@ import { OFEnumVBOObjectType } from '../../../../device/optimization/gpu/ofEnumV
 import { OFVBOObject } from '../../../../device/optimization/gpu/ofVBOObject';
 import { mat4 } from 'gl-matrix';
 import { OFEnumShaderDataTypes } from '../../../../../../cross-cutting/shader-analizer/ofEnumShaderDataTypes';
+import { IDictionary } from 'shute-technologies.common-and-utils';
 
 export interface OFIPolygonBatcherUniformData {
   index: number;
@@ -161,7 +161,7 @@ export class OFPolygonBatcher {
     }
   }
 
-  draw(args: IOFRenderArgs, transformationMatrix?: mat4, renderMode?: number, uniformData?: Dictionary<OFIPolygonBatcherUniformData>): void {
+  draw(args: IOFRenderArgs, transformationMatrix?: mat4, renderMode?: number, uniformData?: IDictionary<OFIPolygonBatcherUniformData>): void {
     const _renderMode = !renderMode ? this._GL.TRIANGLES : renderMode;
 
     if (!transformationMatrix) {

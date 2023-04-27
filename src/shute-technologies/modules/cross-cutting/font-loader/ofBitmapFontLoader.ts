@@ -4,7 +4,7 @@ import { OFBitmapFontCharDescriptor } from './data/ofBitmapFontCharDescriptor';
 import { OFBitmapFontKerning } from './data/ofBitmapFontKerning';
 import { OFConsole } from '../../framework/helpers/ofConsole';
 import { OFEnumKeyCode } from '../../framework/enums/ofEnumKeyCode';
-import { OFHelpers } from '../../framework/helpers/ofHelpers';
+import { STHelpers } from 'shute-technologies.common-and-utils';
 
 enum OFEnumBitmapFontLineTypes {
   DEFAULT_NONE = 0,
@@ -136,7 +136,7 @@ export class OFBitmapFontLoader {
       case OFEnumBitmapFontLineTypes.INFO:
         switch (propertyType) {
           case 'face':
-            OFBitmapFontLoader.FontCharset.fontName = OFHelpers.eraseCharsInString(propertyValue, 
+            OFBitmapFontLoader.FontCharset.fontName = STHelpers.eraseCharsInString(propertyValue, 
               OFBitmapFontLoader.ASCIIFilter);
             break;
           case 'size':
@@ -149,7 +149,7 @@ export class OFBitmapFontLoader {
             OFBitmapFontLoader.FontCharset.italic = propertyValue === '0' ? false : true;
             break;
           case 'charset':
-            OFBitmapFontLoader.FontCharset.charset = OFHelpers.eraseCharsInString(propertyValue, 
+            OFBitmapFontLoader.FontCharset.charset = STHelpers.eraseCharsInString(propertyValue, 
               OFBitmapFontLoader.ASCIIFilter);
             break;
           case 'unicode':
@@ -237,7 +237,7 @@ export class OFBitmapFontLoader {
                 NBFPage.id = parseInt(propertyValue);
                 break;
               case 'file':
-                NBFPage.path = OFHelpers.eraseCharsInString(propertyValue, OFBitmapFontLoader.ASCIIFilter);
+                NBFPage.path = STHelpers.eraseCharsInString(propertyValue, OFBitmapFontLoader.ASCIIFilter);
                 NBFPage.isInitialized = true;
 
                 // THIS ARE TEMPORAL VARIABLES FOR THE PAGES

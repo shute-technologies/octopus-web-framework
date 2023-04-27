@@ -3,7 +3,7 @@ import { OFEnumShaderLiterals } from './ofEnumShaderLiterals';
 import { OFIShaderCodeInfo } from './data/ofIShaderCodeInfo';
 import { OFIShaderCodeInfoInput } from './data/ofIShaderCodeInfoInput';
 import { OFIShaderCodeInfoInputData } from './data/ofIShaderCodeInfoInputData';
-import { Dictionary } from '../../framework/common/ofInterfaces';
+import { IDictionary } from 'shute-technologies.common-and-utils'
 
 export class OFShaderAnalizer {
 
@@ -25,7 +25,7 @@ export class OFShaderAnalizer {
     } as OFIShaderCodeInfo;
 
     let index = 0;
-    const dictDTIndexAccum: Dictionary<number> = {};
+    const dictDTIndexAccum: IDictionary<number> = {};
 
     while (true) {
       // first get the input data info

@@ -1,4 +1,4 @@
-import { SimpleCallback } from "../common/ofInterfaces";
+import { ICallback0 } from "shute-technologies.common-and-utils";
 import { IOFRenderArgs } from "../interfaces/iofRenderArgs";
 
 export class OFInterval {
@@ -8,11 +8,11 @@ export class OFInterval {
   private _loops: number;
   private _currentLoop: number;
 
-  private _onFinishedLoopCallback: SimpleCallback;
-  private _onFinishedIntervalCallback: SimpleCallback;
+  private _onFinishedLoopCallback: ICallback0;
+  private _onFinishedIntervalCallback: ICallback0;
 
-  set finishedLoopCallback(val: SimpleCallback) { this._onFinishedLoopCallback = val; }
-  set finishedIntervalCallback(val: SimpleCallback) { this._onFinishedIntervalCallback = val; }
+  set finishedLoopCallback(val: ICallback0) { this._onFinishedLoopCallback = val; }
+  set finishedIntervalCallback(val: ICallback0) { this._onFinishedIntervalCallback = val; }
 
   constructor(intervalTimeSeconds: number, loops: number) {
     this._currentTime = 0;

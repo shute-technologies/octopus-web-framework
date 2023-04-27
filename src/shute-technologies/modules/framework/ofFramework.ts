@@ -14,7 +14,7 @@ import { OFVector2 } from "./math/ofVector2";
 import { OFDeviceCapabilities } from "./core/device/ofDeviceCapabilities";
 import { OFColor } from "./core/render/graphics/ofColor";
 import { OFSceneManager } from "./scene/ofSceneManager";
-import { OFHelpers } from "./helpers/ofHelpers";
+import { STUtils } from "shute-technologies.common-and-utils";
 
 export class OFFramework {
 
@@ -64,6 +64,8 @@ export class OFFramework {
     this._params = params;
     this._settings = !customSettings ? OFSettings.create() : customSettings;
     this._deltaTimeCorrector = new OFDeltaTimeCorrector();
+
+    STUtils.staticDebugConsole = OFConsole;
 
     OFConsole.log(OFTranslations.Framework.initialized, this.frameworkIdentifier.toString());
   }
@@ -158,7 +160,7 @@ export class OFFramework {
       const foundFramework = OFFrameworkFactory.getById(frameworkId);
 
       if (foundFramework) {
-        const mousePos = OFHelpers.getMousePosition(foundFramework, e);
+        const mousePos = OFHTMLHelpers.getMousePosition(foundFramework, e);
         foundFramework.onMouseMove(mousePos.x, mousePos.y);
       }
     });

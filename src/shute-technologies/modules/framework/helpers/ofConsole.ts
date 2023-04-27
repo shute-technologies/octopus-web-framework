@@ -1,24 +1,24 @@
-import { OFHelpers } from './ofHelpers';
+import { ISTDebugConsole, STHelpers } from 'shute-technologies.common-and-utils';
 
 export class OFConsole {
 
-  static info(message: string, ...args: string[]): void {
-    // tslint:disable-next-line: no-console
-    console.info(OFHelpers.formatString(message, ...args));
+  static info<TInstance extends Object>(fromClass: TInstance, message?: string, ...args: string[]): void {
+    console.info(`${fromClass.constructor.name}-> ${STHelpers.formatString (message, ...args)}`);
   }
 
-  static log(message: string, ...args: string[]): void {
-    // tslint:disable-next-line: no-console
-    console.log(OFHelpers.formatString(message, ...args));
+  static log<TInstance extends Object>(fromClass: TInstance, message?: string, ...args: string[]): void {
+    console.log(`${fromClass.constructor.name}-> ${STHelpers.formatString (message, ...args)}`);
   }
 
-  static warn(message: string, ...args: string[]): void {
-    // tslint:disable-next-line: no-console
-    console.warn(OFHelpers.formatString(message, ...args));
+  static warn<TInstance extends Object>(fromClass: TInstance, message?: string, ...args: string[]): void {
+    console.warn(`${fromClass.constructor.name}-> ${STHelpers.formatString (message, ...args)}`);
   }
 
-  static error(message: string, ...args: string[]): void {
-    // tslint:disable-next-line: no-console
-    console.error(OFHelpers.formatString(message, ...args));
+  static error<TInstance extends Object>(fromClass: TInstance, message?: string, ...args: string[]): void {
+    console.error(`${fromClass.constructor.name}-> ${STHelpers.formatString (message, ...args)}`);
+  }
+
+  static throwError<TInstance extends Object>(fromClass: TInstance, message?: string | unknown, ...args: string[]): Error {
+    return null;
   }
 }

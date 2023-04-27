@@ -1,6 +1,4 @@
 export * from './common/ofDeltaTimeCorrector';
-export * from './common/ofInterfaces';
-export * from './common/ofUtils';
 export * from './core/ofCanvasContextManager';
 export * from './core/content/ofBaseContent';
 export * from './core/content/ofContentManager';
@@ -48,10 +46,8 @@ export * from './helpers/render/effects/ofEffect2DManager';
 export * from './helpers/ofCollisionHelper';
 export * from './helpers/ofConsole';
 export * from './helpers/ofGLHelper';
-export * from './helpers/ofHelpers';
 export * from './helpers/ofHTMLHelpers';
 export * from './helpers/ofInterval';
-export * from './interfaces/iofConstructor';
 export * from './interfaces/iofMoreRenderArgs';
 export * from './interfaces/iofRenderArgs';
 export * from './interfaces/iofSRect';
