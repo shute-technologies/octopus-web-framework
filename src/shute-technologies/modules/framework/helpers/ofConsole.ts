@@ -1,4 +1,4 @@
-import { ISTDebugConsole, STHelpers } from 'shute-technologies.common-and-utils';
+import { STHelpers } from 'shute-technologies.common-and-utils';
 
 export class OFConsole {
 
