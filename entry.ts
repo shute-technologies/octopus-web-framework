@@ -6,5 +6,5 @@ import { OFRenderLoop } from './src/shute-technologies/modules/common/ofRenderLo
   const instance = new SpecMain(EnumSpectType.SimpleFramework);
   const frameRate = 30;
 
-  OFRenderLoop.create((deltaTime) => instance.update(deltaTime), frameRate);
+  OFRenderLoop.create((deltaTime) => instance.update(deltaTime as number), frameRate);
 })();
