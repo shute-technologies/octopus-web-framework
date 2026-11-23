@@ -166,7 +166,9 @@ export abstract class OFBaseShader implements OFIIsShaderAbstract {
 
     _GL.activeTexture(_GL[`TEXTURE${textureIndex}`]);
     _GL.bindTexture(_GL.TEXTURE_2D, texture);
-    _GL.uniform1i(uniformLocation, 0);
+    // The sampler reads the unit the texture was just bound to. It was always set to 0, so any
+    // texture bound to unit 1+ was sampled from whatever sat in unit 0.
+    _GL.uniform1i(uniformLocation, textureIndex);
   }
 
   setColor (uniformName: string, colorObject: OFColor): void {
