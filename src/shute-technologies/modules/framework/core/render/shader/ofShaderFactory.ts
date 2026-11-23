@@ -61,7 +61,7 @@ export class OFShaderFactory {
     this._shaderRepository[uid] = new OFShaderAbstract(this, shaderObject, shaderCodeInfo);
     this._shaderRepository[uid].name = shaderName;
 
-    OFConsole.log(OFTranslations.Framework.ShaderFactory.loadAndAddShaderWithCodeInfo,
+    OFConsole.log(this, OFTranslations.Framework.ShaderFactory.loadAndAddShaderWithCodeInfo,
       this._framework.frameworkIdentifier.toString(), shaderName);
 
     return this._shaderRepository[uid] as OFShaderAbstract;
@@ -71,7 +71,7 @@ export class OFShaderFactory {
     this._shaderRepository[shaderName] = shader;
     this._shaderRepository[shaderName].name = shaderName;
 
-    OFConsole.log(OFTranslations.Framework.ShaderFactory.addShader,
+    OFConsole.log(this, OFTranslations.Framework.ShaderFactory.addShader,
       this._framework.frameworkIdentifier.toString(), shaderName);
   }
 

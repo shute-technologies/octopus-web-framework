@@ -67,7 +67,7 @@ export class OFFramework {
 
     STUtils.staticDebugConsole = OFConsole;
 
-    OFConsole.log(OFTranslations.Framework.initialized, this.frameworkIdentifier.toString());
+    OFConsole.log(this, OFTranslations.Framework.initialized, this.frameworkIdentifier.toString());
   }
 
   startOctopusFramework2D (divIdentifier: string, appWidth?: number, appHeight?: number) {
@@ -128,7 +128,7 @@ export class OFFramework {
       // Now initialize the Application
       this.initializeApplication();
     } else {
-      OFConsole.error(OFTranslations.Framework.canvasNotFound, 
+      OFConsole.error(this, OFTranslations.Framework.canvasNotFound,
         this.frameworkIdentifier.toString(), divIdentifier);
     }
   }
@@ -185,7 +185,7 @@ export class OFFramework {
   private initializeApplication(): void {
     this._sceneManager = new OFSceneManager(this);
     
-    OFConsole.log(OFTranslations.Framework.ready, this.frameworkIdentifier.toString());
+    OFConsole.log(this, OFTranslations.Framework.ready, this.frameworkIdentifier.toString());
   }
 
   onKeyDown (event: KeyboardEvent) {

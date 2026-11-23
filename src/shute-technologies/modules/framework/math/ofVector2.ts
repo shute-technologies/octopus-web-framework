@@ -56,7 +56,7 @@ export class OFVector2 {
         this.y /= vectorLength;
     }
     else {
-      OFConsole.warn("[WARN]: OFVector2.normalize: called on a zero-length vector.");
+      OFConsole.warn(this, 'normalize> called on a zero-length vector.');
     }
   }
 
@@ -64,7 +64,7 @@ export class OFVector2 {
     const squareLength = v.dot(v);
 
     if (squareLength === 0) {
-      OFConsole.log("[WARN] OFVector2.projectionOn: zero-length projection vector.");
+      OFConsole.warn(this, 'projectionOn> zero-length projection vector.');
       return this.clone();
     }
 

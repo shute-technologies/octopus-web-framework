@@ -79,7 +79,7 @@ export class OFPolygonBatcher {
     }
 
     if (!changed) {
-      OFConsole.warn(OFTranslations.Framework.GraphicsOptimization.PolygonBatcher.changeShader, name);
+      OFConsole.warn(this, OFTranslations.Framework.GraphicsOptimization.PolygonBatcher.changeShader, name);
     }
   }
 
@@ -96,7 +96,7 @@ export class OFPolygonBatcher {
     }
 
     if (!changed) {
-      OFConsole.warn(OFTranslations.Framework.GraphicsOptimization.PolygonBatcher.changeShader, this._shader.name);
+      OFConsole.warn(this, OFTranslations.Framework.GraphicsOptimization.PolygonBatcher.changeShader, this._shader.name);
     }
   }
 

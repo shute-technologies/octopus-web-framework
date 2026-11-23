@@ -37,7 +37,7 @@ export class  OFGraphicDeviceManager {
 
     this._graphicDevices[id] = graphicDevice;
 
-    OFConsole.log(OFTranslations.Framework.GraphicDeviceManager.createGraphicDevice,
+    OFConsole.log(this, OFTranslations.Framework.GraphicDeviceManager.createGraphicDevice,
       this._framework.frameworkIdentifier.toString(), id);
 
     return graphicDevice;

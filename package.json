@@ -10,7 +10,9 @@
   ],
   "scripts": {
     "start": "webpack serve --mode=development  --config webpack.config.js",
-    "build": "webpack --mode production --config webpack.config.js"
+    "build": "webpack --mode production --config webpack.config.js",
+    "build:lib": "tsc",
+    "test": "tsc && node --test test/*.test.js"
   },
   "dependencies": {
     "gl-matrix": "^3.3.0",

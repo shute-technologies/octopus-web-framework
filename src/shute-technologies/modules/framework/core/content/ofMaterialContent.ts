@@ -41,7 +41,7 @@ export class OFMaterialContent extends OFBaseContent {
   }
 
   changeProperties (params: {}) {
-    OFConsole.error(OFTranslations.Framework.ContentManagement.MaterialContent.notImplementedException,
+    OFConsole.error(this, OFTranslations.Framework.ContentManagement.MaterialContent.notImplementedException,
       this.framework.frameworkIdentifier.toString(), params.toString());
   }
 }

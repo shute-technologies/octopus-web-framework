@@ -38,7 +38,7 @@ export class OFFrameworkFactory {
 
   static setCurrentFramework(identifier: number): void {
     if (identifier > OFFrameworkFactory._uniqueIdentifier || identifier < 0) {
-      OFConsole.warn(OFTranslations.Framework.FrameworkFactory.outOfBounds, identifier.toString());
+      OFConsole.warn(OFFrameworkFactory, OFTranslations.Framework.FrameworkFactory.outOfBounds, identifier.toString());
     } else {
       OFFrameworkFactory._currentFramework = identifier;
     }

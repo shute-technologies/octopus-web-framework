@@ -28,7 +28,7 @@ export class OFContentManager {
     if (content) {
       content.changeProperties(otherParams);
     } else {
-      OFConsole.warn(OFTranslations.Framework.ContentManagement.changePropertiesInContentNotFound,
+      OFConsole.warn(this, OFTranslations.Framework.ContentManagement.changePropertiesInContentNotFound,
         this.framework.frameworkIdentifier.toString(), path);
     }
   }
@@ -59,7 +59,7 @@ export class OFContentManager {
 
         this._contentRepository.push(materialContent);
 
-        OFConsole.log(OFTranslations.Framework.ContentManagement.loadMaterialFromJSON,
+        OFConsole.log(this, OFTranslations.Framework.ContentManagement.loadMaterialFromJSON,
           this.framework.frameworkIdentifier.toString(), path);
 
         // console.log("NContentManagment(Frk-id:" + CurrentFramework + ")::LoadImageFromJSONObject> " + path);
@@ -75,7 +75,7 @@ export class OFContentManager {
 
     this._contentRepository.push(materialContent);
 
-    OFConsole.log(OFTranslations.Framework.ContentManagement.loadMaterial,
+    OFConsole.log(this, OFTranslations.Framework.ContentManagement.loadMaterial,
       this.framework.frameworkIdentifier.toString(), path);
 
     return materialContent;
@@ -88,7 +88,7 @@ export class OFContentManager {
 
     this._contentRepository.push(imageContent);
 
-    OFConsole.log(OFTranslations.Framework.ContentManagement.loadImage,
+    OFConsole.log(this, OFTranslations.Framework.ContentManagement.loadImage,
       this.framework.frameworkIdentifier.toString(), path);
 
     return imageContent;
@@ -101,7 +101,7 @@ export class OFContentManager {
 
     this._contentRepository.push(soundContent);
 
-    OFConsole.log(OFTranslations.Framework.ContentManagement.loadSoundFromArrayABuffer,
+    OFConsole.log(this, OFTranslations.Framework.ContentManagement.loadSoundFromArrayABuffer,
       this.framework.frameworkIdentifier.toString(), path);
 
     return soundContent;
@@ -117,7 +117,7 @@ export class OFContentManager {
 
       this._contentRepository.push(imageContent);
 
-      OFConsole.log(OFTranslations.Framework.ContentManagement.loadImageFromHTMLImage,
+      OFConsole.log(this, OFTranslations.Framework.ContentManagement.loadImageFromHTMLImage,
         this.framework.frameworkIdentifier.toString(), path);
     }
 
@@ -125,7 +125,7 @@ export class OFContentManager {
   }
 
   unloadImage (path: string) {
-    OFConsole.error(OFTranslations.Framework.ContentManagement.notImplementedException,
+    OFConsole.error(this, OFTranslations.Framework.ContentManagement.notImplementedException,
       this.framework.frameworkIdentifier.toString(), path);
   }
 }

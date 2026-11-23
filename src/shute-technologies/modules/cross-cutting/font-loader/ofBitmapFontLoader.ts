@@ -328,7 +328,8 @@ export class OFBitmapFontLoader {
         } else {
           // TODO: Translate this, maybe in its own module?
           OFConsole.warn(
-            "OFBitmapFontLoader> readingAndSettingValues> In the Font: '" +
+            OFBitmapFontLoader,
+            "readingAndSettingValues> In the Font: '" +
               OFBitmapFontLoader.FontCharset.fontName +
               "' the char index: " +
               OFBitmapFontLoader.BitmapFontCharIndexTemp +

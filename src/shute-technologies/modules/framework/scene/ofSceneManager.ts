@@ -22,10 +22,10 @@ export class OFSceneManager {
       this._currentScene = instance;
       this._currentScene.initialize(this, params);
 
-      OFConsole.log(OFTranslations.Framework.SceneManager.gotoScene, 
+      OFConsole.log(this, OFTranslations.Framework.SceneManager.gotoScene,
         this.framework.frameworkIdentifier.toString(), className);
     } else {
-      OFConsole.log(OFTranslations.Framework.SceneManager.sceneDontExists, 
+      OFConsole.log(this, OFTranslations.Framework.SceneManager.sceneDontExists,
         this.framework.frameworkIdentifier.toString(), className);
     }
   }
@@ -39,10 +39,10 @@ export class OFSceneManager {
       this._currentScene = instance;
       this._currentScene.initialize(this, params);
 
-      OFConsole.log(OFTranslations.Framework.SceneManager.gotoScene, 
+      OFConsole.log(this, OFTranslations.Framework.SceneManager.gotoScene,
         this.framework.frameworkIdentifier.toString(), '');
     } else {
-      OFConsole.log(OFTranslations.Framework.SceneManager.sceneDontExists, 
+      OFConsole.log(this, OFTranslations.Framework.SceneManager.sceneDontExists,
         this.framework.frameworkIdentifier.toString(), '');
     }
   }

@@ -61,7 +61,7 @@ export class OFCanvasContextManager {
       graphicContext = (canvas.getContext('webgl', contextPreferences) ||
         canvas.getContext('experimental-webgl', contextPreferences)) as WebGLRenderingContext;
     } catch (e) {
-      OFConsole.error(OFTranslations.Framework.CanvasContextManager.issueRenderingContext, e);
+      OFConsole.error(this, OFTranslations.Framework.CanvasContextManager.issueRenderingContext, e);
     }
 
     return graphicContext;

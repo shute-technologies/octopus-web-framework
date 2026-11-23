@@ -56,7 +56,8 @@ export class OFSoundContent extends OFBaseContent {
   internal_OnErrorDecodeAudioData (error: DOMException): void {
     this._audioBufferError = error;
 
-    OFConsole.log(OFTranslations.Framework.ContentManagement.SoundContent.internal_OnErrorDecodeAudioData,
-      this._framework.frameworkIdentifier.toString(), error.message);
+    // Some browsers call the error callback with null instead of a DOMException.
+    OFConsole.error(this, OFTranslations.Framework.ContentManagement.SoundContent.internal_OnErrorDecodeAudioData,
+      this._framework.frameworkIdentifier.toString(), error ? (error.message || error.name) : 'unknown decode error');
   }
 }

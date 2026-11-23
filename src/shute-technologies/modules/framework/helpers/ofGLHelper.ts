@@ -34,7 +34,7 @@ export class OFGLHelper {
     _GL.compileShader(shaderSourceObject);
     // See if it compiled successfully
     if (!_GL.getShaderParameter(shaderSourceObject, _GL.COMPILE_STATUS)) {
-      OFConsole.log(OFTranslations.Framework.GLHelper.compileShader, 
+      OFConsole.error(OFGLHelper, OFTranslations.Framework.GLHelper.compileShader,
         _GL.getShaderInfoLog(shaderSourceObject));
       return null;
     }
@@ -85,7 +85,7 @@ export class OFGLHelper {
 
     // If creating the shader program failed, alert
     if (!_GL.getProgramParameter(shaderProgram, _GL.LINK_STATUS)) {
-      OFConsole.log(OFTranslations.Framework.GLHelper.createProgram, 
+      OFConsole.error(OFGLHelper, OFTranslations.Framework.GLHelper.createProgram,
         _GL.getProgramInfoLog(shaderProgram));
     }
 

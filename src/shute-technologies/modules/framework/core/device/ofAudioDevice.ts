@@ -50,10 +50,10 @@ export class OFAudioDevice {
 
       this._isAudioSupported = true;
 
-      OFConsole.log(OFTranslations.Framework.AudioDevice.initialize, this._framework.frameworkIdentifier.toString());
+      OFConsole.log(this, OFTranslations.Framework.AudioDevice.initialize, this._framework.frameworkIdentifier.toString());
     } catch (e) {
       this._isAudioSupported = false;
-      OFConsole.error(OFTranslations.Framework.AudioDevice.notSupported, this._framework.frameworkIdentifier.toString());
+      OFConsole.error(this, OFTranslations.Framework.AudioDevice.notSupported, this._framework.frameworkIdentifier.toString());
     }
   }
 
