@@ -26,3 +26,30 @@ function createFakeGL() {
 }
 
 module.exports = { createFakeGL };
+
+/**
+ * A real OFShaderAbstract on top of the fake GL. `uniforms` is a list of [inputName, OFEnumShaderDataTypes].
+ * `deviceCamera` is what the device's render camera returns (as a fresh copy, like OFRenderCamera).
+ */
+function makeAbstractShader(lib, uniforms, deviceCamera) {
+  const { OFShaderAbstract, OFEnumShaderDataTypes } = lib;
+  const gl = createFakeGL();
+  const { mat4 } = require('gl-matrix');
+  const cameraMatrix = deviceCamera || mat4.create();
+  const graphicDevice = {
+    graphicContext: gl,
+    renderCamera: { get transformedMatrix() { return mat4.clone(cameraMatrix); } },
+    useShaderProgram(program) { gl.useProgram(program); }
+  };
+  const shaderFactory = { graphicDevice, instanceShader: () => ({ program: 'p' }) };
+  const shaderCodeInfo = {
+    attributeCount: 1,
+    attributes: [{ inputName: 'aVertexPosition', inputVariableType: OFEnumShaderDataTypes.Vector3 }],
+    uniformCount: uniforms.length,
+    uniforms: uniforms.map(([inputName, inputVariableType]) => ({ inputName, inputVariableType }))
+  };
+
+  return { shader: new OFShaderAbstract(shaderFactory, {}, shaderCodeInfo), gl };
+}
+
+module.exports.makeAbstractShader = makeAbstractShader;

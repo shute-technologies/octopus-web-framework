@@ -9,6 +9,9 @@ import { OFEnumShaderDataTypes } from '../../../../cross-cutting/shader-analizer
 export class OFShaderAbstract extends OFBaseShader {
 
   private _shaderCodeInfo: OFIShaderCodeInfo;
+  // camera x model for the current draw. Never multiply into the camera matrix itself: with a
+  // custom camera that is `args.cameraMVP`, shared by every draw the caller makes with those args.
+  private readonly _modelViewProjection: mat4 = mat4.create();
 
   private _attributeInterleavedDataSize: number;
   private _colorPropIndexCount: number;
@@ -146,14 +149,12 @@ export class OFShaderAbstract extends OFBaseShader {
           case OFEnumShaderDataTypes.ICamera:
             const uniformLocation = this[uniformData.inputName];
 
-            // Now multiply the Camera transformed Matrix with the local transformations Matrix.
-            if (!transformation) {
-              mat4.multiply(transformedMatrix, transformedMatrix, this._world);
-            } else {
-              mat4.multiply(transformedMatrix, transformedMatrix, transformation);
-            }
+            // camera x (transformation or this shader's world), into a scratch matrix. This used to
+            // multiply into `transformedMatrix` in place, i.e. into args.cameraMVP, so the second and
+            // later draws sharing those args got camera x M1 x M2 x ... and drifted.
+            mat4.multiply(this._modelViewProjection, transformedMatrix, transformation ? transformation : this._world);
 
-            _GL.uniformMatrix4fv(uniformLocation, false, transformedMatrix);
+            _GL.uniformMatrix4fv(uniformLocation, false, this._modelViewProjection);
         }
       }
 
