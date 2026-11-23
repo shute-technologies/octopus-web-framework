@@ -60,6 +60,9 @@ export class OFAudioNodePooler {
       // Now call recursively the function until found an available AudioNode
       resultObject = this.getAvailableAudioNode(desiredNodeType);
     }
+
+    // Handed out again: it must not be swept as idle (isWaitingForDelete) before it is activated.
+    resultObject.renewLifeTime();
     
     return resultObject;
   }

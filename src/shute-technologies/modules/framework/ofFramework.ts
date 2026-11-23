@@ -232,6 +232,8 @@ export class OFFramework {
 
       this._graphicDeviceManager.update(renderArgs);
       this._sceneManager.update(renderArgs);
+      // Ages idle audio nodes out of the pool. Nothing called it before, so the pool only grew.
+      this._audioDevice.update(renderArgs);
     }
   }
 

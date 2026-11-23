@@ -36,12 +36,25 @@ export class OFAudioNodeObject<T extends AudioNode> {
 
   activate(): void {
     this._isAvailable = false;
+    this.renewLifeTime();
   }
 
   deactivate(): void {
+    // Back to the pool: cut the node out of the graph it was playing in, or the next user of
+    // this node would inherit its old connections.
+    this.disconnectWebAudioNode();
     this._isAvailable = true;
-    // Reset Lifetime
+    this.renewLifeTime();
+  }
+
+  /**
+   * Restarts the idle countdown and clears `isWaitingForDelete`. The pool calls it when it hands a
+   * node out again: a node that had aged out and was reused before the next sweep used to be
+   * destroyed (disconnected) while playing.
+   */
+  renewLifeTime(): void {
     this._lifeTime = OFAudioNodeObject.defaultNodeLifeTime;
+    this.isWaitingForDelete = false;
   }
 
   update(args: IOFRenderArgs): void {
@@ -55,10 +68,17 @@ export class OFAudioNodeObject<T extends AudioNode> {
   }
 
   destroy(): void {
-    if (this.webAudioNode) {
-      this.webAudioNode.disconnect();
-    }
-
+    this.disconnectWebAudioNode();
     this.webAudioNode = null;
+  }
+
+  private disconnectWebAudioNode(): void {
+    if (this.webAudioNode) {
+      try {
+        this.webAudioNode.disconnect();
+      } catch (e) {
+        // Older WebKit throws when the node has no connections; nothing to undo then.
+      }
+    }
   }
 }
