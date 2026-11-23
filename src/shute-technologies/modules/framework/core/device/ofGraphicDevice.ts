@@ -61,8 +61,11 @@ export class OFGraphicDevice {
     canvasElement.setAttribute('width', width.toString());
     canvasElement.setAttribute('height', height.toString());
 
-    // resize camera
-    if (!this._hasCustomCamera) {
+    // Resize the device camera even with a custom camera: it still draws everything the host does
+    // not give a camera of its own (no `cameraMVP`), and used to keep its boot-time projection, so
+    // that content stretched with the canvas. Skip a zero size (a hidden container), which would
+    // make the projection singular.
+    if (width > 0 && height > 0) {
       this._renderCamera.resize(width, height, oldWidth, oldHeight);
     }
   }
