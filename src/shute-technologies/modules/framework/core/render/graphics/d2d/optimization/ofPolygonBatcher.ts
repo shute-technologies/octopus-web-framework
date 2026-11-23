@@ -113,9 +113,13 @@ export class OFPolygonBatcher {
     }
     // TODO: Should group them in drawGroups, and in the end draw everything
 
+    // 8 floats per vertex: aVertexPosition(2) + aVertexColor(4) + aTextureCoord(2).
     const indexStart = this._vertexCount / 8;
 
-    for (const index of this._indices) {
+    // Rebase the *incoming* indices onto this batch. This loop used to walk `this._indices` (the
+    // still-empty accumulator), so every batch uploaded an empty index buffer and then drew
+    // `_indexCount` elements from it: GL_INVALID_OPERATION, and nothing on screen.
+    for (const index of indices) {
       this._indices.push(index + indexStart);
     }
 
