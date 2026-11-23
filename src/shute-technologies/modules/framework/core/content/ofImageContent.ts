@@ -55,7 +55,10 @@ export class OFImageContent extends OFBaseContent {
     params = !params ? {} : params;
     const _GL = this.graphicContext;
 
-    if (path) { this.load(path); }
+    // Record the path only. This called this.load(path), which also creates an Image, points it at
+    // `path` (a content key, not necessarily a URL: a 404 per image) and allocates a texture that
+    // the lines below immediately replace.
+    if (path) { super.load(path); }
 
     this._image = imageHTML;
 
