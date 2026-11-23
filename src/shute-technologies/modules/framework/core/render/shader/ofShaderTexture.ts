@@ -44,8 +44,7 @@ export class OFShaderTexture extends OFBaseShader {
 
     _GL.bindBuffer(_GL.ARRAY_BUFFER, vertexBuffer);
 
-    _GL.enableVertexAttribArray(this._vertexPositionAttr);
-    _GL.enableVertexAttribArray(this._textureCoordPositionAttr);
+    this._graphicDevice.useVertexAttributes([this._vertexPositionAttr, this._textureCoordPositionAttr]);
     _GL.vertexAttribPointer(this._vertexPositionAttr, 3, _GL.FLOAT, false, 20, 0);
     _GL.vertexAttribPointer(this._textureCoordPositionAttr, 2, _GL.FLOAT, false, 20, 12);
 
@@ -85,8 +84,7 @@ export class OFShaderTexture extends OFBaseShader {
     _GL.uniform1i(this._samplerPositionUniform, 0);
 
     _GL.bindBuffer(_GL.ARRAY_BUFFER, vertexBuffer);
-    _GL.enableVertexAttribArray(this._vertexPositionAttr);
-    _GL.enableVertexAttribArray(this._textureCoordPositionAttr);
+    this._graphicDevice.useVertexAttributes([this._vertexPositionAttr, this._textureCoordPositionAttr]);
     _GL.vertexAttribPointer(this._vertexPositionAttr, 3, _GL.FLOAT, false, 20, 0);
     _GL.vertexAttribPointer(this._textureCoordPositionAttr, 2, _GL.FLOAT, false, 20, 12);
 

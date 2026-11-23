@@ -35,7 +35,8 @@ export class OFShaderPrimitive extends OFBaseShader {
     _GL.blendFunc(_GL.SRC_ALPHA, _GL.ONE_MINUS_SRC_ALPHA);
     _GL.useProgram(this._shaderProgram);
     _GL.bindBuffer(_GL.ARRAY_BUFFER, vertexBuffer);
-    _GL.enableVertexAttribArray(this._vertexPositionAttr);
+    // Through the device, which also disables what an earlier draw enabled (texture coordinates).
+    this._graphicDevice.useVertexAttributes([this._vertexPositionAttr]);
     _GL.vertexAttribPointer(this._vertexPositionAttr, 3, _GL.FLOAT, false, 0, 0);
 
     // Get Transformation Matrix from RenderCamera

@@ -16,6 +16,8 @@ export class OFGraphicDevice {
 
   private _hasCustomCamera: boolean;
   private _currentShaderProgram: WebGLProgram;
+  // Vertex attribute arrays are context state, not program state; see useVertexAttributes().
+  private readonly _enabledVertexAttributes = new Set<number>();
 
   clearColor: OFColor;
 
@@ -81,6 +83,34 @@ export class OFGraphicDevice {
       this._currentShaderProgram = shaderProgram;
       _GL.useProgram(shaderProgram);
    // }
+  }
+
+  /**
+   * Enables the vertex attribute arrays a draw reads, and disables every one an earlier draw
+   * enabled that this draw does not read. Every shader's draw goes through here.
+   *
+   * Enabled arrays belong to the context, not to the program: a textured draw leaves its texture
+   * coordinates enabled, pointing at its own vertex buffer. Once the VBO pool deletes that buffer,
+   * every later draw that leaves the array enabled fails with INVALID_OPERATION ("no buffer is bound
+   * to enabled attribute") and draws nothing. Inactive locations (-1) are skipped.
+   */
+  useVertexAttributes(locations: ReadonlyArray<number>): void {
+    const _GL = this._graphicContext;
+
+    this._enabledVertexAttributes.forEach((location) => {
+      if (locations.indexOf(location) < 0) {
+        _GL.disableVertexAttribArray(location);
+        this._enabledVertexAttributes.delete(location);
+      }
+    });
+
+    // Enabled on every draw, not only when new: cheap, and right even if a host changed the state.
+    for (const location of locations) {
+      if (location >= 0) {
+        _GL.enableVertexAttribArray(location);
+        this._enabledVertexAttributes.add(location);
+      }
+    }
   }
 
   clear(): void {

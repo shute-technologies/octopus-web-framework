@@ -14,6 +14,8 @@ export class OFShaderAbstract extends OFBaseShader {
   private readonly _modelViewProjection: mat4 = mat4.create();
 
   private _attributeInterleavedDataSize: number;
+  // Locations of the attributes this program declares, in declaration order (-1 if inactive).
+  private _attributeLocations: number[];
   private _colorPropIndexCount: number;
   private _texturePropIndexCount: number;
 
@@ -27,6 +29,17 @@ export class OFShaderAbstract extends OFBaseShader {
     this._shaderCodeInfo = shaderCodeInfo;
 
     this.updateShader(sourceTarget, shaderCodeInfo);
+  }
+
+  /** Floats per vertex for an attribute type; 0 for a type that is not a float vector. */
+  private static floatCountOf(type: OFEnumShaderDataTypes): number {
+    switch (type) {
+      case OFEnumShaderDataTypes.Float: return 1;
+      case OFEnumShaderDataTypes.Vector2: return 2;
+      case OFEnumShaderDataTypes.Vector3: return 3;
+      case OFEnumShaderDataTypes.Vector4: return 4;
+      default: return 0;
+    }
   }
 
   getShaderLocations(_GL: WebGLRenderingContext): void { /*NO IMPLEMENTATION HERE*/ }
@@ -78,11 +91,14 @@ export class OFShaderAbstract extends OFBaseShader {
     this._shaderProgram = this._shaderFactory.instanceShader(sourceTarget);
 
     // Auto-Generate global variables for this context: Attributes
+    this._attributeLocations = [];
+
     for (let i = 0; i < this._shaderCodeInfo.attributeCount; i++) {
       const attributeData = this._shaderCodeInfo.attributes[i];
 
       this[attributeData.inputName] = _GL.getAttribLocation(
         this._shaderProgram, attributeData.inputName);
+      this._attributeLocations.push(this[attributeData.inputName]);
 
       // count size of interleaved data
       switch (attributeData.inputVariableType) {
@@ -160,42 +176,25 @@ export class OFShaderAbstract extends OFBaseShader {
 
       _GL.bindBuffer(_GL.ARRAY_BUFFER, vertexBuffer);
 
-      // Auto-Generate WebGL calls for Attributes
+      // Auto-Generate WebGL calls for Attributes. Enabling goes through the device, which also
+      // disables what an earlier draw enabled and this program does not read.
+      this._graphicDevice.useVertexAttributes(this._attributeLocations);
+
       let interleavedOffset = 0;
 
       for (let i = 0; i < this._shaderCodeInfo.attributeCount; i++) {
         const attributeData = this._shaderCodeInfo.attributes[i];
-        const attributeInputName = attributeData.inputName;
-        const attribLocation = this[attributeInputName];
+        const attribLocation = this._attributeLocations[i];
+        const floatCount = OFShaderAbstract.floatCountOf(attributeData.inputVariableType);
 
-        _GL.enableVertexAttribArray(attribLocation);
-
-        switch (attributeData.inputVariableType) {
-          case OFEnumShaderDataTypes.Float:
-            _GL.vertexAttribPointer(attribLocation, 1, _GL.FLOAT, false,
-              this._attributeInterleavedDataSize, interleavedOffset);
-
-            interleavedOffset += 4; // 2 floats per 4 bytes
-            break;
-          case OFEnumShaderDataTypes.Vector2:
-            _GL.vertexAttribPointer(attribLocation, 2, _GL.FLOAT, false,
-              this._attributeInterleavedDataSize, interleavedOffset);
-
-            interleavedOffset += 8; // 2 floats per 4 bytes
-            break;
-          case OFEnumShaderDataTypes.Vector3:
-            _GL.vertexAttribPointer(attribLocation, 3, _GL.FLOAT, false,
-              this._attributeInterleavedDataSize, interleavedOffset);
-
-            interleavedOffset += 12; // 3 floats per 4 bytes
-            break;
-          case OFEnumShaderDataTypes.Vector4:
-            _GL.vertexAttribPointer(attribLocation, 4, _GL.FLOAT, false,
-              this._attributeInterleavedDataSize, interleavedOffset);
-
-            interleavedOffset += 16; // 4 floats per 4 bytes
-            break;
+        // -1: declared but never read, so the compiler removed it. It still takes its place in the
+        // interleaved data; it just has no location to point at.
+        if (floatCount > 0 && attribLocation >= 0) {
+          _GL.vertexAttribPointer(attribLocation, floatCount, _GL.FLOAT, false,
+            this._attributeInterleavedDataSize, interleavedOffset);
         }
+
+        interleavedOffset += floatCount * 4; // 4 bytes per float
       }
 
       // RenderType: TRIANGLE_STRIP as default
