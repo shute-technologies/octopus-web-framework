@@ -140,7 +140,24 @@ export class OFPrimitiveCircle extends OFDrawable2D {
   }
 
   update(args: IOFRenderArgs): void {
-    if (!this._shader.isShaderAbstract && this._color.a !== 0) {
+    if (this._color.a === 0) {
+      return;
+    }
+
+    if (this._shader.isShaderAbstract) {
+      // An OFShaderAbstract (e.g. a 'ShaderPrimitive' registered from source by a host that boots with
+      // loadDefault = false) has its own draw signature and takes the colour as its 'uColor'
+      // uniform. update() used to skip the draw entirely for it, so the primitive never appeared.
+      if (!this._transformation) {
+        this._shader.setTranslate(this.x + this.offsetX, this.y + this.offsetY, this.z);
+        this._shader.rotationZ = this.rotation;
+        this._shader.setScale(this.scaleX, this.scaleY, 1.0);
+      }
+
+      this._shader.setColor('uColor', this._color);
+      this._shader.draw(args, this._vboObject.vbo, this._transformation || null, this._triangleRenderType,
+        this._iboObject.vbo, this._drawingCount);
+    } else {
       if (!this._transformation) {
         this._shader.setTranslate(this.x + this.offsetX, this.y + this.offsetY, this.z);
         this._shader.rotationZ = this.rotation;

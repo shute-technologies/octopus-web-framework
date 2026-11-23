@@ -152,7 +152,31 @@ export class OFPrimitiveGrid extends OFDrawable2D {
   }
 
   update(args: IOFRenderArgs): void {
-    if (!this._shader.isShaderAbstract && this._color.a !== 0) {
+    if (this._color.a === 0) {
+      return;
+    }
+
+    if (this._shader.isShaderAbstract) {
+      // An OFShaderAbstract (e.g. a 'ShaderPrimitive' registered from source by a host that boots with
+      // loadDefault = false) has its own draw signature and takes the colour as its 'uColor'
+      // uniform. update() used to skip the draw entirely for it, so the primitive never appeared.
+      let transformation: mat4 = null;
+
+      if (!this._transformation) {
+        this._shader.setTranslate(this.x + this.offsetX, this.y + this.offsetY, this.z);
+        this._shader.rotationZ = this.rotation;
+        this._shader.setScale(this.scaleX, this.scaleY, 1.0);
+      } else {
+        // Same as the OFShaderPrimitive branch below: the offset applies in local space.
+        mat4.fromTranslation(this._otherTransformation, vec3.fromValues(this.offsetX, this.offsetY, 0));
+        mat4.multiply(this._otherTransformation, this._transformation, this._otherTransformation);
+        transformation = this._otherTransformation;
+      }
+
+      this._shader.setColor('uColor', this._color);
+      this._shader.draw(args, this._vboObject.vbo, transformation, this._triangleRenderType,
+        this._iboObject.vbo, this._drawingCount);
+    } else {
       if (!this._transformation) {
         this._shader.setTranslate(this.x + this.offsetX, this.y + this.offsetY, this.z);
         this._shader.rotationZ = this.rotation;
