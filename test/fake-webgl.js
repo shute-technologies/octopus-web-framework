@@ -44,14 +44,18 @@ function makeGraphicDevice(lib, gl, deviceCamera) {
   return Object.assign(Object.create(lib.OFGraphicDevice.prototype), {
     _graphicContext: gl,
     _renderCamera: { get transformedMatrix() { return mat4.clone(cameraMatrix); } },
-    _enabledVertexAttributes: new Set()
+    _enabledVertexAttributes: new Set(),
+    // Field initializers do not run on a device made with Object.create.
+    elapsedSeconds: 0,
+    currentViewport: { x: 0, y: 0, width: 0, height: 0 },
+    sharedUniforms: new Map()
   });
 }
 
 module.exports.makeGraphicDevice = makeGraphicDevice;
 
 /**
- * A real OFShaderAbstract on top of the fake GL. `uniforms` is a list of [inputName, OFEnumShaderDataTypes].
+ * A real OFShaderAbstract on top of the fake GL. `uniforms` is a list of [inputName, OFEnumShaderDataTypes, inputGLSLType?].
  * `deviceCamera` is what the device's render camera returns (as a fresh copy, like OFRenderCamera).
  * `options.attributes`: [inputName, OFEnumShaderDataTypes] pairs (default: one Vector3 aVertexPosition).
  * `options.graphicDevice`: a device shared with other shaders; its gl is used.
@@ -66,7 +70,7 @@ function makeAbstractShader(lib, uniforms, deviceCamera, options = {}) {
     attributeCount: attributes.length,
     attributes: attributes.map(([inputName, inputVariableType]) => ({ inputName, inputVariableType })),
     uniformCount: uniforms.length,
-    uniforms: uniforms.map(([inputName, inputVariableType]) => ({ inputName, inputVariableType }))
+    uniforms: uniforms.map(([inputName, inputVariableType, inputGLSLType]) => ({ inputName, inputVariableType, inputGLSLType }))
   };
 
   return { shader: new OFShaderAbstract(shaderFactory, {}, shaderCodeInfo), gl, graphicDevice };

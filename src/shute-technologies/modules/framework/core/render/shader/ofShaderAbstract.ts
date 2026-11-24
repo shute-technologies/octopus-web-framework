@@ -3,6 +3,7 @@ import { OFShaderFactory } from './ofShaderFactory';
 import { IOFDefaultShaderSource } from '../../../default-assets/ofDefaultShaderSources';
 import { mat4 } from 'gl-matrix';
 import { IOFMoreRenderArgs } from '../../../interfaces/iofMoreRenderArgs';
+import type { OFIShaderCodeInfoInputData } from '../../../../cross-cutting/shader-analizer/data/ofIShaderCodeInfoInputData';
 import { OFIShaderCodeInfo } from '../../../../cross-cutting/shader-analizer/data/ofIShaderCodeInfo';
 import { OFEnumShaderDataTypes } from '../../../../cross-cutting/shader-analizer/ofEnumShaderDataTypes';
 
@@ -138,6 +139,30 @@ export class OFShaderAbstract extends OFBaseShader {
     }
   }
 
+  /** Sends the value stored under the input's name in sharedUniforms; false when there is none. */
+  private sendSharedUniform(uniformData: OFIShaderCodeInfoInputData, textureUnit: number): boolean {
+    const _GL = this._graphicContext;
+    const value = this._graphicDevice.sharedUniforms.get(uniformData.inputName);
+
+    if (value === undefined) { return false; }
+
+    const location = this[uniformData.inputName];
+
+    switch (uniformData.inputGLSLType) {
+      case OFEnumShaderDataTypes.Sampler2D:
+        _GL.activeTexture(_GL[`TEXTURE${textureUnit}`]);
+        _GL.bindTexture(_GL.TEXTURE_2D, value as WebGLTexture);
+        _GL.uniform1i(location, textureUnit);
+        return true;
+      case OFEnumShaderDataTypes.Float: _GL.uniform1f(location, value as number); break;
+      case OFEnumShaderDataTypes.Vector2: _GL.uniform2fv(location, value as ArrayLike<number> as Float32List); break;
+      case OFEnumShaderDataTypes.Vector3: _GL.uniform3fv(location, value as ArrayLike<number> as Float32List); break;
+      case OFEnumShaderDataTypes.Vector4: _GL.uniform4fv(location, value as ArrayLike<number> as Float32List); break;
+    }
+
+    return false;
+  }
+
   // tslint:disable-next-line: cyclomatic-complexity
   draw(args: IOFMoreRenderArgs, vertexBuffer: WebGLBuffer, transformation: mat4 = null, renderType: number,
     indexBuffer: WebGLBuffer, indexCount: number): void {
@@ -156,6 +181,9 @@ export class OFShaderAbstract extends OFBaseShader {
       // _GL.useProgram(mShaderProgram); // Replaced for optimized function in GraphicDevice
       this._graphicDevice.useShaderProgram(this._shaderProgram);
 
+      // Shared textures take the units after the shader's own `: Texture` inputs.
+      let nextTextureUnit = this._texturePropIndexCount;
+
       // Auto-Generate WebGL calls for Uniforms
       for (let i = 0; i < this._shaderCodeInfo.uniformCount; i++) {
         const uniformData = this._shaderCodeInfo.uniforms[i];
@@ -170,6 +198,20 @@ export class OFShaderAbstract extends OFBaseShader {
             mat4.multiply(this._modelViewProjection, transformedMatrix, transformation ? transformation : this._world);
 
             _GL.uniformMatrix4fv(uniformLocation, false, this._modelViewProjection);
+            break;
+          case OFEnumShaderDataTypes.ITime:
+            _GL.uniform1f(this[uniformData.inputName], this._graphicDevice.elapsedSeconds);
+            break;
+          case OFEnumShaderDataTypes.IViewport:
+            const viewport = this._graphicDevice.currentViewport;
+
+            _GL.uniform4f(this[uniformData.inputName], viewport.x, viewport.y, viewport.width, viewport.height);
+            break;
+          case OFEnumShaderDataTypes.IShared:
+            if (this.sendSharedUniform(uniformData, nextTextureUnit)) {
+              if (uniformData.inputGLSLType === OFEnumShaderDataTypes.Sampler2D) { nextTextureUnit++; }
+            }
+            break;
         }
       }
 

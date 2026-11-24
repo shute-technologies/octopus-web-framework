@@ -23,6 +23,12 @@ export class OFGraphicDevice {
   private _currentBlendMode: OFEnumBlendMode;
 
   clearColor: OFColor;
+  /** Seconds since the framework started, summed from the frames' `dt`. Fills a `: Time` input. */
+  elapsedSeconds = 0;
+  /** The viewport last set through setViewport(), in drawing-buffer pixels. Fills a `: Viewport` input. */
+  readonly currentViewport = { x: 0, y: 0, width: 0, height: 0 };
+  /** Values by uniform name that fill a `: Shared` input of any shader. A texture takes a unit. */
+  readonly sharedUniforms = new Map<string, number | ArrayLike<number> | WebGLTexture>();
 
   get currentShaderProgram(): WebGLProgram { return this._currentShaderProgram; }
   get hasCustomCamera(): boolean { return this._hasCustomCamera; }
@@ -116,6 +122,18 @@ export class OFGraphicDevice {
     this._currentBlendMode = mode;
   }
 
+  /** Records the viewport and sets it on the context. */
+  setViewport(x: number, y: number, width: number, height: number): void {
+    const viewport = this.currentViewport;
+
+    viewport.x = x;
+    viewport.y = y;
+    viewport.width = width;
+    viewport.height = height;
+
+    this._graphicContext.viewport(x, y, width, height);
+  }
+
   /** Forgets the cached blend mode, so the next useBlendMode() sets it on the context. */
   resetStateCache(): void {
     this._currentBlendMode = undefined;
@@ -161,6 +179,7 @@ export class OFGraphicDevice {
   }
 
   update (args: IOFRenderArgs): void {
+    this.elapsedSeconds += args.dt;
     this.clear();
     this._renderCamera.update(args);
     this._deviceOptimizationManager.update(args);

@@ -19,5 +19,8 @@ export enum OFEnumShaderDataTypes {
   Bool             = 17,
   ICamera          = 18,
   IColor           = 19,
-  ITexture         = 20
+  ITexture         = 20,
+  ITime            = 21,
+  IViewport        = 22,
+  IShared          = 23
 }

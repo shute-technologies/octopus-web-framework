@@ -162,7 +162,10 @@ export class OFShaderAnalizer {
       inputVariableType: OFShaderAnalizer.changeVariableTypeToEnum(out_inputVariableType,
         out_inputDeclarativeVariableTypeName),
       inputName: out_inputName ? out_inputName.trim() : out_inputName,
-      inputDeclarativeVariableIndex: 0
+      inputDeclarativeVariableIndex: 0,
+      inputGLSLType: out_inputDeclarativeVariableTypeName
+        ? OFShaderAnalizer.changeVariableTypeToEnum(out_inputVariableType, undefined)
+        : undefined
     } as OFIShaderCodeInfoInputData;
   }
 
@@ -207,6 +210,9 @@ export class OFShaderAnalizer {
         case OFEnumShaderLiterals.DT_Texture: result = OFEnumShaderDataTypes.ITexture; break;
         case OFEnumShaderLiterals.DT_Color:   result = OFEnumShaderDataTypes.IColor; break;
         case OFEnumShaderLiterals.DT_Camera:  result = OFEnumShaderDataTypes.ICamera; break;
+        case OFEnumShaderLiterals.DT_Time:      result = OFEnumShaderDataTypes.ITime; break;
+        case OFEnumShaderLiterals.DT_Viewport:  result = OFEnumShaderDataTypes.IViewport; break;
+        case OFEnumShaderLiterals.DT_Shared:    result = OFEnumShaderDataTypes.IShared; break;
       }
     }
 

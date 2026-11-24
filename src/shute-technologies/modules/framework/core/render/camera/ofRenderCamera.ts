@@ -97,7 +97,7 @@ export class OFRenderCamera {
     this._viewport.width = width;
     this._viewport.height = height;
 
-    this._graphicContext.viewport(x, y, width, height);
+    this._graphicDevice.setViewport(x, y, width, height);
   }
 
   createPerspective (fov: number, width: number, height: number, zNear: number, zFar: number): void {

@@ -21,5 +21,8 @@ export enum OFEnumShaderLiterals {
   // Declarative Types
   DT_Texture   = "TEXTURE",
   DT_Color     = "COLOR",
-  DT_Camera    = "CAMERA"
+  DT_Camera    = "CAMERA",
+  DT_Time      = "TIME",
+  DT_Viewport  = "VIEWPORT",
+  DT_Shared    = "SHARED"
 }
