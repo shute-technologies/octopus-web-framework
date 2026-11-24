@@ -9,6 +9,7 @@ import { IOFRenderArgs } from '../../../../interfaces/iofRenderArgs';
 import { OFShaderTexture } from '../../shader/ofShaderTexture';
 import { OFSpriteBatcher } from './optimization/ofSpriteBatcher';
 import { OFCollisionHelper } from '../../../../helpers/ofCollisionHelper';
+import { OFEnumBlendMode } from '../../shader/ofEnumBlendMode';
 
 export class OFSprite extends OFDrawable2D {
 
@@ -22,6 +23,7 @@ export class OFSprite extends OFDrawable2D {
   protected _collisionRect: IOFSRect;
 
   enabledShaderProps: boolean;
+  blendMode: OFEnumBlendMode = OFEnumBlendMode.Alpha;
 
   get quadTextCoords(): OFQuadTextCoords { return this._quadTextCoords; }
   get collisionRect(): IOFSRect { return this._collisionRect; }
@@ -190,6 +192,9 @@ export class OFSprite extends OFDrawable2D {
         } else {
           (this._shader as OFShaderTexture).color = this._color;
         }
+
+        // The shader is shared per name, so the mode is written before every draw.
+        this._shader.blendMode = this.blendMode;
 
         if (!this._transformation) {
           this._shader.setTranslate(this.x, this.y, this.z);

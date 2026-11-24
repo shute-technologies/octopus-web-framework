@@ -41,6 +41,7 @@ export * from './src/shute-technologies/modules/cross-cutting/shader-analizer/of
 export * from './src/shute-technologies/modules/cross-cutting/shader-analizer/ofEnumShaderLiterals';
 export * from './src/shute-technologies/modules/cross-cutting/shader-analizer/ofShaderAnalizer';
 export * from './src/shute-technologies/modules/framework/core/render/shader/ofBaseShader';
+export * from './src/shute-technologies/modules/framework/core/render/shader/ofEnumBlendMode';
 export * from './src/shute-technologies/modules/framework/core/render/shader/ofShaderAbstract';
 export * from './src/shute-technologies/modules/framework/core/render/shader/ofShaderFactory';
 export * from './src/shute-technologies/modules/framework/core/render/shader/ofShaderPrimitive';

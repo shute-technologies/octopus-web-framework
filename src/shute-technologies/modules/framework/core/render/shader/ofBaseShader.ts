@@ -8,6 +8,7 @@ import { OFGraphicDevice } from '../../device/ofGraphicDevice';
 import { OFColor } from '../graphics/ofColor';
 import { OFIIsShaderAbstract } from './interfaces/ofIIsShaderAbstract';
 import { STUtils } from 'shute-technologies.common-and-utils';
+import { OFEnumBlendMode } from './ofEnumBlendMode';
 
 export abstract class OFBaseShader implements OFIIsShaderAbstract {
 
@@ -31,6 +32,10 @@ export abstract class OFBaseShader implements OFIIsShaderAbstract {
   protected _shaderProgram: WebGLProgram;
   protected _graphicContext: WebGLRenderingContext;
   protected _graphicDevice: OFGraphicDevice;
+
+  // How this shader's draws blend with what is already on the target. Shaders are shared per name, so
+  // whoever draws with one sets this right before the draw.
+  blendMode: OFEnumBlendMode = OFEnumBlendMode.Alpha;
 
   get name(): string { return this._name; }
   set name(val: string) {

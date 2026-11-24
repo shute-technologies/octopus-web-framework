@@ -151,8 +151,7 @@ export class OFShaderAbstract extends OFBaseShader {
 
     if (transformedMatrix && this._shaderProgram) {
       // Enable blending
-      _GL.enable(_GL.BLEND);
-      _GL.blendFunc(_GL.SRC_ALPHA, _GL.ONE_MINUS_SRC_ALPHA);
+      this._graphicDevice.useBlendMode(this.blendMode);
 
       // _GL.useProgram(mShaderProgram); // Replaced for optimized function in GraphicDevice
       this._graphicDevice.useShaderProgram(this._shaderProgram);

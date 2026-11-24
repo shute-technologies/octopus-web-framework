@@ -5,6 +5,7 @@ import { OFShaderFactory } from '../render/shader/ofShaderFactory';
 import { OFDeviceOptimizationManager } from './optimization/gpu/ofDeviceOptimizationManager';
 import { IOFRenderArgs } from '../../interfaces/iofRenderArgs';
 import { IOFCanvasElement } from '../ofCanvasContextManager';
+import { OFEnumBlendMode } from '../render/shader/ofEnumBlendMode';
 
 export class OFGraphicDevice {
 
@@ -18,6 +19,8 @@ export class OFGraphicDevice {
   private _currentShaderProgram: WebGLProgram;
   // Vertex attribute arrays are context state, not program state; see useVertexAttributes().
   private readonly _enabledVertexAttributes = new Set<number>();
+  // The blend mode last set on the context; undefined when unknown, which always sets.
+  private _currentBlendMode: OFEnumBlendMode;
 
   clearColor: OFColor;
 
@@ -83,6 +86,39 @@ export class OFGraphicDevice {
       this._currentShaderProgram = shaderProgram;
       _GL.useProgram(shaderProgram);
    // }
+  }
+
+  /**
+   * Enables blending and sets the blend function for `mode`. Skips every GL call when the mode is
+   * the one set last. A host that changes GL blend state itself calls resetStateCache() afterwards.
+   */
+  useBlendMode(mode: OFEnumBlendMode): void {
+    if (this._currentBlendMode === mode) { return; }
+
+    const _GL = this._graphicContext;
+    _GL.enable(_GL.BLEND);
+
+    switch (mode) {
+      case OFEnumBlendMode.Additive:
+        _GL.blendFuncSeparate(_GL.SRC_ALPHA, _GL.ONE, _GL.ONE, _GL.ONE_MINUS_SRC_ALPHA);
+        break;
+      case OFEnumBlendMode.Multiply:
+        _GL.blendFuncSeparate(_GL.DST_COLOR, _GL.ONE_MINUS_SRC_ALPHA, _GL.ONE, _GL.ONE_MINUS_SRC_ALPHA);
+        break;
+      case OFEnumBlendMode.Screen:
+        _GL.blendFuncSeparate(_GL.ONE, _GL.ONE_MINUS_SRC_COLOR, _GL.ONE, _GL.ONE_MINUS_SRC_ALPHA);
+        break;
+      default:
+        _GL.blendFunc(_GL.SRC_ALPHA, _GL.ONE_MINUS_SRC_ALPHA);
+        break;
+    }
+
+    this._currentBlendMode = mode;
+  }
+
+  /** Forgets the cached blend mode, so the next useBlendMode() sets it on the context. */
+  resetStateCache(): void {
+    this._currentBlendMode = undefined;
   }
 
   /**

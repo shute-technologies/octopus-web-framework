@@ -10,6 +10,7 @@ import { OFEnumVBOObjectType } from '../../../../device/optimization/gpu/ofEnumV
 import { OFVBOObject } from '../../../../device/optimization/gpu/ofVBOObject';
 import { mat4 } from 'gl-matrix';
 import { OFEnumShaderDataTypes } from '../../../../../../cross-cutting/shader-analizer/ofEnumShaderDataTypes';
+import { OFEnumBlendMode } from '../../../shader/ofEnumBlendMode';
 import { IDictionary } from 'shute-technologies.common-and-utils';
 
 export interface OFIPolygonBatcherUniformData {
@@ -32,6 +33,8 @@ export class OFPolygonBatcher {
   private _arrayBufferGPUIndex: Uint16Array;
 
   private _shader: OFBaseShader;
+
+  blendMode: OFEnumBlendMode = OFEnumBlendMode.Alpha;
 
   // Get a VBO for this object
   private _vBOObject: OFVBOObject;
@@ -194,6 +197,8 @@ export class OFPolygonBatcher {
       this._shader.setTextureByIndex(0, this._imageContent.imageTexture);
     }
 
+    // The shader is shared per name, so the mode is written before every draw.
+    this._shader.blendMode = this.blendMode;
     this._shader.draw(args, this._vBOObject.vbo, transformationMatrix, _renderMode, this._iBOObject.vbo, this._indexCount);
 
     this._GL.bindBuffer(this._GL.ARRAY_BUFFER, null);

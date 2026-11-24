@@ -33,8 +33,7 @@ export class OFShaderTexture extends OFBaseShader {
     const _GL = this._graphicContext;
 
     // Enable blending
-    _GL.enable(_GL.BLEND);
-    _GL.blendFunc(_GL.SRC_ALPHA, _GL.ONE_MINUS_SRC_ALPHA);
+    this._graphicDevice.useBlendMode(this.blendMode);
 
     _GL.useProgram(this._shaderProgram);
 
@@ -74,8 +73,7 @@ export class OFShaderTexture extends OFBaseShader {
     const _GL = this._graphicContext;
 
     // Enable blending
-    _GL.enable(_GL.BLEND);
-    _GL.blendFunc(_GL.SRC_ALPHA, _GL.ONE_MINUS_SRC_ALPHA);
+    this._graphicDevice.useBlendMode(this.blendMode);
 
     _GL.useProgram(this._shaderProgram);
 

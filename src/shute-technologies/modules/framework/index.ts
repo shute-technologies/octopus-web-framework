@@ -32,6 +32,7 @@ export * from './core/render/graphics/data/ofVertexPositionColorTexture';
 export * from './core/render/graphics/ofColor';
 export * from './core/render/graphics/ofDrawable2D';
 export * from './core/render/shader/ofBaseShader';
+export * from './core/render/shader/ofEnumBlendMode';
 export * from './core/render/shader/ofShaderAbstract';
 export * from './core/render/shader/ofShaderFactory';
 export * from './core/render/shader/ofShaderPrimitive';
