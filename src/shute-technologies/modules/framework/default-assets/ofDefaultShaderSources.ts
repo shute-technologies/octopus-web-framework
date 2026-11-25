@@ -20,8 +20,11 @@ export class OFDefaultShaderSources {
     fragment:
         "uniform lowp vec4 uColor : Color;\n\n" +
 
+        "uniform float uPremultiplyAlpha : Shared;\n\n" +
+
         "void main(void) {\n" +
         "    gl_FragColor = uColor;\n" +
+        "    gl_FragColor.rgb *= mix(1.0, gl_FragColor.a, uPremultiplyAlpha);\n" +
         "}"
   } as IOFDefaultShaderSource;
 
@@ -45,8 +48,11 @@ export class OFDefaultShaderSources {
         "uniform lowp vec4 uColor : Color;\n" +
         "uniform sampler2D uSamplerTexture : Texture;\n\n" +
 
+        "uniform float uPremultiplyAlpha : Shared;\n\n" +
+
         "void main(void) {\n" +
         "    gl_FragColor = texture2D(uSamplerTexture, varyingTextureCoord) * uColor;\n" +
+        "    gl_FragColor.rgb *= mix(1.0, gl_FragColor.a, uPremultiplyAlpha);\n" +
         "}"
   } as IOFDefaultShaderSource;
 
@@ -98,8 +104,11 @@ export class OFDefaultShaderSources {
 
         "uniform sampler2D uSamplerTexture : Texture;\n\n" +
 
+        "uniform float uPremultiplyAlpha : Shared;\n\n" +
+
         "void main(void) {\n" +
         "    gl_FragColor = texture2D(uSamplerTexture, varyingTextureCoord) * varyingVertexColor;\n" +
+        "    gl_FragColor.rgb *= mix(1.0, gl_FragColor.a, uPremultiplyAlpha);\n" +
         "}"
   } as IOFDefaultShaderSource;
 
@@ -127,8 +136,11 @@ export class OFDefaultShaderSources {
         "uniform lowp vec4 uTintColor : Color;\n" +
         "uniform sampler2D uSamplerTexture : Texture;\n\n" +
 
+        "uniform float uPremultiplyAlpha : Shared;\n\n" +
+
         "void main(void) {\n" +
         "    gl_FragColor = texture2D(uSamplerTexture, varyingTextureCoord) * varyingVertexColor * uTintColor;\n" +
+        "    gl_FragColor.rgb *= mix(1.0, gl_FragColor.a, uPremultiplyAlpha);\n" +
         "}"
   } as IOFDefaultShaderSource;
 }

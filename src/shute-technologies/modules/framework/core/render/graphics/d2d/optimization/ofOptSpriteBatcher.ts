@@ -9,6 +9,7 @@ import { OFImageContent } from '../../../../content/ofImageContent';
 import { OFEnumVBOObjectType } from '../../../../device/optimization/gpu/ofEnumVBOObjectType';
 import { IOFRenderArgs } from '../../../../../interfaces/iofRenderArgs';
 import { mat4 } from 'gl-matrix';
+import { OFEnumBlendMode } from '../../../shader/ofEnumBlendMode';
 import { OFOptSpriteBatcherRenderData } from '../../data/ofOptSpriteBatcherRenderData';
 
 export class OFOptSpriteBatcher {
@@ -23,6 +24,8 @@ export class OFOptSpriteBatcher {
   protected _alreadyTransformedForRender: boolean;
 
   color: OFColor;
+  // How this batcher's sprites blend. The shader is shared per name, so it is written before every draw.
+  blendMode: OFEnumBlendMode = OFEnumBlendMode.Alpha;
 
   constructor () {
     this._graphicDevice = OFFrameworkFactory.currentFramewok.mainGraphicDevice;
@@ -190,6 +193,7 @@ export class OFOptSpriteBatcher {
 
       this._shader.setColorByIndex(0, this.color);
       this._shader.setTextureByIndex(0, renderData.imageTexture);
+      this._shader.blendMode = this.blendMode;
       this._shader.draw(args, renderData.vboObject.vbo, transformationMatrix,
         _GL.TRIANGLES, renderData.iboObject.vbo, renderData.indicesCount);
     }

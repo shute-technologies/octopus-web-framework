@@ -3,6 +3,7 @@ import { OFShaderFactory } from './ofShaderFactory';
 import { IOFDefaultShaderSource } from '../../../default-assets/ofDefaultShaderSources';
 import { OFColor } from '../graphics/ofColor';
 import { IOFRenderArgs } from '../../../interfaces/iofRenderArgs';
+import { OFGraphicDevice } from '../../device/ofGraphicDevice';
 import { mat4 } from 'gl-matrix';
 
 export class OFShaderTexture extends OFBaseShader {
@@ -14,6 +15,7 @@ export class OFShaderTexture extends OFBaseShader {
   private _samplerPositionUniform: WebGLUniformLocation;
   private _uniformWVPMatrix: WebGLUniformLocation;
   private _uniformColor: WebGLUniformLocation;
+  private _uniformPremultiply: WebGLUniformLocation;
 
   constructor(protected readonly _shaderFactory: OFShaderFactory, sourceTarget: IOFDefaultShaderSource) {
     super(_shaderFactory, sourceTarget);
@@ -27,6 +29,7 @@ export class OFShaderTexture extends OFBaseShader {
     this._samplerPositionUniform = _GL.getUniformLocation(this._shaderProgram, 'uSamplerTexture');
     this._uniformWVPMatrix = _GL.getUniformLocation(this._shaderProgram, 'uWVPMatrix');
     this._uniformColor = _GL.getUniformLocation(this._shaderProgram, 'uColor');
+    this._uniformPremultiply = _GL.getUniformLocation(this._shaderProgram, OFGraphicDevice.premultiplyUniformName);
   }
 
   draw (args: IOFRenderArgs, texture: WebGLTexture, vertexBuffer: WebGLBuffer, transformation?: mat4): void {
@@ -36,6 +39,7 @@ export class OFShaderTexture extends OFBaseShader {
     this._graphicDevice.useBlendMode(this.blendMode);
 
     _GL.useProgram(this._shaderProgram);
+    _GL.uniform1f(this._uniformPremultiply, OFGraphicDevice.premultipliesFor(this.blendMode) ? 1 : 0);
 
     _GL.activeTexture(_GL.TEXTURE0);
     _GL.bindTexture(_GL.TEXTURE_2D, texture);
@@ -76,6 +80,7 @@ export class OFShaderTexture extends OFBaseShader {
     this._graphicDevice.useBlendMode(this.blendMode);
 
     _GL.useProgram(this._shaderProgram);
+    _GL.uniform1f(this._uniformPremultiply, OFGraphicDevice.premultipliesFor(this.blendMode) ? 1 : 0);
 
     _GL.activeTexture(_GL.TEXTURE0);
     _GL.bindTexture(_GL.TEXTURE_2D, texture);

@@ -3,6 +3,7 @@ import { OFShaderFactory } from './ofShaderFactory';
 import { IOFDefaultShaderSource } from '../../../default-assets/ofDefaultShaderSources';
 import { IOFRenderArgs } from '../../../interfaces/iofRenderArgs';
 import { OFColor } from '../graphics/ofColor';
+import { OFGraphicDevice } from '../../device/ofGraphicDevice';
 import { mat4 } from 'gl-matrix';
 
 export class OFShaderPrimitive extends OFBaseShader {
@@ -10,6 +11,7 @@ export class OFShaderPrimitive extends OFBaseShader {
   private _vertexPositionAttr: number;
   private _uniformWVPMatrix: WebGLUniformLocation;
   private _uniformColor: WebGLUniformLocation;
+  private _uniformPremultiply: WebGLUniformLocation;
 
   color: OFColor;
 
@@ -23,6 +25,7 @@ export class OFShaderPrimitive extends OFBaseShader {
     this._vertexPositionAttr = _GL.getAttribLocation(this._shaderProgram, 'aVertexPosition');
     this._uniformWVPMatrix = _GL.getUniformLocation(this._shaderProgram, 'uWVPMatrix');
     this._uniformColor = _GL.getUniformLocation(this._shaderProgram, 'uColor');
+    this._uniformPremultiply = _GL.getUniformLocation(this._shaderProgram, OFGraphicDevice.premultiplyUniformName);
   }
 
   draw(args: IOFRenderArgs, vertexBuffer: WebGLBuffer, indexBuffer: WebGLBuffer,
@@ -33,6 +36,7 @@ export class OFShaderPrimitive extends OFBaseShader {
     // Enable blending
     this._graphicDevice.useBlendMode(this.blendMode);
     _GL.useProgram(this._shaderProgram);
+    _GL.uniform1f(this._uniformPremultiply, OFGraphicDevice.premultipliesFor(this.blendMode) ? 1 : 0);
     _GL.bindBuffer(_GL.ARRAY_BUFFER, vertexBuffer);
     // Through the device, which also disables what an earlier draw enabled (texture coordinates).
     this._graphicDevice.useVertexAttributes([this._vertexPositionAttr]);

@@ -38,6 +38,18 @@ export class OFGraphicDevice {
   /** The viewport last set through setViewport(), in drawing-buffer pixels. Fills a `: Viewport` input. */
   readonly currentViewport = { x: 0, y: 0, width: 0, height: 0 };
   /** Values by uniform name that fill a `: Shared` input of any shader. A texture takes a unit. */
+  /**
+   * The shared uniform a shader declares (`uniform float uPremultiplyAlpha : Shared;`) to output
+   * premultiplied colour. Textures are straight alpha, and the Multiply and Screen blend functions
+   * are the premultiplied ones.
+   */
+  static readonly premultiplyUniformName = 'uPremultiplyAlpha';
+
+  /** True for the blend modes whose blend function expects premultiplied colour. */
+  static premultipliesFor(mode: OFEnumBlendMode): boolean {
+    return mode === OFEnumBlendMode.Multiply || mode === OFEnumBlendMode.Screen;
+  }
+
   readonly sharedUniforms = new Map<string, number | ArrayLike<number> | WebGLTexture>();
 
   get currentShaderProgram(): WebGLProgram { return this._currentShaderProgram; }
@@ -113,6 +125,9 @@ export class OFGraphicDevice {
    * the one set last. A host that changes GL blend state itself calls resetStateCache() afterwards.
    */
   useBlendMode(mode: OFEnumBlendMode): void {
+    // Set on every call, before the early return: the next draw reads the shared value, not the context.
+    this.sharedUniforms.set(OFGraphicDevice.premultiplyUniformName, OFGraphicDevice.premultipliesFor(mode) ? 1 : 0);
+
     if (this._currentBlendMode === mode) { return; }
 
     const _GL = this._graphicContext;
