@@ -1,6 +1,9 @@
 // A WebGL stand-in for the render tests. Every method call is recorded in `calls`. Constants
 // (upper-case names such as TEXTURE3 or ELEMENT_ARRAY_BUFFER) read as their own name.
 // `attribLocations` maps attribute names to the location getAttribLocation returns (default 0).
+// Render targets: `extensions` maps extension names to what getExtension returns (default none),
+// `framebufferStatus` is what checkFramebufferStatus returns (default complete), and
+// `enabled` is the set of capabilities isEnabled reports (enable/disable keep it).
 
 function createFakeGL(attribLocations = {}) {
   const calls = [];
@@ -14,6 +17,15 @@ function createFakeGL(attribLocations = {}) {
       return name in target.attribLocations ? target.attribLocations[name] : 0;
     },
     createTexture() { calls.push({ name: 'createTexture', args: [] }); return { texture: calls.length }; },
+    createFramebuffer() { calls.push({ name: 'createFramebuffer', args: [] }); return { framebuffer: calls.length }; },
+    extensions: {},
+    framebufferStatus: 'FRAMEBUFFER_COMPLETE',
+    enabled: new Set(),
+    getExtension(name) { calls.push({ name: 'getExtension', args: [name] }); return target.extensions[name] || null; },
+    checkFramebufferStatus(t) { calls.push({ name: 'checkFramebufferStatus', args: [t] }); return target.framebufferStatus; },
+    isEnabled(cap) { return target.enabled.has(cap); },
+    enable(cap) { calls.push({ name: 'enable', args: [cap] }); target.enabled.add(cap); },
+    disable(cap) { calls.push({ name: 'disable', args: [cap] }); target.enabled.delete(cap); },
     uniformMatrix4fv(location, transpose, matrix) {
       // Copy: callers may legitimately reuse the array after the call, as WebGL itself copies it.
       calls.push({ name: 'uniformMatrix4fv', args: [location, transpose, Array.from(matrix)] });
@@ -48,7 +60,9 @@ function makeGraphicDevice(lib, gl, deviceCamera) {
     // Field initializers do not run on a device made with Object.create.
     elapsedSeconds: 0,
     currentViewport: { x: 0, y: 0, width: 0, height: 0 },
-    sharedUniforms: new Map()
+    sharedUniforms: new Map(),
+    _currentFramebuffer: null,
+    _renderTargetStack: []
   });
 }
 

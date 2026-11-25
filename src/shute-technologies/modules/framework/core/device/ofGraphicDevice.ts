@@ -7,6 +7,12 @@ import { IOFRenderArgs } from '../../interfaces/iofRenderArgs';
 import { IOFCanvasElement } from '../ofCanvasContextManager';
 import { OFEnumBlendMode } from '../render/shader/ofEnumBlendMode';
 
+interface OFIRenderTargetState {
+  framebuffer: WebGLFramebuffer | null;
+  viewport: { x: number; y: number; width: number; height: number };
+  scissor: boolean;
+}
+
 export class OFGraphicDevice {
 
   private _canvasObject: IOFCanvasElement;
@@ -21,6 +27,10 @@ export class OFGraphicDevice {
   private readonly _enabledVertexAttributes = new Set<number>();
   // The blend mode last set on the context; undefined when unknown, which always sets.
   private _currentBlendMode: OFEnumBlendMode;
+  // The framebuffer bound through bindRenderTarget(); null is the canvas.
+  private _currentFramebuffer: WebGLFramebuffer | null = null;
+  // What bindRenderTarget() replaced, restored by unbindRenderTarget(); nests.
+  private readonly _renderTargetStack: OFIRenderTargetState[] = [];
 
   clearColor: OFColor;
   /** Seconds since the framework started, summed from the frames' `dt`. Fills a `: Time` input. */
@@ -31,6 +41,10 @@ export class OFGraphicDevice {
   readonly sharedUniforms = new Map<string, number | ArrayLike<number> | WebGLTexture>();
 
   get currentShaderProgram(): WebGLProgram { return this._currentShaderProgram; }
+  /** The framebuffer draws go to: null for the canvas, else the bound render target's. */
+  get currentFramebuffer(): WebGLFramebuffer | null { return this._currentFramebuffer; }
+  /** How many render targets are bound, nested; 0 when drawing to the canvas. */
+  get renderTargetDepth(): number { return this._renderTargetStack.length; }
   get hasCustomCamera(): boolean { return this._hasCustomCamera; }
   get graphicContext(): WebGLRenderingContext { return this._graphicContext; }
   get canvasElement(): HTMLCanvasElement { return this._canvasObject.canvasElement; }
@@ -132,6 +146,52 @@ export class OFGraphicDevice {
     viewport.height = height;
 
     this._graphicContext.viewport(x, y, width, height);
+  }
+
+  /**
+   * Makes `framebuffer` the draw target with a viewport of `width` x `height` at 0, 0, and disables the
+   * scissor test (a camera's scissor rectangle is in canvas pixels and would clip the target). Remembers the
+   * framebuffer, viewport and scissor state it replaces; unbindRenderTarget() restores them. Nests.
+   */
+  bindRenderTarget(framebuffer: WebGLFramebuffer, width: number, height: number): void {
+    const _GL = this._graphicContext;
+    const viewport = this.currentViewport;
+
+    this._renderTargetStack.push({
+      framebuffer: this._currentFramebuffer,
+      viewport: { x: viewport.x, y: viewport.y, width: viewport.width, height: viewport.height },
+      scissor: !!_GL.isEnabled(_GL.SCISSOR_TEST)
+    });
+
+    this.bindFramebuffer(framebuffer);
+    _GL.disable(_GL.SCISSOR_TEST);
+    this.setViewport(0, 0, width, height);
+  }
+
+  /** Restores what the matching bindRenderTarget() replaced. Does nothing when no target is bound. */
+  unbindRenderTarget(): void {
+    const previous = this._renderTargetStack.pop();
+
+    if (!previous) { return; }
+
+    const _GL = this._graphicContext;
+    const viewport = previous.viewport;
+
+    this.bindFramebuffer(previous.framebuffer);
+    this.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
+
+    if (previous.scissor) { _GL.enable(_GL.SCISSOR_TEST); }
+  }
+
+  /**
+   * Binds `framebuffer` (null: the canvas) and records it. For a render target's own setup; drawing into one
+   * goes through bindRenderTarget(), which also sets the viewport.
+   */
+  bindFramebuffer(framebuffer: WebGLFramebuffer | null): void {
+    const _GL = this._graphicContext;
+
+    this._currentFramebuffer = framebuffer;
+    _GL.bindFramebuffer(_GL.FRAMEBUFFER, framebuffer);
   }
 
   /** Forgets the cached blend mode, so the next useBlendMode() sets it on the context. */

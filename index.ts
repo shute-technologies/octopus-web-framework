@@ -45,6 +45,8 @@ export * from './src/shute-technologies/modules/framework/core/render/shader/ofE
 export * from './src/shute-technologies/modules/framework/core/render/shader/ofShaderAbstract';
 export * from './src/shute-technologies/modules/framework/core/render/shader/ofShaderFactory';
 export * from './src/shute-technologies/modules/framework/core/render/shader/ofShaderPrimitive';
+export * from './src/shute-technologies/modules/framework/core/render/target/ofRenderTarget';
+export * from './src/shute-technologies/modules/framework/core/render/target/ofRenderTargetPool';
 export * from './src/shute-technologies/modules/framework/core/render/shader/ofShaderTexture';
 export * from './src/shute-technologies/modules/framework/core/render/shader/interfaces/ofIIsShaderAbstract';
 export * from './src/shute-technologies/modules/framework/core/render/viewport/ofViewport';
