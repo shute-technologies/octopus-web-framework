@@ -50,6 +50,31 @@ export class OFDefaultShaderSources {
         "}"
   } as IOFDefaultShaderSource;
 
+  /** Draws a texture unchanged over a clip-space quad (OFFullscreenPass.copyShader). */
+  static readonly SourcesFullscreenCopy = {
+    vertex:
+        "attribute vec3 aVertexPosition;\n" +
+        "attribute vec2 aTextureCoord;\n\n" +
+
+        "uniform mat4 uWVPMatrix : Camera;\n\n" +
+
+        "varying highp vec2 varyingTextureCoord;\n\n" +
+
+        "void main(void) {\n" +
+            "    varyingTextureCoord = aTextureCoord;\n" +
+            "    gl_Position = uWVPMatrix * vec4(aVertexPosition, 1.0);\n" +
+        "}",
+
+    fragment:
+        "varying highp vec2 varyingTextureCoord;\n\n" +
+
+        "uniform sampler2D uSamplerTexture : Texture;\n\n" +
+
+        "void main(void) {\n" +
+        "    gl_FragColor = texture2D(uSamplerTexture, varyingTextureCoord);\n" +
+        "}"
+  } as IOFDefaultShaderSource;
+
   static readonly SourcesSpineShaderTexture = {
     vertex:
         "attribute vec2 aVertexPosition;\n" +

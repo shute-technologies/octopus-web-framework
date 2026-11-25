@@ -36,6 +36,7 @@ export * from './core/render/shader/ofEnumBlendMode';
 export * from './core/render/shader/ofShaderAbstract';
 export * from './core/render/shader/ofShaderFactory';
 export * from './core/render/shader/ofShaderPrimitive';
+export * from './core/render/target/ofFullscreenPass';
 export * from './core/render/target/ofRenderTarget';
 export * from './core/render/target/ofRenderTargetPool';
 export * from './core/render/shader/ofShaderTexture';

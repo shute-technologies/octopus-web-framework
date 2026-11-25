@@ -17,6 +17,7 @@ function createFakeGL(attribLocations = {}) {
       return name in target.attribLocations ? target.attribLocations[name] : 0;
     },
     createTexture() { calls.push({ name: 'createTexture', args: [] }); return { texture: calls.length }; },
+    createBuffer() { calls.push({ name: 'createBuffer', args: [] }); return { buffer: calls.length }; },
     createFramebuffer() { calls.push({ name: 'createFramebuffer', args: [] }); return { framebuffer: calls.length }; },
     extensions: {},
     framebufferStatus: 'FRAMEBUFFER_COMPLETE',
