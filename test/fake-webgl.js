@@ -19,6 +19,14 @@ function createFakeGL(attribLocations = {}) {
     createTexture() { calls.push({ name: 'createTexture', args: [] }); return { texture: calls.length }; },
     createBuffer() { calls.push({ name: 'createBuffer', args: [] }); return { buffer: calls.length }; },
     createFramebuffer() { calls.push({ name: 'createFramebuffer', args: [] }); return { framebuffer: calls.length }; },
+    // Tracked by bindFramebuffer/bindTexture, so getParameter reports what is bound (texture: on the active unit).
+    bindings: { FRAMEBUFFER_BINDING: null, TEXTURE_BINDING_2D: null },
+    bindFramebuffer(t, fb) { calls.push({ name: 'bindFramebuffer', args: [t, fb] }); target.bindings.FRAMEBUFFER_BINDING = fb; },
+    bindTexture(t, tex) { calls.push({ name: 'bindTexture', args: [t, tex] }); target.bindings.TEXTURE_BINDING_2D = tex; },
+    getParameter(name) {
+      calls.push({ name: 'getParameter', args: [name] });
+      return name in target.bindings ? target.bindings[name] : null;
+    },
     extensions: {},
     framebufferStatus: 'FRAMEBUFFER_COMPLETE',
     enabled: new Set(),

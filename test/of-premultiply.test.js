@@ -112,3 +112,20 @@ test('OFOptSpriteBatcher draws Alpha even when its shared shader was left Additi
   assert.deepEqual(gl.callsTo('blendFunc').map((c) => c.args), [['SRC_ALPHA', 'ONE_MINUS_SRC_ALPHA']]);
   assert.equal(gl.callsTo('blendFuncSeparate').length, 0);
 });
+
+test('every float, vector and matrix uniform of a default fragment shader has a precision word', () => {
+  const names = ['SourcesShaderPrimitive', 'SourcesShaderTexture', 'SourcesFullscreenCopy', 'SourcesSpineShaderTexture',
+    'SourcesTextShaderTexture'];
+
+  for (const name of names) {
+    const fragment = OFDefaultShaderSources[name].fragment;
+
+    if (/^\s*precision\s/m.test(fragment)) { continue; }
+
+    for (const line of fragment.split('\n').filter((l) => /^\s*uniform\s/.test(l))) {
+      if (/\b(float|vec[234]|mat[234])\b/.test(line)) {
+        assert.match(line, /^\s*uniform\s+(lowp|mediump|highp)\s/, `${name}: ${line}`);
+      }
+    }
+  }
+});

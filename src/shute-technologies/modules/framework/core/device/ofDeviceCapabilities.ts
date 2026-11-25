@@ -38,8 +38,7 @@ export class OFDeviceCapabilities {
    * enough on some drivers, so a 1x1 half-float framebuffer is made and its status checked; the answer is kept
    * per context. Needs OES_texture_half_float (the type), OES_texture_half_float_linear (LINEAR filtering, without
    * which the texture samples black) and a complete framebuffer; EXT_color_buffer_half_float is enabled when present.
-   * Leaves no binding behind: the 2D texture and framebuffer bindings are reset to null, as octopus binds both
-   * explicitly before use.
+   * Leaves the framebuffer and the 2D texture (on the active unit) bound as they were.
    */
   static supportsHalfFloatTarget(gl: WebGLRenderingContext): boolean {
     if (!gl) { return false; }
@@ -53,6 +52,8 @@ export class OFDeviceCapabilities {
     gl.getExtension('EXT_color_buffer_half_float');
 
     if (halfFloat && halfFloatLinear) {
+      const previousFramebuffer = gl.getParameter(gl.FRAMEBUFFER_BINDING) as WebGLFramebuffer | null;
+      const previousTexture = gl.getParameter(gl.TEXTURE_BINDING_2D) as WebGLTexture | null;
       const texture = gl.createTexture();
       const framebuffer = gl.createFramebuffer();
 
@@ -63,8 +64,8 @@ export class OFDeviceCapabilities {
       gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
       gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
       result = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
-      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-      gl.bindTexture(gl.TEXTURE_2D, null);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, previousFramebuffer);
+      gl.bindTexture(gl.TEXTURE_2D, previousTexture);
       gl.deleteFramebuffer(framebuffer);
       gl.deleteTexture(texture);
     }

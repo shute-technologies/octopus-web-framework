@@ -8,6 +8,8 @@ import { IOFCanvasElement } from '../ofCanvasContextManager';
 import { OFEnumBlendMode } from '../render/shader/ofEnumBlendMode';
 
 interface OFIRenderTargetState {
+  // The framebuffer this entry's bindRenderTarget() bound, to check unbinds come in reverse order.
+  bound: WebGLFramebuffer;
   framebuffer: WebGLFramebuffer | null;
   viewport: { x: number; y: number; width: number; height: number };
   scissor: boolean;
@@ -27,6 +29,8 @@ export class OFGraphicDevice {
   private readonly _enabledVertexAttributes = new Set<number>();
   // The blend mode last set on the context; undefined when unknown, which always sets.
   private _currentBlendMode: OFEnumBlendMode;
+  // Whether that blend mode was set while a render target was bound: Alpha differs there.
+  private _currentBlendInTarget = false;
   // The framebuffer bound through bindRenderTarget(); null is the canvas.
   private _currentFramebuffer: WebGLFramebuffer | null = null;
   // What bindRenderTarget() replaced, restored by unbindRenderTarget(); nests.
@@ -128,12 +132,22 @@ export class OFGraphicDevice {
     // Set on every call, before the early return: the next draw reads the shared value, not the context.
     this.sharedUniforms.set(OFGraphicDevice.premultiplyUniformName, OFGraphicDevice.premultipliesFor(mode) ? 1 : 0);
 
-    if (this._currentBlendMode === mode) { return; }
+    const inTarget = this._renderTargetStack.length > 0;
+
+    if (this._currentBlendMode === mode && this._currentBlendInTarget === inTarget) { return; }
 
     const _GL = this._graphicContext;
-    _GL.enable(_GL.BLEND);
+
+    // Replace disables BLEND, and every other mode enables it again: it never relies on the cache.
+    if (mode !== OFEnumBlendMode.Replace) { _GL.enable(_GL.BLEND); }
 
     switch (mode) {
+      case OFEnumBlendMode.Replace:
+        _GL.disable(_GL.BLEND);
+        break;
+      case OFEnumBlendMode.Premultiplied:
+        _GL.blendFuncSeparate(_GL.ONE, _GL.ONE_MINUS_SRC_ALPHA, _GL.ONE, _GL.ONE_MINUS_SRC_ALPHA);
+        break;
       case OFEnumBlendMode.Additive:
         _GL.blendFuncSeparate(_GL.SRC_ALPHA, _GL.ONE, _GL.ONE, _GL.ONE_MINUS_SRC_ALPHA);
         break;
@@ -144,11 +158,18 @@ export class OFGraphicDevice {
         _GL.blendFuncSeparate(_GL.ONE, _GL.ONE_MINUS_SRC_COLOR, _GL.ONE, _GL.ONE_MINUS_SRC_ALPHA);
         break;
       default:
-        _GL.blendFunc(_GL.SRC_ALPHA, _GL.ONE_MINUS_SRC_ALPHA);
+        if (inTarget) {
+          // Alpha as one blendFunc would also blend the alpha channel (a² + dA(1-a)), wrong for a transparent
+          // target. The canvas has no alpha channel to keep right, and keeps the plain call.
+          _GL.blendFuncSeparate(_GL.SRC_ALPHA, _GL.ONE_MINUS_SRC_ALPHA, _GL.ONE, _GL.ONE_MINUS_SRC_ALPHA);
+        } else {
+          _GL.blendFunc(_GL.SRC_ALPHA, _GL.ONE_MINUS_SRC_ALPHA);
+        }
         break;
     }
 
     this._currentBlendMode = mode;
+    this._currentBlendInTarget = inTarget;
   }
 
   /** Records the viewport and sets it on the context. */
@@ -173,6 +194,7 @@ export class OFGraphicDevice {
     const viewport = this.currentViewport;
 
     this._renderTargetStack.push({
+      bound: framebuffer,
       framebuffer: this._currentFramebuffer,
       viewport: { x: viewport.x, y: viewport.y, width: viewport.width, height: viewport.height },
       scissor: !!_GL.isEnabled(_GL.SCISSOR_TEST)
@@ -181,13 +203,24 @@ export class OFGraphicDevice {
     this.bindFramebuffer(framebuffer);
     _GL.disable(_GL.SCISSOR_TEST);
     this.setViewport(0, 0, width, height);
+    // Alpha blends differently in a target; see useBlendMode().
+    this.resetStateCache();
   }
 
-  /** Restores what the matching bindRenderTarget() replaced. Does nothing when no target is bound. */
-  unbindRenderTarget(): void {
-    const previous = this._renderTargetStack.pop();
+  /**
+   * Restores what the matching bindRenderTarget() replaced. Does nothing when no target is bound. `framebuffer`
+   * is the one being unbound: it must be the most recent bind, or this throws and changes nothing.
+   */
+  unbindRenderTarget(framebuffer: WebGLFramebuffer): void {
+    const stack = this._renderTargetStack;
 
-    if (!previous) { return; }
+    if (stack.length === 0) { return; }
+
+    if (stack[stack.length - 1].bound !== framebuffer) {
+      throw new Error('OFGraphicDevice.unbindRenderTarget: render targets must be unbound in reverse order.');
+    }
+
+    const previous = stack.pop();
 
     const _GL = this._graphicContext;
     const viewport = previous.viewport;
@@ -196,6 +229,8 @@ export class OFGraphicDevice {
     this.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
 
     if (previous.scissor) { _GL.enable(_GL.SCISSOR_TEST); }
+
+    this.resetStateCache();
   }
 
   /**

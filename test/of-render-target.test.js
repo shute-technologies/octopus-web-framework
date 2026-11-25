@@ -252,3 +252,135 @@ test('releasing unbinds a target left bound', () => {
   assert.equal(device.currentFramebuffer, null);
   assert.equal(device.renderTargetDepth, 0);
 });
+
+test('unbinding out of order throws, names the problem and leaves the stack intact', () => {
+  const { gl, device } = setup();
+  const outer = new OFRenderTarget(device, 100, 100);
+  const inner = new OFRenderTarget(device, 50, 50);
+
+  outer.bind();
+  inner.bind();
+  gl.calls.length = 0;
+
+  assert.throws(() => outer.unbind(), /reverse order/);
+  assert.throws(() => outer.destroy(), /reverse order/);
+  assert.equal(device.renderTargetDepth, 2);
+  assert.equal(device.currentFramebuffer, inner.framebuffer);
+  assert.equal(gl.callsTo('bindFramebuffer').length, 0);
+
+  inner.unbind();
+  outer.unbind();
+  assert.equal(device.renderTargetDepth, 0);
+  assert.equal(device.currentFramebuffer, null);
+});
+
+test('releasing an outer pooled target while an inner one is bound throws and keeps the stack', () => {
+  const { device } = setup();
+  const pool = new OFRenderTargetPool(device);
+  const outer = pool.acquire(100, 100);
+  const inner = pool.acquire(50, 50);
+
+  outer.bind();
+  inner.bind();
+
+  assert.throws(() => pool.release(outer), /reverse order/);
+  assert.equal(device.renderTargetDepth, 2);
+  assert.equal(pool.inUseCount, 2);
+});
+
+test('pool.destroy with nested binds destroys in reverse acquisition order and empties the stack', () => {
+  const { device } = setup();
+  const pool = new OFRenderTargetPool(device);
+  const outer = pool.acquire(100, 100);
+  const inner = pool.acquire(50, 50);
+
+  outer.bind();
+  inner.bind();
+  pool.destroy();
+
+  assert.equal(device.renderTargetDepth, 0);
+  assert.equal(device.currentFramebuffer, null);
+  assert.ok(outer.isDestroyed && inner.isDestroyed);
+  assert.equal(pool.count, 0);
+});
+
+test('clear of a lower bound target clears only it and restores the top', () => {
+  const { gl, device } = setup();
+  const outer = new OFRenderTarget(device, 100, 100);
+  const inner = new OFRenderTarget(device, 50, 50);
+
+  outer.bind();
+  inner.bind();
+  gl.calls.length = 0;
+  outer.clear(1, 0, 0, 1);
+
+  const bound = gl.callsTo('bindFramebuffer').map((c) => c.args[1]);
+  assert.deepEqual(bound, [outer.framebuffer, inner.framebuffer]);
+  assert.equal(gl.callsTo('clear').length, 1);
+  assert.ok(gl.calls.findIndex((c) => c.name === 'clear') > gl.calls.findIndex((c) => c.name === 'bindFramebuffer'));
+  assert.equal(device.renderTargetDepth, 2);
+  assert.equal(device.currentFramebuffer, inner.framebuffer);
+  assert.deepEqual(viewportOf(device), { x: 0, y: 0, width: 50, height: 50 });
+});
+
+test('clear of the current target pushes nothing', () => {
+  const { gl, device } = setup();
+  const target = new OFRenderTarget(device, 100, 100);
+
+  target.bind();
+  gl.calls.length = 0;
+  target.clear(0, 0, 0, 0);
+
+  assert.equal(gl.callsTo('bindFramebuffer').length, 0);
+  assert.equal(device.renderTargetDepth, 1);
+});
+
+test('creating a target, and resizing one, restores the framebuffer and the TEXTURE_2D binding', () => {
+  const { gl, device } = setup();
+  const userTexture = { texture: 'user' };
+  const userFramebuffer = { framebuffer: 'user' };
+
+  gl.bindTexture('TEXTURE_2D', userTexture);
+  gl.bindFramebuffer('FRAMEBUFFER', userFramebuffer);
+  const target = new OFRenderTarget(device, 64, 64);
+
+  assert.equal(gl.getParameter('TEXTURE_BINDING_2D'), userTexture);
+  assert.equal(gl.getParameter('FRAMEBUFFER_BINDING'), userFramebuffer);
+
+  target.resize(32, 32);
+  assert.equal(gl.getParameter('TEXTURE_BINDING_2D'), userTexture);
+  assert.equal(gl.getParameter('FRAMEBUFFER_BINDING'), userFramebuffer);
+});
+
+test('the half-float probe restores the framebuffer and the TEXTURE_2D binding', () => {
+  const { gl } = setup({ extensions: halfFloatExtensions });
+  const userTexture = { texture: 'user' };
+  const userFramebuffer = { framebuffer: 'user' };
+
+  gl.bindTexture('TEXTURE_2D', userTexture);
+  gl.bindFramebuffer('FRAMEBUFFER', userFramebuffer);
+
+  assert.equal(OFDeviceCapabilities.supportsHalfFloatTarget(gl), true);
+  assert.equal(gl.getParameter('TEXTURE_BINDING_2D'), userTexture);
+  assert.equal(gl.getParameter('FRAMEBUFFER_BINDING'), userFramebuffer);
+});
+
+test('the render camera resizes through the device, so currentViewport follows', () => {
+  const { OFRenderCamera } = lib;
+  const { gl, device } = setup();
+  const viewport = { x: 0, y: 0, width: 0, height: 0 };
+  const camera = Object.assign(Object.create(OFRenderCamera.prototype), {
+    _graphicDevice: device, _graphicContext: gl, _viewport: viewport, _width: 1, _height: 1,
+    isFreeAspect: true, createOrthographic() {},
+    _framework: { settings: { canvasContextType: lib.OFEnumCanvasContextType.D2D } }
+  });
+  gl.calls.length = 0;
+
+  camera.resize(1024, 768);
+  assert.deepEqual(viewportOf(device), { x: 0, y: 0, width: 1024, height: 768 });
+  assert.deepEqual(lastCall(gl, 'viewport').args, [0, 0, 1024, 768]);
+
+  device.setViewport(0, 0, 5, 5);
+  camera.invalidateConfiguration();
+  assert.deepEqual(viewportOf(device), { x: 0, y: 0, width: 1024, height: 768 });
+});

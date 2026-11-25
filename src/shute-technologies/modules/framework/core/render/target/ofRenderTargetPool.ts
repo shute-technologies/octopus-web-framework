@@ -73,9 +73,12 @@ export class OFRenderTargetPool {
     }
   }
 
-  /** Destroys every target, in use or not. */
+  /** Destroys every target, in use or not, last acquired first, so nested binds unwind in order. */
   destroy(): void {
-    this._entries.forEach((entry) => entry.target.destroy());
+    for (let i = this._entries.length - 1; i >= 0; i--) {
+      this._entries[i].target.destroy();
+    }
+
     this._entries.length = 0;
   }
 }

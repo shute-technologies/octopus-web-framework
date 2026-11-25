@@ -7,8 +7,14 @@ export type OFRenderTargetFormat = 'rgba8' | 'half-float';
 /**
  * A framebuffer with one colour texture, to draw into instead of the canvas and then sample.
  *
- * The texture is LINEAR and CLAMP_TO_EDGE with no mipmaps, so any size works on WebGL 1. It is not
- * premultiplied: what is drawn into it with the usual blending is straight colour, as on the canvas.
+ * The texture is LINEAR and CLAMP_TO_EDGE with no mipmaps, so any size works on WebGL 1.
+ *
+ * Content: drawn into with Alpha from a transparent clear, a target holds premultiplied colour (rgb·a, a);
+ * composite it with the Premultiplied blend mode, copy it with Replace. Over an opaque clear it is the same
+ * as straight colour.
+ *
+ * Orientation: rows run bottom-up, as in any framebuffer. A full-screen pass reads it the right way up, but
+ * sampled as a sprite's image (whose v=0 is the top) it appears flipped vertically.
  *
  * bind() makes it the draw target (viewport 0, 0, width, height; scissor test off) and unbind() restores what
  * was there before, through the device, so binds nest and a `: Viewport` input is right inside the target.
@@ -47,6 +53,10 @@ export class OFRenderTarget {
       this._textureType = _GL.UNSIGNED_BYTE;
     }
 
+    // Setup leaves the caller's bindings as they were: a texture set before this target is made stays bound.
+    const previousFramebuffer = _GL.getParameter(_GL.FRAMEBUFFER_BINDING) as WebGLFramebuffer | null;
+    const previousTexture = _GL.getParameter(_GL.TEXTURE_BINDING_2D) as WebGLTexture | null;
+
     this._texture = _GL.createTexture();
     _GL.bindTexture(_GL.TEXTURE_2D, this._texture);
     _GL.texParameteri(_GL.TEXTURE_2D, _GL.TEXTURE_MAG_FILTER, _GL.LINEAR);
@@ -58,16 +68,20 @@ export class OFRenderTarget {
     this._framebuffer = _GL.createFramebuffer();
     _GL.bindFramebuffer(_GL.FRAMEBUFFER, this._framebuffer);
     _GL.framebufferTexture2D(_GL.FRAMEBUFFER, _GL.COLOR_ATTACHMENT0, _GL.TEXTURE_2D, this._texture, 0);
-    // Put back what the device has bound: setup must not move draws off their target.
-    _GL.bindFramebuffer(_GL.FRAMEBUFFER, this._graphicDevice.currentFramebuffer);
+    _GL.bindFramebuffer(_GL.FRAMEBUFFER, previousFramebuffer);
+    _GL.bindTexture(_GL.TEXTURE_2D, previousTexture);
   }
 
   /** Reallocates the texture when the size changes; the same size makes no GL call. The contents are lost. */
   resize(width: number, height: number): void {
     if (width === this._width && height === this._height) { return; }
 
-    this._graphicContext.bindTexture(this._graphicContext.TEXTURE_2D, this._texture);
+    const _GL = this._graphicContext;
+    const previousTexture = _GL.getParameter(_GL.TEXTURE_BINDING_2D) as WebGLTexture | null;
+
+    _GL.bindTexture(_GL.TEXTURE_2D, this._texture);
     this.allocate(width, height);
+    _GL.bindTexture(_GL.TEXTURE_2D, previousTexture);
     // While bound, the viewport follows the new size.
     if (this._isBound) { this._graphicDevice.setViewport(0, 0, this._width, this._height); }
   }
@@ -84,21 +98,25 @@ export class OFRenderTarget {
   unbind(): void {
     if (!this._isBound) { return; }
 
-    this._graphicDevice.unbindRenderTarget();
+    this._graphicDevice.unbindRenderTarget(this._framebuffer);
     this._isBound = false;
   }
 
-  /** Clears the whole target to the colour, whether or not it is bound. */
+  /**
+   * Clears the whole target to the colour, whether or not it is bound, and only this target. When it is not the
+   * one being drawn to, it is bound on top for the clear and unbound again, also when it is bound lower down.
+   */
   clear(r: number, g: number, b: number, a: number): void {
-    const wasBound = this._isBound;
+    const device = this._graphicDevice;
+    const isCurrent = device.currentFramebuffer === this._framebuffer;
 
-    if (!wasBound) { this.bind(); }
+    if (!isCurrent) { device.bindRenderTarget(this._framebuffer, this._width, this._height); }
 
     const _GL = this._graphicContext;
     _GL.clearColor(r, g, b, a);
     _GL.clear(_GL.COLOR_BUFFER_BIT);
 
-    if (!wasBound) { this.unbind(); }
+    if (!isCurrent) { device.unbindRenderTarget(this._framebuffer); }
   }
 
   /** Frees the framebuffer and texture. Unbinds first if bound. */
@@ -114,7 +132,7 @@ export class OFRenderTarget {
     this._texture = null;
   }
 
-  // Expects the texture bound on TEXTURE_2D; leaves TEXTURE_2D unbound, as octopus binds textures before use.
+  // Expects the texture bound on TEXTURE_2D; leaves TEXTURE_2D unbound: the callers restore the old binding.
   private allocate(width: number, height: number): void {
     const _GL = this._graphicContext;
 

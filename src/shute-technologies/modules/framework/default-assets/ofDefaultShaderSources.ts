@@ -20,7 +20,7 @@ export class OFDefaultShaderSources {
     fragment:
         "uniform lowp vec4 uColor : Color;\n\n" +
 
-        "uniform float uPremultiplyAlpha : Shared;\n\n" +
+        "uniform lowp float uPremultiplyAlpha : Shared;\n\n" +
 
         "void main(void) {\n" +
         "    gl_FragColor = uColor;\n" +
@@ -48,7 +48,7 @@ export class OFDefaultShaderSources {
         "uniform lowp vec4 uColor : Color;\n" +
         "uniform sampler2D uSamplerTexture : Texture;\n\n" +
 
-        "uniform float uPremultiplyAlpha : Shared;\n\n" +
+        "uniform lowp float uPremultiplyAlpha : Shared;\n\n" +
 
         "void main(void) {\n" +
         "    gl_FragColor = texture2D(uSamplerTexture, varyingTextureCoord) * uColor;\n" +
@@ -104,7 +104,7 @@ export class OFDefaultShaderSources {
 
         "uniform sampler2D uSamplerTexture : Texture;\n\n" +
 
-        "uniform float uPremultiplyAlpha : Shared;\n\n" +
+        "uniform lowp float uPremultiplyAlpha : Shared;\n\n" +
 
         "void main(void) {\n" +
         "    gl_FragColor = texture2D(uSamplerTexture, varyingTextureCoord) * varyingVertexColor;\n" +
@@ -136,7 +136,7 @@ export class OFDefaultShaderSources {
         "uniform lowp vec4 uTintColor : Color;\n" +
         "uniform sampler2D uSamplerTexture : Texture;\n\n" +
 
-        "uniform float uPremultiplyAlpha : Shared;\n\n" +
+        "uniform lowp float uPremultiplyAlpha : Shared;\n\n" +
 
         "void main(void) {\n" +
         "    gl_FragColor = texture2D(uSamplerTexture, varyingTextureCoord) * varyingVertexColor * uTintColor;\n" +

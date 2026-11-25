@@ -136,7 +136,7 @@ export class OFRenderCamera {
       this._viewport.width = width;
       this._viewport.height = height;
 
-      this._graphicContext.viewport(this._viewport.x, this._viewport.y, this._viewport.width, this._viewport.height);
+      this._graphicDevice.setViewport(this._viewport.x, this._viewport.y, this._viewport.width, this._viewport.height);
     }
   }
 
@@ -144,7 +144,7 @@ export class OFRenderCamera {
     const _GL = this._graphicContext;
 
     // Viewport
-    this._graphicContext.viewport(this._viewport.x, this._viewport.y, this._viewport.width, this._viewport.height);
+    this._graphicDevice.setViewport(this._viewport.x, this._viewport.y, this._viewport.width, this._viewport.height);
 
     // Set the scissor rectangle.
     _GL.scissor(

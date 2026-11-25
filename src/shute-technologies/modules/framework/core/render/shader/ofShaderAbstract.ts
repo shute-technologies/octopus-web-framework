@@ -20,6 +20,9 @@ export class OFShaderAbstract extends OFBaseShader {
   private _colorPropIndexCount: number;
   private _texturePropIndexCount: number;
 
+  /** The inputs the shader's source declares. */
+  get shaderCodeInfo(): OFIShaderCodeInfo { return this._shaderCodeInfo; }
+
   constructor(protected readonly _shaderFactory: OFShaderFactory, sourceTarget: IOFDefaultShaderSource,
     shaderCodeInfo: OFIShaderCodeInfo) {
     super(_shaderFactory, sourceTarget, true);

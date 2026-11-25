@@ -141,3 +141,27 @@ test('copyShader is built once from the copy source through the shader factory',
   assert.equal(calls[0][0], 'OFFullscreenCopy');
   assert.equal(calls[0][1], OFDefaultShaderSources.SourcesFullscreenCopy);
 });
+
+test('a source that is the render target being drawn to throws (feedback loop)', () => {
+  const { shader, graphicDevice, pass } = setup();
+  const target = new OFRenderTarget(graphicDevice, 64, 64);
+
+  target.bind();
+  assert.throws(() => pass.draw(shader, target), /feedback loop/);
+  target.unbind();
+  assert.doesNotThrow(() => pass.draw(shader, target));
+});
+
+test('a shader whose attributes are not a vec3 aVertexPosition and a vec2 aTextureCoord throws', () => {
+  const wrong = [
+    [['aVertexPosition', vec3]],
+    [['aVertexPosition', vec3], ['aTextureCoord', vec2], ['aColor', OFEnumShaderDataTypes.Vector4]],
+    [['aTextureCoord', vec2], ['aVertexPosition', vec3]],
+    [['aVertexPosition', vec3], ['aTextureCoord', vec3]]
+  ];
+
+  for (const attrs of wrong) {
+    const { shader, graphicDevice } = makeAbstractShader(lib, uniforms, undefined, { attributes: attrs });
+    assert.throws(() => new OFFullscreenPass(graphicDevice).draw(shader, {}), /attributes/, JSON.stringify(attrs));
+  }
+});

@@ -2,6 +2,7 @@ import { mat4 } from 'gl-matrix';
 import { OFGraphicDevice } from '../../device/ofGraphicDevice';
 import { OFShaderAbstract } from '../shader/ofShaderAbstract';
 import { OFRenderTarget } from './ofRenderTarget';
+import { OFEnumShaderDataTypes } from '../../../../cross-cutting/shader-analizer/ofEnumShaderDataTypes';
 import { OFDefaultShaderSources } from '../../../default-assets/ofDefaultShaderSources';
 import type { IOFMoreRenderArgs } from '../../../interfaces/iofMoreRenderArgs';
 
@@ -12,6 +13,10 @@ import type { IOFMoreRenderArgs } from '../../../interfaces/iofMoreRenderArgs';
  * the viewport whatever the device camera is. The pass sets no viewport itself: inside a bound render target
  * it covers the target, on the canvas it covers the current viewport. The shader's own blendMode is applied.
  * The source goes to the shader's first `: Texture` input; any other input is the caller's to set.
+ *
+ * draw() throws when the source is the render target currently bound (a feedback loop: WebGL draws nothing),
+ * and when the shader's attributes are not exactly a vec3 aVertexPosition and a vec2 aTextureCoord, the
+ * layout of the quad (20 bytes a vertex).
  */
 export class OFFullscreenPass {
 
@@ -52,6 +57,18 @@ export class OFFullscreenPass {
 
   draw(shader: OFShaderAbstract, source?: OFRenderTarget | WebGLTexture): void {
     const _GL = this._graphicContext;
+
+    if (source instanceof OFRenderTarget && source.framebuffer === this._graphicDevice.currentFramebuffer) {
+      throw new Error('OFFullscreenPass.draw: the source is the render target being drawn to (a feedback loop).');
+    }
+
+    const attributes = shader.shaderCodeInfo.attributes;
+
+    if (shader.shaderCodeInfo.attributeCount !== 2
+      || attributes[0].inputName !== 'aVertexPosition' || attributes[0].inputVariableType !== OFEnumShaderDataTypes.Vector3
+      || attributes[1].inputName !== 'aTextureCoord' || attributes[1].inputVariableType !== OFEnumShaderDataTypes.Vector2) {
+      throw new Error('OFFullscreenPass.draw: the shader attributes must be a vec3 aVertexPosition and a vec2 aTextureCoord.');
+    }
 
     if (!this._vertexBuffer) {
       this._vertexBuffer = _GL.createBuffer();
