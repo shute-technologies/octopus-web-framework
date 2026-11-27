@@ -48,7 +48,7 @@ export class OFAnimation extends OFSprite {
         this._vertices[15] = -hw; this._vertices[16] = -hh; this._vertices[17] = 0; this._vertices[18] = 0; this._vertices[19] = 0;
 
         // Now we set the vertices interleaved array to the VertexBuffer
-        _GL.bindBuffer(_GL.ARRAY_BUFFER, this._vboObject.vbo);
+        this._graphicDevice.bindBuffer(_GL.ARRAY_BUFFER, this._vboObject.vbo);
         // This time the BufferData is set as DYNAMIC_DRAW, this is
         // because our vertex array will change often.
         _GL.bufferData(_GL.ARRAY_BUFFER, this._vertices, _GL.DYNAMIC_DRAW);
@@ -124,7 +124,7 @@ export class OFAnimation extends OFSprite {
         this._vertices[18] = this._quadTextCoords.left; this._vertices[19] = this._quadTextCoords.up;
 
         // Now we set the vertices interleaved array to the VertexBuffer
-        _GL.bindBuffer(_GL.ARRAY_BUFFER, this.vboObject.vbo);
+        this._graphicDevice.bindBuffer(_GL.ARRAY_BUFFER, this.vboObject.vbo);
         _GL.bufferSubData(_GL.ARRAY_BUFFER, 0, this._vertices as BufferSource);
 
         (this._shader as OFShaderTexture).color = this._color;

@@ -78,7 +78,7 @@ test('the shader\'s blend mode is used', () => {
   assert.deepEqual(gl.callsTo('blendFuncSeparate')[0].args, ['SRC_ALPHA', 'ONE', 'ONE', 'ONE_MINUS_SRC_ALPHA']);
 });
 
-test('the identity matrix is sent for the Camera input, whatever the device camera and shader world are', () => {
+test('the identity matrix is sent for the Camera input, whatever the device camera and shader world are; once, as the program keeps it', () => {
   const { shader, gl, pass } = setup(mat4.fromScaling(mat4.create(), [0.25, 0.5, 1]));
   shader.setTranslate(30, 40, 0);
 
@@ -86,7 +86,7 @@ test('the identity matrix is sent for the Camera input, whatever the device came
   pass.draw(shader, {});
 
   const sent = gl.callsTo('uniformMatrix4fv').map((c) => c.args[2]);
-  assert.equal(sent.length, 2);
+  assert.equal(sent.length, 1);
   for (const matrix of sent) { assert.deepEqual(matrix, Array.from(mat4.create())); }
 });
 

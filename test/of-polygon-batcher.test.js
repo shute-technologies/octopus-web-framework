@@ -1,12 +1,15 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { OFPolygonBatcher } = require('../lib/index.js');
-const { createFakeGL } = require('./fake-webgl');
+const lib = require('../lib/index.js');
+const { createFakeGL, makeGraphicDevice } = require('./fake-webgl');
+
+const { OFPolygonBatcher } = lib;
 
 // The constructor needs a running framework; the batching state is all these tests touch.
 function makeBatcher() {
   const batcher = Object.create(OFPolygonBatcher.prototype);
   batcher._GL = createFakeGL();
+  batcher._graphicDevice = makeGraphicDevice(lib, batcher._GL);
   batcher._vBOObject = { vbo: 'vbo' };
   batcher._iBOObject = { vbo: 'ibo' };
   batcher.beginDraw();

@@ -68,7 +68,7 @@ test('an abstract shader that reads only positions disables what a textured draw
   assert.ok(disabled < indexOfCall(gl, 'drawElements', outlineStart), 'disabled before the draw');
 });
 
-test('a textured draw after a position-only draw enables the texture coordinates again', () => {
+test('a textured draw after a position-only draw enables the texture coordinates again, and only them', () => {
   const { gl, shaderFactory } = makeScene();
   const texture = new OFShaderTexture(shaderFactory, {});
   const primitive = new OFShaderPrimitive(shaderFactory, {});
@@ -79,7 +79,8 @@ test('a textured draw after a position-only draw enables the texture coordinates
   texture.draw({}, 'texture', 'vboB');
 
   const enabledAgain = gl.calls.slice(secondTextureStart).filter((c) => c.name === 'enableVertexAttribArray');
-  assert.deepEqual(enabledAgain.map((c) => c.args), [[0], [1]]);
+  // The positions (0) stayed enabled through the position-only draw.
+  assert.deepEqual(enabledAgain.map((c) => c.args), [[1]]);
 });
 
 test('an abstract shader never points an inactive attribute, and keeps the interleaved offsets', () => {

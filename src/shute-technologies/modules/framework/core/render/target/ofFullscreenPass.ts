@@ -72,9 +72,9 @@ export class OFFullscreenPass {
 
     if (!this._vertexBuffer) {
       this._vertexBuffer = _GL.createBuffer();
-      _GL.bindBuffer(_GL.ARRAY_BUFFER, this._vertexBuffer);
+      this._graphicDevice.bindBuffer(_GL.ARRAY_BUFFER, this._vertexBuffer);
       _GL.bufferData(_GL.ARRAY_BUFFER, OFFullscreenPass.QuadVertices, _GL.STATIC_DRAW);
-      _GL.bindBuffer(_GL.ARRAY_BUFFER, null);
+      this._graphicDevice.bindBuffer(_GL.ARRAY_BUFFER, null);
     }
 
     if (source) {
@@ -85,13 +85,13 @@ export class OFFullscreenPass {
     // transformation also keeps the shader's own world matrix out of it.
     shader.draw(this._args, this._vertexBuffer, this._identity, _GL.TRIANGLE_STRIP, null, 4);
 
-    _GL.bindBuffer(_GL.ARRAY_BUFFER, null);
+    this._graphicDevice.bindBuffer(_GL.ARRAY_BUFFER, null);
   }
 
   /** Frees the quad's buffer. The copy shader belongs to the shader factory and stays there. */
   destroy(): void {
     if (this._vertexBuffer) {
-      this._graphicContext.deleteBuffer(this._vertexBuffer);
+      this._graphicDevice.deleteBuffer(this._vertexBuffer);
       this._vertexBuffer = null;
     }
   }

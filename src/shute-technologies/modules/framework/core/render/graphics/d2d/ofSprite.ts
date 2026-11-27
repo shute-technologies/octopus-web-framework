@@ -119,7 +119,7 @@ export class OFSprite extends OFDrawable2D {
 
         // Now we set the vertices interleaved array to the VertexBuffer
         const _GL = this._graphicContext;
-        _GL.bindBuffer(_GL.ARRAY_BUFFER, this._vboObject.vbo);
+        this._graphicDevice.bindBuffer(_GL.ARRAY_BUFFER, this._vboObject.vbo);
         _GL.bufferData(_GL.ARRAY_BUFFER, new Float32Array(this._vertices), _GL.STATIC_DRAW);
       }
     }
@@ -168,7 +168,7 @@ export class OFSprite extends OFDrawable2D {
 
         // Now we set the vertices interleaved array to the VertexBuffer
         const _GL = this._graphicContext;
-        _GL.bindBuffer(_GL.ARRAY_BUFFER, this._vboObject.vbo);
+        this._graphicDevice.bindBuffer(_GL.ARRAY_BUFFER, this._vboObject.vbo);
         _GL.bufferData(_GL.ARRAY_BUFFER, new Float32Array(this._vertices), _GL.STATIC_DRAW);
       }
     }

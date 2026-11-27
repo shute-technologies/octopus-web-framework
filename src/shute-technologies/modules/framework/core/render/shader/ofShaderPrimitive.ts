@@ -35,9 +35,9 @@ export class OFShaderPrimitive extends OFBaseShader {
 
     // Enable blending
     this._graphicDevice.useBlendMode(this.blendMode);
-    _GL.useProgram(this._shaderProgram);
+    this._graphicDevice.useShaderProgram(this._shaderProgram);
     _GL.uniform1f(this._uniformPremultiply, OFGraphicDevice.premultipliesFor(this.blendMode) ? 1 : 0);
-    _GL.bindBuffer(_GL.ARRAY_BUFFER, vertexBuffer);
+    this._graphicDevice.bindBuffer(_GL.ARRAY_BUFFER, vertexBuffer);
     // Through the device, which also disables what an earlier draw enabled (texture coordinates).
     this._graphicDevice.useVertexAttributes([this._vertexPositionAttr]);
     _GL.vertexAttribPointer(this._vertexPositionAttr, 3, _GL.FLOAT, false, 0, 0);
@@ -61,7 +61,7 @@ export class OFShaderPrimitive extends OFBaseShader {
     renderType = !renderType ? _GL.TRIANGLE_STRIP : renderType;
 
     if (indexBuffer) {
-      _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, indexBuffer);
+      this._graphicDevice.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, indexBuffer);
       _GL.drawElements(renderType, count, _GL.UNSIGNED_SHORT, 0);
     } else {
       _GL.drawArrays(renderType, 0, count);

@@ -219,10 +219,10 @@ export class OFSpriteBatcher {
         x.enabled = true;
 
         // Now we set the vertices interleaved array to the VertexBuffer
-        _GL.bindBuffer(_GL.ARRAY_BUFFER, x.vboObject.vbo);
+        this._graphicDevice.bindBuffer(_GL.ARRAY_BUFFER, x.vboObject.vbo);
         _GL.bufferData(_GL.ARRAY_BUFFER, new Float32Array(x.vertices), _GL.DYNAMIC_DRAW);
         // Now we set the indices array to the IndexBuffer
-        _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, x.iboObject.vbo);
+        this._graphicDevice.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, x.iboObject.vbo);
         _GL.bufferData(_GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(x.indices), _GL.STATIC_DRAW);
       } else {
         x.destroy();

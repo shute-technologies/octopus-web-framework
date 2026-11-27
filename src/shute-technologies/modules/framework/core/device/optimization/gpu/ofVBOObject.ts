@@ -55,6 +55,7 @@ export class OFVBOObject {
   }
 
   destroy (): void {
-    this._GL.deleteBuffer(this.vbo);
+    // Through the device, so a buffer it recorded as bound is not taken for bound after it is gone.
+    this._vboPooler.graphicDeviceOptManager.graphicDevice.deleteBuffer(this.vbo);
   }
 }

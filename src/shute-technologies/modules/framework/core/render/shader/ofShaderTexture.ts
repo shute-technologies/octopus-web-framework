@@ -38,14 +38,14 @@ export class OFShaderTexture extends OFBaseShader {
     // Enable blending
     this._graphicDevice.useBlendMode(this.blendMode);
 
-    _GL.useProgram(this._shaderProgram);
+    this._graphicDevice.useShaderProgram(this._shaderProgram);
     _GL.uniform1f(this._uniformPremultiply, OFGraphicDevice.premultipliesFor(this.blendMode) ? 1 : 0);
 
     _GL.activeTexture(_GL.TEXTURE0);
     _GL.bindTexture(_GL.TEXTURE_2D, texture);
     _GL.uniform1i(this._samplerPositionUniform, 0);
 
-    _GL.bindBuffer(_GL.ARRAY_BUFFER, vertexBuffer);
+    this._graphicDevice.bindBuffer(_GL.ARRAY_BUFFER, vertexBuffer);
 
     this._graphicDevice.useVertexAttributes([this._vertexPositionAttr, this._textureCoordPositionAttr]);
     _GL.vertexAttribPointer(this._vertexPositionAttr, 3, _GL.FLOAT, false, 20, 0);
@@ -79,14 +79,14 @@ export class OFShaderTexture extends OFBaseShader {
     // Enable blending
     this._graphicDevice.useBlendMode(this.blendMode);
 
-    _GL.useProgram(this._shaderProgram);
+    this._graphicDevice.useShaderProgram(this._shaderProgram);
     _GL.uniform1f(this._uniformPremultiply, OFGraphicDevice.premultipliesFor(this.blendMode) ? 1 : 0);
 
     _GL.activeTexture(_GL.TEXTURE0);
     _GL.bindTexture(_GL.TEXTURE_2D, texture);
     _GL.uniform1i(this._samplerPositionUniform, 0);
 
-    _GL.bindBuffer(_GL.ARRAY_BUFFER, vertexBuffer);
+    this._graphicDevice.bindBuffer(_GL.ARRAY_BUFFER, vertexBuffer);
     this._graphicDevice.useVertexAttributes([this._vertexPositionAttr, this._textureCoordPositionAttr]);
     _GL.vertexAttribPointer(this._vertexPositionAttr, 3, _GL.FLOAT, false, 20, 0);
     _GL.vertexAttribPointer(this._textureCoordPositionAttr, 2, _GL.FLOAT, false, 20, 12);
@@ -105,11 +105,7 @@ export class OFShaderTexture extends OFBaseShader {
 
     // Now draw arrays
     // GL.drawArrays(GL.TRIANGLE_STRIP, 0, indexCount);
-    _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, indexBuffer);
+    this._graphicDevice.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, indexBuffer);
     _GL.drawElements(_GL.TRIANGLE_STRIP, indexCount, _GL.UNSIGNED_SHORT, 0);
-
-    // clear
-    _GL.bindBuffer(_GL.ARRAY_BUFFER, null);
-    _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, null);
   }
 }

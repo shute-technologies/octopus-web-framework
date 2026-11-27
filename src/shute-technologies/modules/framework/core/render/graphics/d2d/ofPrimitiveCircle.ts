@@ -35,11 +35,11 @@ export class OFPrimitiveCircle extends OFDrawable2D {
       const _GL = this._graphicContext;
 
       // Now we set the vertices array to the VertexBuffer
-      _GL.bindBuffer(_GL.ARRAY_BUFFER, this._vboObject.vbo);
+      this._graphicDevice.bindBuffer(_GL.ARRAY_BUFFER, this._vboObject.vbo);
       _GL.bufferData(_GL.ARRAY_BUFFER, new Float32Array(this._vertices), _GL.STATIC_DRAW);
 
       // Now we set the indices array to the IndexBuffer
-      _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, this._iboObject.vbo);
+      this._graphicDevice.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, this._iboObject.vbo);
       _GL.bufferData(_GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(this._indices), _GL.STATIC_DRAW);
     }
   }
@@ -116,7 +116,7 @@ export class OFPrimitiveCircle extends OFDrawable2D {
     }
 
     // Now we set the indices array to the IndexBuffer
-    _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, this._iboObject.vbo);
+    this._graphicDevice.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, this._iboObject.vbo);
     _GL.bufferData(_GL.ELEMENT_ARRAY_BUFFER, new Uint16Array(this._indices), _GL.STATIC_DRAW);
   }
 

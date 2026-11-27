@@ -13,6 +13,13 @@ export class OFShaderAbstract extends OFBaseShader {
   // camera x model for the current draw. Never multiply into the camera matrix itself: with a
   // custom camera that is `args.cameraMVP`, shared by every draw the caller makes with those args.
   private readonly _modelViewProjection: mat4 = mat4.create();
+  // The last value sent to each `: Camera`, `: Time` and `: Viewport` input of this program, by input name, while
+  // the device's stateEpoch is _sentEpoch. A draw sends such an input only when its value differs.
+  private readonly _sentValues = new Map<string, Float64Array>();
+  private _sentEpoch = -1;
+  // Scratch for the `: Time` and `: Viewport` values compared before sending.
+  private readonly _timeValue = [0];
+  private readonly _viewportValue = [0, 0, 0, 0];
 
   private _attributeInterleavedDataSize: number;
   // Locations of the attributes this program declares, in declaration order (-1 if inactive).
@@ -47,6 +54,42 @@ export class OFShaderAbstract extends OFBaseShader {
   }
 
   getShaderLocations(_GL: WebGLRenderingContext): void { /*NO IMPLEMENTATION HERE*/ }
+
+  protected forgetSentUniform(uniformName: string): void {
+    this._sentValues.delete(uniformName);
+  }
+
+  /**
+   * True when `values` differ from the last values sent to the input `inputName` of this program, which it then
+   * records: the caller sends them. Every copy is dropped when the device's stateEpoch has moved (resetStateCache()).
+   * Kept as doubles, so `: Time` (a double) compares exactly; the camera's floats and the viewport fit unchanged.
+   */
+  private hasChanged(inputName: string, values: ArrayLike<number>): boolean {
+    const epoch = this._graphicDevice.stateEpoch;
+
+    if (this._sentEpoch !== epoch) {
+      this._sentValues.clear();
+      this._sentEpoch = epoch;
+    }
+
+    let sent = this._sentValues.get(inputName);
+
+    if (sent && sent.length === values.length) {
+      let same = true;
+
+      for (let i = 0; i < values.length; i++) {
+        if (sent[i] !== values[i]) { same = false; break; }
+      }
+
+      if (same) { return false; }
+    } else {
+      sent = new Float64Array(values.length);
+      this._sentValues.set(inputName, sent);
+    }
+
+    sent.set(values);
+    return true;
+  }
 
   // tslint:disable-next-line: cyclomatic-complexity
   updateShader(sourceTarget: IOFDefaultShaderSource, newShaderCodeInfo: OFIShaderCodeInfo): void {
@@ -90,9 +133,11 @@ export class OFShaderAbstract extends OFBaseShader {
       }
     }
 
-    // Update ShaderProgram and ShaderCodeInfo
+    // Update ShaderProgram and ShaderCodeInfo. A new program starts with every uniform at zero: nothing sent to the
+    // old one counts.
     this._shaderCodeInfo = newShaderCodeInfo;
     this._shaderProgram = this._shaderFactory.instanceShader(sourceTarget);
+    this._sentValues.clear();
 
     // Auto-Generate global variables for this context: Attributes
     this._attributeLocations = [];
@@ -200,15 +245,30 @@ export class OFShaderAbstract extends OFBaseShader {
             // later draws sharing those args got camera x M1 x M2 x ... and drifted.
             mat4.multiply(this._modelViewProjection, transformedMatrix, transformation ? transformation : this._world);
 
-            _GL.uniformMatrix4fv(uniformLocation, false, this._modelViewProjection);
+            // Uniforms belong to the program: one this program already holds is not sent again.
+            if (this.hasChanged(uniformData.inputName, this._modelViewProjection)) {
+              _GL.uniformMatrix4fv(uniformLocation, false, this._modelViewProjection);
+            }
             break;
           case OFEnumShaderDataTypes.ITime:
-            _GL.uniform1f(this[uniformData.inputName], this._graphicDevice.elapsedSeconds);
+            this._timeValue[0] = this._graphicDevice.elapsedSeconds;
+
+            if (this.hasChanged(uniformData.inputName, this._timeValue)) {
+              _GL.uniform1f(this[uniformData.inputName], this._timeValue[0]);
+            }
             break;
           case OFEnumShaderDataTypes.IViewport:
             const viewport = this._graphicDevice.currentViewport;
+            const viewportValue = this._viewportValue;
 
-            _GL.uniform4f(this[uniformData.inputName], viewport.x, viewport.y, viewport.width, viewport.height);
+            viewportValue[0] = viewport.x;
+            viewportValue[1] = viewport.y;
+            viewportValue[2] = viewport.width;
+            viewportValue[3] = viewport.height;
+
+            if (this.hasChanged(uniformData.inputName, viewportValue)) {
+              _GL.uniform4f(this[uniformData.inputName], viewport.x, viewport.y, viewport.width, viewport.height);
+            }
             break;
           case OFEnumShaderDataTypes.IShared:
             if (this.sendSharedUniform(uniformData, nextTextureUnit)) {
@@ -218,7 +278,8 @@ export class OFShaderAbstract extends OFBaseShader {
         }
       }
 
-      _GL.bindBuffer(_GL.ARRAY_BUFFER, vertexBuffer);
+      // Through the device, which skips the bind when the buffer already is bound. Nothing unbinds it after the draw.
+      this._graphicDevice.bindBuffer(_GL.ARRAY_BUFFER, vertexBuffer);
 
       // Auto-Generate WebGL calls for Attributes. Enabling goes through the device, which also
       // disables what an earlier draw enabled and this program does not read.
@@ -248,7 +309,7 @@ export class OFShaderAbstract extends OFBaseShader {
       if (!indexBuffer) {
         _GL.drawArrays(renderType, 0, 4);
       } else {
-        _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, indexBuffer);
+        this._graphicDevice.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, indexBuffer);
         _GL.drawElements(renderType, indexCount, _GL.UNSIGNED_SHORT, 0);
       }
     }

@@ -158,14 +158,11 @@ export class OFOptSpriteBatcher {
     iboObject.activate(OFEnumVBOObjectType.IndexBuffer);
 
     // Now we set the vertices interleaved array to the VertexBuffer
-    _GL.bindBuffer(_GL.ARRAY_BUFFER, vboObject.vbo);
+    this._graphicDevice.bindBuffer(_GL.ARRAY_BUFFER, vboObject.vbo);
     _GL.bufferData(_GL.ARRAY_BUFFER, arrayBufferGPUVertex, _GL.DYNAMIC_DRAW);
     // Now we set the indices array to the IndexBuffer
-    _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, iboObject.vbo);
+    this._graphicDevice.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, iboObject.vbo);
     _GL.bufferData(_GL.ELEMENT_ARRAY_BUFFER, arrayBufferGPUIndex, _GL.DYNAMIC_DRAW);
-    // Clear it
-    _GL.bindBuffer(_GL.ARRAY_BUFFER, null);
-    _GL.bindBuffer(_GL.ELEMENT_ARRAY_BUFFER, null);
 
     arrayBufferGPUVertex = null;
     arrayBufferGPUIndex = null;

@@ -166,6 +166,7 @@ export abstract class OFBaseShader implements OFIIsShaderAbstract {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
+    this.forgetSentUniform(uniformName);
 
     const uniformLocation = this[uniformName];
 
@@ -180,6 +181,7 @@ export abstract class OFBaseShader implements OFIIsShaderAbstract {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
+    this.forgetSentUniform(uniformName);
 
     const uniformLocation = this.getOrCreateUniformLocation(uniformName);
     _GL.uniform4f(uniformLocation, colorObject.r, colorObject.g, colorObject.b, colorObject.a);
@@ -198,6 +200,7 @@ export abstract class OFBaseShader implements OFIIsShaderAbstract {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
+    this.forgetSentUniform(uniformName);
 
     const uniformLocation = this[uniformName];
     _GL.uniform4f(uniformLocation, x, y, z, w);
@@ -207,6 +210,7 @@ export abstract class OFBaseShader implements OFIIsShaderAbstract {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
+    this.forgetSentUniform(uniformName);
 
     const uniformLocation = this[uniformName];
     _GL.uniform3f(uniformLocation, x, y, z);
@@ -216,6 +220,7 @@ export abstract class OFBaseShader implements OFIIsShaderAbstract {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
+    this.forgetSentUniform(uniformName);
 
     const uniformLocation = this[uniformName];
     _GL.uniform2f(uniformLocation, x, y);
@@ -225,6 +230,7 @@ export abstract class OFBaseShader implements OFIIsShaderAbstract {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
+    this.forgetSentUniform(uniformName);
 
     const uniformLocation = this[uniformName];
     _GL.uniform1f(uniformLocation, x);
@@ -234,6 +240,7 @@ export abstract class OFBaseShader implements OFIIsShaderAbstract {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
+    this.forgetSentUniform(uniformName);
 
     const uniformLocation = this[uniformName];
     _GL.uniform1i(uniformLocation, x);
@@ -243,6 +250,7 @@ export abstract class OFBaseShader implements OFIIsShaderAbstract {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
+    this.forgetSentUniform(uniformName);
 
     const uniformLocation = this[uniformName];
     _GL.uniform2i(uniformLocation, x, y);
@@ -252,6 +260,7 @@ export abstract class OFBaseShader implements OFIIsShaderAbstract {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
+    this.forgetSentUniform(uniformName);
 
     const uniformLocation = this[uniformName];
     _GL.uniform3i(uniformLocation, x, y, z);
@@ -261,6 +270,7 @@ export abstract class OFBaseShader implements OFIIsShaderAbstract {
     const _GL = this._graphicContext;
     // Use ShaderProgram for setting the uniforms
     this._graphicDevice.useShaderProgram(this._shaderProgram);
+    this.forgetSentUniform(uniformName);
 
     const uniformLocation = this[uniformName];
     _GL.uniform4i(uniformLocation, x, y, z, w);
@@ -290,6 +300,13 @@ export abstract class OFBaseShader implements OFIIsShaderAbstract {
 
     _GL.uniform4f(uniformLocation, colorObject.r, colorObject.g, colorObject.b, colorObject.a);
   }
+
+  /**
+   * Called by every setter that writes a uniform by name: a shader that skips re-sending a value it sent before
+   * (OFShaderAbstract's `: Camera`, `: Time` and `: Viewport` inputs) forgets its copy for that name. The
+   * by-index setters write `: Texture` and `: Color` inputs, which no shader keeps a copy of.
+   */
+  protected forgetSentUniform(uniformName: string): void { /* nothing is kept here */ }
 
   abstract draw(args: IOFRenderArgs | IOFMoreRenderArgs, ...others): void;
 }
