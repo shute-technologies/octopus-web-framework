@@ -14,6 +14,9 @@ import { OFOptSpriteBatcherRenderData } from '../../data/ofOptSpriteBatcherRende
 
 export class OFOptSpriteBatcher {
 
+  /** Vertices one draw may hold: its indices are 16-bit (`flush` uploads a `Uint16Array`). */
+  static readonly MaxVerticesPerDraw = 65536;
+
   protected readonly _framework: OFFramework;
   protected readonly _graphicDevice: OFGraphicDevice;
   protected readonly _graphicContext: WebGLRenderingContext;
@@ -89,7 +92,9 @@ export class OFOptSpriteBatcher {
         // Sort first: Doesn't matter the order, only the grouping
         this._spriteQuadData = this._spriteQuadData.sort((a, b) => a.sortId.localeCompare(b.sortId));
 
-        const sortId = this._spriteQuadData[0].sortId;
+        // The group being filled. It must follow the quads: comparing every quad with the first one's id
+        // flushed each quad of every later texture as a draw of its own.
+        let sortId = this._spriteQuadData[0].sortId;
         let vertices = [];
         let indices = [];
         let imageContent = null;
@@ -97,7 +102,8 @@ export class OFOptSpriteBatcher {
         let vertexCount = 0;
 
         this._spriteQuadData.forEach(sqData => {
-          if (sortId !== sqData.sortId) {
+          // A new texture, or a group about to pass what 16-bit indices can address, starts a new draw.
+          if (vertexCount > 0 && (sortId !== sqData.sortId || vertexCount + 4 > OFOptSpriteBatcher.MaxVerticesPerDraw)) {
             // Phase 1: Flush it!
             this.flush(imageContent, vertices, indices, vertexCount, indicesCount);
 
@@ -113,6 +119,7 @@ export class OFOptSpriteBatcher {
           const vw = sqData.width;
           const vh = sqData.height;
 
+          sortId = sqData.sortId;
           imageContent = sqData.imageContent;
 
           vertices.push(
